@@ -1,0 +1,366 @@
+#library-main-section {
+    width: 70%;
+    padding-right: 15px;
+}
+
+#library-sidemenu {
+    width: 30%;
+}
+
+/*LIBRARY SEARCH SECTION*/
+#library-search-form {
+    position: relative;
+}
+
+#library-search-form i {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    color: #999;
+}
+
+#library-search-container {
+    margin-top: 20px;
+}
+
+#library-search-input {
+    width: 100%;
+    padding-left: 50px;
+    font-size: 17px;
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 5px;
+    height: 50px;
+    outline-style: none !important;
+    outline-color: transparent !important;
+}
+
+#sort-by-txt {
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+#sort-options-btn {
+    background-color: var(--background-white);
+    font-size: 12px;
+    border: 1px solid var(--border-gray);
+    color: var(--text-gray3);
+}
+
+#sort-symbol {
+    font-weight: bold;
+    transform: translateY(1px);
+}
+
+#sort-symbol:hover {
+    cursor: pointer;
+}
+
+/*TABLE SECTION*/
+#library-table {
+    border: 1px solid var(--border-lightgray);
+    border-radius: 3px;
+}
+
+table {
+    width: 100%;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04)
+}
+
+table th {
+    padding: 10px;
+    font-size: 12px;
+}
+
+table tr {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+table td {
+    padding: 10px;
+}
+
+thead, tbody {
+    display: flex;
+    flex-flow: column nowrap; /*each flex item (tr) will be stacked on top of each other (column-like) instead of all being inline*/
+}
+
+tbody tr {
+    border-top: 1px solid var(--border-lightgray2);
+}
+
+.status-bar-cell {
+    padding: 2px !important;
+    margin-right: 8px;
+}
+
+.title-cell {
+    min-width: 574px;
+    padding-left: 0;
+    flex-grow: 1; 
+    /*the only item in flex container to have flex-grow. having read the definition, this will take up the remaining positive flex space than the other unset flex grow items*/
+}
+
+.rating-cell {
+    text-align: center;
+    min-width: 68px;
+}
+
+td.rating-cell {
+    /* only td elements with rating-cell class*/
+    border-left: 1px solid var(--border-lightgray2);
+    border-right: 1px solid var(--border-lightgray2);
+    line-height: 35px;
+}
+
+.progress-cell {
+    text-align: center;
+    min-width: 106px;
+}
+
+td.progress-cell {
+    border-right: 1px solid var(--border-lightgray2);
+    line-height: 35px;
+    font-size: 14px;
+}
+
+.edit-btn-cell {
+    text-align: center;
+    min-width: 56px;
+    margin-bottom: auto;
+    margin-top: auto;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    width: 80px;
+}
+
+tbody {
+    background-color: var(--background-white);
+}
+
+.title-cell-thumbnail-span {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.title-cell-thumbnail-span img {
+    object-fit: contain;
+    width: 100%;
+}
+
+.title-cell-span {
+    vertical-align: top;
+    margin-left: 10px;
+}
+
+.title-cell-span:hover {
+    color: var(--hover-orange);
+    cursor: pointer;
+}
+
+.rating-cell-span, .progress-cell-span {
+    cursor: pointer;
+    color: var(--link-turquoise);
+}
+
+.rating-cell-span:hover, .progress-cell-span:hover {
+    color: var(--hover-turquoise);
+}
+
+.rating-cell-span-readonly {
+    color: var(--link-turquoise);
+}
+
+.progress-cell-span {
+    font-weight: bold;
+}
+
+input.progress-cell-input {
+    width: 60px;
+}
+
+.increment-episode-span {
+    cursor: pointer;
+    color: var(--link-turquoise);
+}
+
+.increment-episode-span:hover {
+    color: var(--hover-turquoise);
+}
+
+.edit-entry-btn {
+    background: #fff;
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 3px;
+    color: var(--text-gray4);
+    font-size: 13px;
+    padding: 3px 8px;
+}
+
+.edit-entry-btn:hover {
+    border-color: var(--link-turquoise);
+    color: var(--link-turquoise);
+}
+
+#empty-library-section {
+    text-align: center;
+    padding: 20px 0px;
+    color: var(--text-gray5);
+}
+
+#browse-anime-btn-container {
+    padding-top: 20px;
+}
+
+#browse-anime-btn {
+    color: #fff;
+    background: var(--link-turquoise);
+    border: none;
+    border-radius: 3px;
+    padding: 10px 40px;
+    letter-spacing: 0.05em;
+}
+
+#browse-anime-btn:hover {
+    background: var(--hover-turquoise);
+}
+
+/*LIBRARY SIDEMENU SECTION*/
+
+#library-sidemenu-container {
+    background-color: var(--background-white);
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    border: 1px solid var(--border-lightgray);
+}
+
+#library-sidemenu-container-2 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+#library-media-type-select {
+    border: 1px solid var(--border-lightgray);
+    border-radius: 5px;
+}
+
+#library-media-type-select a {
+    text-align: start;
+    width: 100%;
+}
+
+#library-sections {
+    margin-top: 10px;
+    padding-left: 0px;
+    list-style: none;
+}
+
+#library-sections li {
+    padding: 10px;
+    margin-bottom: 3px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#library-sections a {
+    text-decoration: none;
+}
+
+#library-sections span {
+    float: right;
+    opacity: .6;
+}
+
+#allAnime {
+    background-color: #e7dee6;
+}
+
+#allAnime a {
+    color: #8e8b8e;
+}
+
+#allAnime:hover {
+    background-color: #d1c1d0;
+}
+
+.allAnime-active {
+    background-color: var(--background-burgundy) !important;
+    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+}
+
+.allAnime-active a {
+    color: #fff !important;
+}
+
+#watching {
+    background-color: #e2e9ef;
+}
+
+#watching a {
+    color: #8d9398;
+}
+
+#watching:hover {
+    background-color: #c2cfdd;
+}
+
+.watching-active {
+    background-color: #2c3e50 !important;
+    border-bottom: #fff 1px solid;
+    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+}
+
+.watching-active a {
+    color: #fff !important;
+}
+
+#planning {
+    background-color: #f0f7fc;
+}
+
+#planning a {
+    color: #8e959a;
+}
+
+#planning:hover {
+    background-color: #c6e1f2;
+}
+
+.planning-active {
+    background-color: #2980b9 !important;
+    border-bottom: #fff 1px solid;
+    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+}
+
+.planning-active a {
+    color: #fff !important;
+}
+
+#completed {
+    background-color: #e5f9ee;
+}
+
+#completed a {
+    color: #798e7b;
+}
+
+#completed:hover {
+    background-color: #bbf0d2;
+}
+
+.completed-active {
+    background-color: #27ae60 !important;
+    border-bottom: #fff 1px solid;
+    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+}
+
+.completed-active a {
+    color: #fff !important;
+}

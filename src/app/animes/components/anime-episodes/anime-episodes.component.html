@@ -1,0 +1,25 @@
+<div id="episode-table-container" class="d-flex">
+    @if(episodes$.value.length > 0) {
+        <table id="episode-table">
+            <thead>
+                <tr>
+                    <th class="episode-cell"></th>
+                    <th class="title-cell">Episode Title</th>
+                    <th>Aired</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let episode of episodes$.value">
+                    <td class="episode-cell">{{episode.number}}</td>
+                    <td class="title-cell" >{{episode.title}}</td>
+                    <td>{{episode.airDate}}</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+    @else {
+        <div id="no-episodes">
+            <h5>No episode information has been added to this anime. </h5>
+        </div>
+    }
+</div>

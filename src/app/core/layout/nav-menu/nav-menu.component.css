@@ -1,0 +1,59 @@
+#kitsu-nav {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#nav-spacer {
+    height: 40px;
+}
+
+.navbar {
+    background-color: var(--background-burgundy) !important;
+}
+
+.navbar-brand {
+    color: var(--text-white)
+}
+
+.nav-link {
+    color: var(--text-gray2);
+    font-size: 14px;
+}
+
+.nav-link:hover {
+    color: var(--hover-white);
+}
+
+#nav-search-form {
+    position: relative;
+}
+
+#nav-search-form i {
+    position: absolute;
+    top: 4px;
+    left: 10px;
+    font-size: 12px;
+    color: #a99fa8;
+}
+
+#navbar-search-field {
+    background-color: var(--background-burgundy2);
+    color: var(--text-white2);
+    padding-left: 30px;
+    border: none;
+    border-radius: 3px;
+    width: 200px;
+    font-size: 13px;
+    height: 25px;
+}
+
+#navbar-search-field:active, #navbar-search-field:focus {
+    background-color: var(--background-burgundy3);
+    outline-color: transparent;
+    outline-style: none;
+}
+
+.cursor {
+    cursor: pointer;
+}

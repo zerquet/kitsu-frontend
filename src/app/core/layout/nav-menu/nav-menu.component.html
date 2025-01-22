@@ -1,0 +1,49 @@
+<nav id="kitsu-nav" class="navbar navbar-expand-lg py-0">
+    <div class="container">
+        <a class="navbar-brand" href="#">Kitsu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content"
+            aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-content">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                @if(authService.isLoggedIn$.getValue() === true) {
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" routerLink="/users/{{this.authService.loggedUserId$.getValue()}}">Library</a>
+                    </li>
+                }
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Browse
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" routerLink="/explore">Anime</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div>
+                <!--An absolute positioned element will appear at the top-left corner of the parent element. So adding this <div> encapsulating the form and dropdown <div>
+                    makes it so that the dropdown window doesn't appear on the top-left position of the nav-->
+                <form id="nav-search-form" class="d-flex" role="search" [formGroup]="form">
+                    <i class="bi bi-search"></i>
+                    <input id="navbar-search-field" type="search" placeholder="Search" formControlName="searchControl">
+                </form>
+                @if(show$.value === true ) {
+                    <app-search-results [results$]="searchResults$"></app-search-results>
+                }
+            </div>
+            <ul class="navbar-nav me-autp mb-2 mb-lg-0 ms-3">
+                @if (authService.isLoggedIn$.getValue() === false) {
+                    <li class="nav-item"><a class="nav-link cursor" (click)="openSignInModal()">Sign In</a></li>
+                    <li class="nav-item"><a class="nav-link cursor" (click)="openSignUpModal()">Sign Up</a></li>
+                }
+                @else {
+                    <li class="nav-item"><a class="nav-link cursor">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link cursor" (click)="logout()">Logout</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="nav-spacer"></div>

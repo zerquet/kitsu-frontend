@@ -1,0 +1,32 @@
+<div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="text-center mb-3">
+            <p><strong>What should we call you?</strong></p>
+            <input id="username" placeholder="Username" formControlName="username">
+            <div *ngIf="username?.invalid && (username?.touched || username?.dirty)" class="required">
+                <div *ngIf="username?.hasError('required')">
+                    Username is required
+                </div>
+            </div>
+        </div>
+        <div class="text-center mb-3">
+            <p><strong>What email should we use?</strong></p>
+            <input id="email" placeholder="Email" formControlName="email">
+            <div *ngIf="email?.invalid && (email?.touched || email?.dirty)" class="required">
+                <div *ngIf="email?.hasError('required')">
+                    Email is required
+                </div>
+            </div>
+        </div>
+        <div class="text-center mb-3">
+            <p><strong>Think of a strong password</strong></p>
+            <input id="password" placeholder="Password" formControlName="password">
+            <div *ngIf="password?.invalid && (password?.touched || password?.dirty)" class="required">
+                <div *ngIf="password?.hasError('required')">
+                    Password is required
+                </div>
+            </div>
+        </div>
+        <div class="text-center"><button type="submit" [disabled]="!form.valid">Let's create that account</button></div>
+    </form>
+</div>

@@ -1,0 +1,140 @@
+#cover-section {
+    position: relative;
+}
+
+#cover-photo {
+    height: 350px;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+.default-cover-photo {
+    background: url("https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png");
+}
+
+#cover-user-info-container {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+}
+
+#cover-user-info-section {
+    display: flex;
+}
+
+#cover-profile-picture img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+#mini-bio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 15px;
+}
+
+#cover-username {
+    color: #fff;
+    font-size: 25px;
+}
+
+#cover-btn-container {
+    margin-top: 6px;
+}
+
+#edit-btn {
+    background: rgba(255,255,255,.11);
+    border: 1px solid rgba(255,255,255,.2);
+    color:rgba(255,255,255,.6);
+    border-radius: 3px;
+    padding: 6px 40px;
+    font-size: 13px;
+    transition: all .2s ease;
+}
+
+#edit-btn:hover {
+    color: #464646;
+    background: #f2f2f2;
+}
+
+#follow-btn {
+    background: var(--link-turquoise);
+    color:#fff;
+    border-radius: 3px;
+    padding: 6px 40px;
+    font-size: 13px;
+    transition: all .2s ease;
+    text-decoration: none;
+    border-style: none;
+}
+
+#follow-btn:hover {
+    background: var(--hover-turquoise2);
+}
+
+/** Copied from anime component styles. kept class names for easier verification and potential deduplication*/
+#anime-tabs-container {
+    background-color: var(--background-white);
+}
+
+
+#anime-tabs ul {
+    display: flex;
+    list-style: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    cursor: pointer;
+    margin-left: 1%;
+}
+
+#anime-tabs ul li {
+    border: 1px solid var(--border-lightgray);
+    padding: 8px;
+}
+
+#anime-tabs ul li:hover {
+    background-color: var(--background-gray);
+}
+
+#anime-tabs ul li.active {
+    background-color: var(--background-gray);
+}
+
+#anime-tabs ul li.active:hover {
+    background-color: var(--hover-gray2);
+}
+
+#profile-tab-content-container {
+    padding-top: 20px;
+}
+
+/**ACTIVITY TAB STYLES */
+#feed-section {
+    width: 70%;
+}
+
+#about-me-section {
+    width: 30%;
+    font-size: 13px;
+}
+
+#about-me-section ul {
+    list-style: none;
+    padding-left: 0px;
+}
+
+#about-me-section strong {
+    padding-right: 5px;
+}
+
+#about-me-heading {
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-lightgray);
+    padding-bottom: 10px;
+}
+
+#about-me-bio {
+    margin-top: 10px;
+}

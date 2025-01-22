@@ -1,0 +1,50 @@
+#franchise-section {
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.anime-poster {
+    position: relative;
+    width: 20%;
+}
+
+.anime-poster-image-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.anime-poster-image-container:after {
+    content: '\A';
+    position: absolute;
+    width: 100%; height:100%;
+    top:0; left:0;
+    background:rgba(0,0,0,0.6);
+    opacity: 0;
+    border-radius: 5px;
+}
+
+.anime-poster-image-container:hover:after {
+    opacity: 1;
+}
+
+.anime-poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+.title-section {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    white-space: nowrap;
+}
+
+.quick-info-section {
+    font-size: 13px;
+}
+
+.year-span {
+    color: var(--text-gray2);
+}

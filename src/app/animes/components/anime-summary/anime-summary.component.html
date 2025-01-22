@@ -1,0 +1,30 @@
+<div class="d-flex">
+    <div id="anime-main-section" class="px-3">
+        <div id="title-section">
+            <strong>{{anime.title}}</strong>
+            <span id="anime-quick-info-section" class="ps-2"><strong>{{anime.year}} | {{anime.details.mediaType}} | {{anime.details.episodeCount}} Episodes</strong></span>
+            <span id="admin-link" class="ps-2"><a routerLink="../../admin/anime/edit/{{anime.id}}">Update entry</a></span>
+        </div>
+        <div><strong id="anime-score">{{anime.score}}% Overall Rating</strong></div>
+        <div class="mt-2">{{anime.description}}</div>
+        <ul id="anime-categories-list" class="d-flex flex-wrap flex-row ps-0 mt-5">
+            @for (cat of anime.categories; track cat.id) {
+                <li class=""><a href="javascript:void(0);" routerLink="/home/category/{{cat.name}}">{{cat.name}}</a></li>
+            }
+        </ul>
+    </div>
+    <div id="anime-more-details">
+        <div class="p-3 px-4">
+            <h6><strong>Anime Details</strong></h6>
+            <ul>
+                <li *ngIf="anime.details.englishTitle"><strong>English</strong><span>{{anime.details.englishTitle}}</span></li>
+                <li *ngIf="anime.details.japaneseTitle"><strong>Japanese</strong><span>{{anime.details.japaneseTitle}}</span></li>
+                <li *ngIf="anime.details.japaneseTitleRomaji"><strong>Japanese (Romaji)</strong><span>{{anime.details.japaneseTitleRomaji}}</span></li>
+                <li *ngIf="anime.details.releaseStatus"><strong>Status</strong><span>{{anime.details.releaseStatus}}</span></li>
+                <li *ngIf="anime.details.season"><strong>Season</strong><span>{{anime.details.season}}</span></li>
+                <li *ngIf="anime.details.tvRating"><strong>Rating</strong><span>{{anime.details.tvRating}}</span></li>
+                <li *ngIf="anime.details.episodeLength"><strong>Episode Length</strong><span>{{anime.details.episodeLength}} min.</span></li>
+            </ul>
+        </div>
+    </div>
+</div>

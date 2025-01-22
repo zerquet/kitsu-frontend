@@ -1,0 +1,37 @@
+.anime-tooltip {
+    background-color: var(--background-burgundy2) !important;
+    position: absolute;
+    top: 0;
+    left: 165px;
+    z-index: 1;
+    border-radius: 3px;
+    color: var(--text-burgundy);
+    overflow: hidden;
+}
+
+.tooltip-content {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    height: 232px;
+    width: 341px;
+}
+
+.tooltip-year {
+    margin-left: 4px;
+    opacity: 0.5;
+}
+
+.tooltip-score {
+    color: var(--text-turquoise);
+}
+
+.tooltip-description {
+    margin-top: 5px;
+    font-size: 12px;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom,var(--text-burgundy), var(--text-burgundy) 75%,var(--background-burgundy2));
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}

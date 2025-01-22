@@ -1,0 +1,36 @@
+<div *ngIf="profileInfo$.value !== undefined">
+    <div id="modal-cover-photo"></div>
+    <div id="anime-tabs-container" class="container">
+        <div id="anime-tabs">
+            <ul>
+                <li>About Me</li>
+                <li>Favorites</li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <form [formGroup]="form" (ngSubmit)="null">
+            <div><h4>About Me</h4></div>
+            <div class="mb-2">
+                <label for="location">Location</label>
+                <input formControlName="location" type="text" id="location">
+            </div>
+            <div class="mb-2">
+                <label for="birthday">Birthday</label><input formControlName="birthday" type="date" id="birthday">
+            </div>
+            <div class="mb-2"><label for="gender">Gender</label>
+                <select id="gender" formControlName="gender">
+                    <option value="Secret">It's a secret</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="bio">Bio</label>
+                <textarea formControlName="bio" id="bio"></textarea>
+            </div>
+        </form>
+    </div>
+    <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
+</div>

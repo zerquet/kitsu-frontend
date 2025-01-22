@@ -1,0 +1,66 @@
+#modal-cover-photo {
+    background: url(https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100px;
+}
+
+/*Again, copied from anime component styles*/
+#anime-tabs-container {
+    background-color: var(--background-white);
+}
+
+#anime-tabs {
+    margin-left: 16%;
+}
+
+#anime-tabs ul {
+    display: flex;
+    list-style: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    cursor: pointer;
+    margin-left: 1%;
+}
+
+#anime-tabs ul li {
+    border: 1px solid var(--border-lightgray);
+    padding: 8px;
+}
+
+#anime-tabs ul li:hover {
+    background-color: var(--background-gray);
+}
+
+#anime-tabs ul li.active {
+    background-color: var(--background-gray);
+}
+
+#anime-tabs ul li.active:hover {
+    background-color: var(--hover-gray2);
+}
+
+/*FORM SECTION*/
+form {
+    padding: 15px 20px;
+}
+
+#btn-section {
+    padding: 15px;
+}
+
+#btn-section input {
+    display: block;
+    background-color: var(--link-turquoise);
+    margin-left: auto; 
+    margin-right: 0;
+    border-style: none;
+    border-radius: 3px;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+#btn-section input:hover {
+    background-color: var(--hover-turquoise2);
+}

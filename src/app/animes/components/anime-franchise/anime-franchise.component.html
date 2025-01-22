@@ -1,0 +1,32 @@
+<div class="d-flex">
+    <div id="franchise-section">
+        <div><h3>{{franchiseName}} Franchise</h3></div>
+        <div class="col-sm-10"> <!--TODO fix width of row for all instances-->
+            <div class="row">
+                <div class="d-flex flex-row flex-wrap">
+                    @for (anime of animes$ | async; track anime.id) {
+                        <div class="anime-poster pe-2 pb-2">
+                            <div class="anime-poster-image-container" 
+                                (mouseenter)="onAnimePosterHover(anime.id)" 
+                                (mouseleave)="onAnimePosterHoverOut()" 
+                                routerLink="/anime/{{anime.id}}">
+                                <img class="anime-poster-img" src="{{anime.imageUrl}}" />
+                            </div>
+                            <div>
+                                <div class="title-section"><strong>{{anime.title}}</strong></div>
+                                <div class="quick-info-section">
+                                    <span><strong>{{anime.details.mediaType}}</strong></span>
+                                    <span class="px-1">·</span>
+                                    <span class="year-span">{{anime.year}}</span>
+                                </div>
+                            </div>
+                            @if(activeAnimeId == anime.id) {
+                                <app-anime-tooltip [anime]="anime"></app-anime-tooltip>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

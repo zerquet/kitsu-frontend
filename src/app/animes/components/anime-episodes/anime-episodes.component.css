@@ -1,0 +1,42 @@
+#episode-table-container {
+    padding: 10px 40px; 
+}
+
+#episode-table {
+    border-collapse: collapse;
+    border: 1px solid var(--border-lightgray2);
+    border-radius: 3px;
+    display: block;
+}
+
+#episode-table thead {
+    text-align: center;
+}
+
+#episode-table tr {
+    border-bottom: 1px solid var(--border-lightgray2);
+}
+
+#episode-table tbody tr {
+    background-color: var(--background-white);
+}
+
+#episode-table th, td {
+    padding: 5px;
+}
+
+.episode-cell {
+    min-width: 30px;
+}
+
+.title-cell {
+    min-width: 305px;
+    border-right: 1px solid var(--border-lightgray2);
+    border-left: 1px solid var(--border-lightgray2);
+}
+
+#no-episodes {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-gray5);
+}
