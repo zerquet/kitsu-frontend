@@ -2,15 +2,15 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, BehaviorSubject, takeUntil } from 'rxjs';
-import { LibraryEntryWithAnimeInfo } from '../../models/libraryEntryWithAnimeInfo.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UsersService } from '../../../shared/services/users.service';
 import { AuthService } from '../../../core/auth/services/auth.service';
+import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
 
 @Component({
   selector: 'app-library-entry',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, AsyncPipe],
+  imports: [ReactiveFormsModule, AsyncPipe],
   templateUrl: './library-entry.component.html',
   styleUrl: './library-entry.component.css'
 })
@@ -19,8 +19,6 @@ export class LibraryEntryComponent implements OnDestroy {
   
   private usersService = inject(UsersService);
   private activeModal = inject(NgbActiveModal);
-  
-  private destroy$ = new Subject<void>();
   
   form = new FormGroup({
     status: new FormControl('',[this.statusIsDifferentValidator()]),
@@ -32,11 +30,12 @@ export class LibraryEntryComponent implements OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  libraryEntry$ = new BehaviorSubject<LibraryEntryWithAnimeInfo | undefined>(undefined); //itd be nice if this was handled by a service
+  
+  private destroy$ = new Subject<void>();
+  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); //itd be nice if this was handled by a service
   userProfile$ = this.usersService.getCurrentUserProfile();
   
-  initializeModalData(entry: LibraryEntryWithAnimeInfo) {    
+  initializeModalData(entry: LibraryEntry) {    
     this.libraryEntry$.next(entry);
 
     this.form.patchValue({"status": entry.watchStatus});
@@ -48,21 +47,19 @@ export class LibraryEntryComponent implements OnDestroy {
 
   saveChanges() {
     const entry = this.libraryEntry$.value;
-    const data: LibraryEntryWithAnimeInfo = {...entry!, watchStatus: this.status.value, episodesWatched: this.progress.value!, userRating: this.rating.value}
-    // const data: LibraryEntryWithAnimeInfo = {
-    //   id: entry?.id!,
-    //   animeId: entry?.animeId!,
-    //   watchStatus: this.status.value,
-    //   episodesWatched: this.progress.value!,
-    //   userRating: this.rating.value,
-    //   title: entry?.title!,
-    //   imageUrl: entry?.imageUrl!,
-    //   totalEpisodes: entry?.totalEpisodes!
-    // }
-    this.usersService.updateEntry(data, this.activeModal);
+    const updates: LibraryEntry = {
+      ...entry!, 
+      watchStatus: this.status.value, 
+      episodesWatched: this.progress.value!, 
+      userRating: this.rating.value
+    };
+
+    this.usersService.updateEntry(updates, this.activeModal).subscribe();
   }
 
-  deleteEntry = () => this.usersService.deleteEntry(this.libraryEntry$.value?.animeId!, this.activeModal);
+  deleteEntry() {
+    this.usersService.deleteEntry(this.libraryEntry$.value?.animeInfo?.animeId!, this.activeModal).subscribe();
+  } 
 
   //FORM "VALIDATORS"
   statusIsDifferentValidator(): ValidatorFn {

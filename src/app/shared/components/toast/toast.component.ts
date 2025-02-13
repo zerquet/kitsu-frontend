@@ -4,7 +4,7 @@ import { NgClass } from '@angular/common';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-toast',
+  selector: 'toast',
   standalone: true,
   imports: [NgbToast, NgClass],
   templateUrl: './toast.component.html',

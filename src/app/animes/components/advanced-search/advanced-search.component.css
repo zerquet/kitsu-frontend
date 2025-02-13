@@ -1,0 +1,23 @@
+:host {
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+
+#search-field-container2 {
+    background-color: var(--text-white);
+    border-bottom: 1px solid var(--border-lightgray2);
+    padding: 20px 0 20px 20px;
+}
+
+#search-field-container2 i {
+    color: var(--text-gray2);
+    margin-right: 5px;
+}
+
+#search-field {
+    width: 100%;
+    border: none;
+    outline-color: unset;
+    outline-style: none;
+}

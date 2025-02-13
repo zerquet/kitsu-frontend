@@ -20,10 +20,20 @@ export class CategoryService {
       });
   }
 
-  getCategory(name: string): Observable<Category | undefined> {
+  getCategory(name: string): Observable<Category> {
     return this._categories$.pipe(
       switchMap((categories) => {
-        return of(categories.find((category) => category.name === name));
+        let r = categories.find((category) => category.name === name);
+        if(r === undefined) {
+          let fake: Category = {
+            id: 0,
+            name: 'Explore',
+            description: null
+          }
+          return of(fake);
+        }
+        
+        return of(r);
       })
     );
   }

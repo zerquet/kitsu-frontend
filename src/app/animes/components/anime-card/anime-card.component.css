@@ -1,0 +1,32 @@
+:host {
+    position: relative;
+    width: 16.66%;
+    padding-right: 9px;
+    padding-bottom: 9px;
+}
+
+.anime-poster-image-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.anime-poster-image-container:after {
+    content: '\A';
+    position: absolute;
+    width: 100%; height:100%;
+    top:0; left:0;
+    background:rgba(0,0,0,0.6);
+    opacity: 0;
+    border-radius: 5px;
+}
+
+.anime-poster-image-container:hover:after {
+    opacity: 1;
+}
+
+.anime-poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+}

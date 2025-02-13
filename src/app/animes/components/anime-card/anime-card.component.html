@@ -1,0 +1,16 @@
+@if(anime !== undefined) {
+  <div 
+    class="anime-poster-image-container" 
+    (mouseenter)="onAnimePosterHover()" 
+    (mouseleave)="onAnimePosterHoverOut()" 
+    routerLink="/anime/{{anime.id}}/summary"
+    >
+    <img class="anime-poster-img" src="/{{anime.imageUrl}}" />
+  </div>
+}
+@if(showTooltip) {
+  <anime-card-tooltip [anime]="anime"></anime-card-tooltip>
+}
+@if(showCardTitle) {
+  <div>{{anime?.title}}</div>
+}

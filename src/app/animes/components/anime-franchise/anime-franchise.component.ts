@@ -7,7 +7,7 @@ import { AnimeService } from '../../../shared/services/anime.service';
 import { AnimeTooltipComponent } from '../anime-tooltip/anime-tooltip.component';
 
 @Component({
-  selector: 'app-anime-franchise',
+  selector: 'anime-franchise',
   standalone: true,
   imports: [AsyncPipe, RouterLink, AnimeTooltipComponent],
   templateUrl: './anime-franchise.component.html',

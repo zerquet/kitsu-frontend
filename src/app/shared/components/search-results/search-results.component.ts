@@ -6,7 +6,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 import { NavMenuSearchDataService } from '../../services/nav-menu-search-data.service';
 
 @Component({
-  selector: 'app-search-results',
+  selector: 'search-results',
   standalone: true,
   imports: [NgIf, AsyncPipe],
   templateUrl: './search-results.component.html',
@@ -15,7 +15,7 @@ import { NavMenuSearchDataService } from '../../services/nav-menu-search-data.se
 export class SearchResultsComponent {
   private router = inject(Router);
   private navMenuSearchDataService = inject(NavMenuSearchDataService);
-  @Input() results$: Observable<Anime[]> | undefined = undefined;
+  @Input() results$: Observable<Anime[]> | undefined = undefined; //is it ok to pass an observable?
 
   onResultClick(id: number) {
     this.navMenuSearchDataService.show$.next(false);

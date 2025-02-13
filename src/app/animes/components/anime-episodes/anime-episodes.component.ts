@@ -5,7 +5,7 @@ import { Episode } from '../../../shared/models/episode.model';
 import { EpisodeService } from '../../../shared/services/episode.service';
 
 @Component({
-  selector: 'app-anime-episodes',
+  selector: 'anime-episodes',
   standalone: true,
   imports: [NgFor],
   templateUrl: './anime-episodes.component.html',

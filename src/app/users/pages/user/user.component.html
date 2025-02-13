@@ -1,54 +1,18 @@
 @if (userProfile$ | async; as userProfile) {
+  <div id="cover-section">
+    <cover-photo></cover-photo>
+    <primary-info></primary-info>
+  </div>
+  <nav-tabs [tabs]="tabs"></nav-tabs>
+  <div id="profile-tab-content-container" class="container">
     @if (currentTab$ | async; as currentTab) {
-        <div id="cover-section">
-            <div id="cover-photo" class="default-cover-photo"></div>
-            <div id="cover-user-info-container">
-                <div id="cover-user-info-section" class="container">
-                    <div id="cover-profile-picture">
-                        <img src="https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg" alt="Profile Picture">
-                    </div>
-                    <div id="mini-bio">
-                        <div id="cover-username">{{userProfile.username}}</div>
-                        <div id="cover-btn-container">
-                            @if(authService.loggedUserId$.getValue() === userProfile.id) {
-                                <input (click)="onEditProfileClick(userProfile)" type="button" id="edit-btn" value="Edit" />
-                            }
-                            @else {
-                                <input type="button" id="follow-btn" value="Follow">
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="anime-tabs-container" class="container">
-            <div id="anime-tabs">
-                <ul>
-                    <li routerLink="/users/{{userProfile.id}}" [ngClass]="{'active': currentTab === ''}">Activity</li>
-                    <li routerLink="/users/{{userProfile.id}}/library" [ngClass]="{'active': currentTab === 'library'}">Library</li>
-                </ul>
-            </div>
-        </div>
-        <div id="profile-tab-content-container" class="container">
-            @if(currentTab === "activity") {
-                <div id="activity-tab-content" class="d-flex">
-                    <div id="feed-section"></div>
-                    <div id="about-me-section">
-                        <div id="about-me-heading">
-                            <span><strong>About Me</strong></span>
-                        </div>
-                        <div id="about-me-bio" class="mb-3">{{userProfile.bio}}</div>
-                        <ul>
-                            <li><strong><i class="bi bi-person-fill"></i> Gender:</strong>{{userProfile.gender}}</li>
-                            <li><strong><i class="bi bi-geo-alt-fill"></i> Location:</strong>{{userProfile.location}}</li>
-                            <li><strong><i class="bi bi-cake2-fill"></i> Birthday:</strong>{{userProfile.birthday}}</li>
-                        </ul>
-                    </div>
-                </div>
-            }
-            @else if(currentTab === "library") {
-                <app-library></app-library>
-            }
-        </div>
+      <!--since there's only 2, no need for a wrapper component like anime-->
+      @if(currentTab === "about") {
+        <user-about></user-about>
+      }
+      @else if(currentTab === "library") {
+        <app-library></app-library>
+      }
     }
+  </div>
 }

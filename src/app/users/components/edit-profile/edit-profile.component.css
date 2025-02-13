@@ -45,6 +45,19 @@ form {
     padding: 15px 20px;
 }
 
+.field-section {
+    margin-bottom: 6px;
+    display: flex;
+}
+
+.field-section label {
+    width: 20%;
+}
+
+.field-section *:last-child {
+    width: 80%;
+}
+
 #btn-section {
     padding: 15px;
 }

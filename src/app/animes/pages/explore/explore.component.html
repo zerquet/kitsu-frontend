@@ -1,60 +1,23 @@
 <div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-            <div class="row">
-                <div class="col-sm-12">
-                    <h3 class="pt-5">
-                        <ng-container *ngIf="category$ | async; let category; else noCategory">{{category.name}}</ng-container>
-                        <ng-template #noCategory>Explore</ng-template> 
-                        Anime
-                    </h3>
-                </div>
-                <div class="col-sm-12">
-                    <!--This search should be a component-->
-                    <form id="home-search-form" action="" [formGroup]="form">
-                        <i class="bi bi-search"></i>
-                        <input id="search-field" type="text" placeholder="What are you searching for?" formControlName="searchControl">
-                    </form>
-                    <!--This can definitely be made into a separate component. Just add if{} and pass list to componet via @Input(). Check category and nav-menu .ts as well-->
-                    @if(show === true) {
-                        <app-search-results [results$]="searchResults$"></app-search-results>
-                    }
-                </div>
-                <div class="col-sm-12 mt-2"><small id="advanced-link-section">Or, browse with the <a id="advanced-link" routerLink="/search">advanced search</a></small></div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12"><h6 class="pt-4">Check out these popular anime</h6></div>
-                <div class="d-flex flex-row flex-wrap">
-                    <!--foreach... (max 5)-->
-                    @for (anime of animes$ | async; track anime.id) {
-                        <div class="anime-poster pe-2 pb-2">
-                            <div class="anime-poster-image-container" 
-                                (mouseenter)="onAnimePosterHover(anime.id)" 
-                                (mouseleave)="onAnimePosterHoverOut()" 
-                                routerLink="/anime/{{anime.id}}">
-                                <img class="anime-poster-img" src="/{{anime.imageUrl}}" />
-                            </div>
-                            @if(activeAnimeId == anime.id) {
-                                <app-anime-tooltip [anime]="anime"></app-anime-tooltip>
-                            }
-                        </div>
-                    }
-                </div> 
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div id="categories-section" class="mx-1 mt-5 rounded" style="background-color: var(--background-white);">
-                <div class="p-4">
-                    <div class="col-sm-12" id="categories-section-heading"><h6>CATEGORIES</h6></div>
-                    <div>
-                        <ul id="categories-list" *ngIf="categories$ | async; let categories">
-                            @for (cat of categories; track cat) {
-                                <li><a href="javascript:void(0);" routerLink="/explore/category/{{cat.name}}">{{cat.name}}</a></li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="row">
+
+    <!--75%-->
+    <div class="col-sm-9">
+      <div class="row">
+        @if(category$ | async; as category) {
+        <category-summary [category]="category" class="col-sm-12"></category-summary>
+        }
+        <main-search class="col-sm-12"></main-search>
+      </div>
+      @if(animes$ | async; as animes) {
+      <anime-grid [animes]="animes" [showGreeting]="true" class="row"></anime-grid>
+      }
     </div>
+
+    <!--25%-->
+    @if(categories$ | async; as categories) {
+    <category-list [categories]="categories" class="col-sm-3"></category-list>
+    }
+    
+  </div>
 </div>

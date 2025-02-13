@@ -1,0 +1,61 @@
+:host {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+}
+
+#cover-user-info-section {
+    display: flex;
+}
+
+#cover-profile-picture img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+#mini-bio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 15px;
+}
+
+#cover-username {
+    color: #fff;
+    font-size: 25px;
+}
+
+#cover-btn-container {
+    margin-top: 6px;
+}
+
+#edit-btn {
+    background: rgba(255,255,255,.11);
+    border: 1px solid rgba(255,255,255,.2);
+    color:rgba(255,255,255,.6);
+    border-radius: 3px;
+    padding: 6px 40px;
+    font-size: 13px;
+    transition: all .2s ease;
+}
+
+#edit-btn:hover {
+    color: #464646;
+    background: #f2f2f2;
+}
+
+#follow-btn {
+    background: var(--link-turquoise);
+    color:#fff;
+    border-radius: 3px;
+    padding: 6px 40px;
+    font-size: 13px;
+    transition: all .2s ease;
+    text-decoration: none;
+    border-style: none;
+}
+
+#follow-btn:hover {
+    background: var(--hover-turquoise2);
+}

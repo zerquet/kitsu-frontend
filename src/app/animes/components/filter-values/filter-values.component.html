@@ -1,0 +1,15 @@
+<label>{{filter}}</label>
+<small class="filter-values-pill">
+  @if (filter === 'Average Rating') {
+    {{min}}% - {{max}}%
+  }
+  @else if (filter === 'Episodes') {
+    {{min}} - {{max === "100" ? max + "+" : max}}
+  }
+  @else if (filter === 'Types') {
+    {{max}}
+  }
+  @else {
+    {{min}} - {{max}}
+  }
+</small>

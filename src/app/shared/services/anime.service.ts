@@ -123,7 +123,7 @@ export class AnimeService {
     showTv?: boolean,
     showMovie?: boolean
   ): Observable<Anime[]> {
-    let queryString = '/AdvancedSearch?';
+    let queryString = '/search?';
     queryString += `term=${term}`;
     if(minYear != null) queryString += `&minYear=${minYear}`;
     if(maxYear != null) queryString += `&maxYear=${maxYear}`;

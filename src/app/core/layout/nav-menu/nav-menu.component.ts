@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
 import { SearchResultsComponent } from '../../../shared/components/search-results/search-results.component';
 
 @Component({
-  selector: 'app-nav-menu',
+  selector: 'nav-menu',
   standalone: true,
   imports: [RouterModule, ReactiveFormsModule, CommonModule, SearchResultsComponent],
   templateUrl: './nav-menu.component.html',

@@ -1,3 +1,3 @@
-<app-nav-menu *ngIf="authService.isAdminPage$.value === false"></app-nav-menu>
-<app-toast></app-toast>
+<nav-menu *ngIf="authService.isAdminPage$.value === false"></nav-menu>
+<toast></toast>
 <router-outlet />

@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Anime } from '../../../shared/models/anime.model';
 
 @Component({
-  selector: 'app-anime-summary',
+  selector: 'anime-summary',
   standalone: true,
   imports: [RouterLink, NgIf],
   templateUrl: './anime-summary.component.html',

@@ -9,7 +9,7 @@
         <div class="mt-2">{{anime.description}}</div>
         <ul id="anime-categories-list" class="d-flex flex-wrap flex-row ps-0 mt-5">
             @for (cat of anime.categories; track cat.id) {
-                <li class=""><a href="javascript:void(0);" routerLink="/home/category/{{cat.name}}">{{cat.name}}</a></li>
+                <li class=""><a href="javascript:void(0);" routerLink="/explore/category/{{cat.name}}">{{cat.name}}</a></li>
             }
         </ul>
     </div>

@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, debounceTime, distinctUntilChanged } from 'rxjs';
 import { AuthService } from '../../../core/auth/services/auth.service';
-import { LibraryEntryWithAnimeInfo } from '../../models/libraryEntryWithAnimeInfo.model';
+import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LibraryEntryComponent } from '../library-entry/library-entry.component';
 import { UsersService } from '../../../shared/services/users.service';
@@ -43,7 +43,7 @@ export class LibraryComponent implements OnInit  {
   currAnimeIdForEditingRating = -1;
   progressCellMode = "read";
   currAnimeIdForEditingProgress = -1;
-  pendingProgressUpdate: LibraryEntryWithAnimeInfo | undefined = undefined;
+  pendingProgressUpdate: LibraryEntry | undefined = undefined;
 
   ngOnInit(): void {
     this.form.controls["search"].valueChanges.pipe(
@@ -91,7 +91,7 @@ export class LibraryComponent implements OnInit  {
     this.sortDirection$.next(val);
   }
 
-  openEditModal(entry: LibraryEntryWithAnimeInfo) { //can this be handled by service?    
+  openEditModal(entry: LibraryEntry) { //can this be handled by service?    
     const modal = this.modalService.open(LibraryEntryComponent);
     modal.componentInstance.initializeModalData({...entry});
   }
@@ -106,7 +106,7 @@ export class LibraryComponent implements OnInit  {
     this.currAnimeIdForEditingProgress = animeId;
   }
 
-  onProgressChange(entry: LibraryEntryWithAnimeInfo, event: Event) {
+  onProgressChange(entry: LibraryEntry, event: Event) {
     //Save changes when user updates progress by +/-'ing so the rendered event listener can have access to it. //TODO check if this comment is still accurate. belongs below?
     let potential = {...entry};
     potential.episodesWatched = Number((event.target as HTMLInputElement).value);
@@ -126,26 +126,28 @@ export class LibraryComponent implements OnInit  {
     this.pendingProgressUpdate = undefined;
   }
 
-  private sorter(list: LibraryEntryWithAnimeInfo[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntryWithAnimeInfo[] {
+  private sorter(list: LibraryEntry[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {
+    console.log(list);
+    
     if(library !== "all")
       list = list.filter(i => i.watchStatus === library);
 
     if(searchTerm !== "")
-      list = list.filter(j => j.title.toLocaleLowerCase().includes(searchTerm));
+      list = list.filter(j => j.animeInfo!.title.toLocaleLowerCase().includes(searchTerm));
 
     if(column === "Title")
     {
       if(direction === "asc")
-        list.sort((a, b) => a.title < b.title ? -1 : 1)
+        list.sort((a, b) => a.animeInfo!.title < b.animeInfo!.title ? -1 : 1)
       else
-        list.sort((a, b) => a.title < b.title ? 1 : -1)
+        list.sort((a, b) => a.animeInfo!.title < b.animeInfo!.title ? 1 : -1)
     }
     else if(column === "Length")
     {
       if(direction === "asc")
-        list.sort((a, b) => a.totalEpisodes! < b.totalEpisodes! ? -1 : 1)
+        list.sort((a, b) => a.animeInfo!.episodeCount! < b.animeInfo!.episodeCount! ? -1 : 1)
       else
-        list.sort((a, b) => a.totalEpisodes! < b.totalEpisodes! ? 1 : -1)
+        list.sort((a, b) => a.animeInfo!.episodeCount! < b.animeInfo!.episodeCount! ? 1 : -1)
     }
     else if(column === "Rating")
     {

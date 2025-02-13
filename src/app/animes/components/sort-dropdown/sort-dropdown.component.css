@@ -1,0 +1,12 @@
+:host {
+    display: block;
+    margin-bottom: 9px;
+}
+
+:host:hover {
+    color: var(--hover-orange);
+}
+
+#sort button {
+    font-size: 12px;
+}

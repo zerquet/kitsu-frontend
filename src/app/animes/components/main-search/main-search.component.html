@@ -1,0 +1,12 @@
+<form id="home-search-form" [formGroup]="form">
+  <i class="bi bi-search"></i>
+  <input id="search-field" type="text" placeholder="What are you searching for?" formControlName="searchControl">
+</form>
+@if(showResults === true) {
+  <search-results [results$]="searchResults$"></search-results>
+}
+<div class="col-sm-12 mt-2">
+  <small id="advanced-link-section">
+    Or, browse with the <a id="advanced-link" routerLink="/search">advanced search</a>
+  </small>
+</div>

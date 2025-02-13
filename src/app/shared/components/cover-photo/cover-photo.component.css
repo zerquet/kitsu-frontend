@@ -1,0 +1,6 @@
+:host > div {
+    display: block;
+    height: 350px;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
