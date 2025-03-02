@@ -1,7 +1,7 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { Component, ElementRef, inject, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, debounceTime, distinctUntilChanged } from 'rxjs';
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
@@ -20,6 +20,7 @@ export class LibraryComponent implements OnInit  {
   public authService = inject(AuthService);
   private usersService = inject(UsersService);
   private modalService = inject(NgbModal);
+  private route = inject(ActivatedRoute);
 
   private renderer = inject(Renderer2).listen("window", "click", (e: Event) => {
     //when all dropdowns are not shown, ratingEditMenu will be undefined. Return since we don't need to do anything else.
@@ -53,7 +54,7 @@ export class LibraryComponent implements OnInit  {
         this.searchTerm$.next(term.toLowerCase())
     ); 
     //use (input) instead to avoid
-    this.usersService.setLibraryState();
+    this.usersService.setLibraryState(this.route.snapshot.params['id']); //this needs to react to the route param for userid. 
   }
 
   library$ = this.usersService.library$;
@@ -126,9 +127,7 @@ export class LibraryComponent implements OnInit  {
     this.pendingProgressUpdate = undefined;
   }
 
-  private sorter(list: LibraryEntry[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {
-    console.log(list);
-    
+  private sorter(list: LibraryEntry[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {    
     if(library !== "all")
       list = list.filter(i => i.watchStatus === library);
 

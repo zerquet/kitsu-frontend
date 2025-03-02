@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Anime } from '../../../shared/models/anime.model';
 import { RouterLink } from '@angular/router';
 import { AnimeTooltipComponent } from '../anime-tooltip/anime-tooltip.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'anime-card',
@@ -15,6 +16,7 @@ export class AnimeCardComponent {
   @Input() showCardTitle: boolean = false;
   showTooltipCallback: any;
   showTooltip: boolean = false;
+  environment = environment;
 
   onAnimePosterHover(): void {
     this.showTooltipCallback = setTimeout(() => {

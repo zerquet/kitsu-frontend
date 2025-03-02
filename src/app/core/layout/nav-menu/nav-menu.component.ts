@@ -47,9 +47,7 @@ export class NavMenuComponent {
       }),
       takeUntil(this.destroy$)
     )
-    .subscribe(term => this.term$.next(term));
-    console.log('nav');
-    
+    .subscribe(term => this.term$.next(term));    
   }
 
   ngOnDestroy(): void {

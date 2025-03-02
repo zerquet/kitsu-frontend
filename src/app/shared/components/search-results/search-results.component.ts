@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Anime } from '../../models/anime.model';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { NavMenuSearchDataService } from '../../services/nav-menu-search-data.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'search-results',
@@ -16,6 +17,7 @@ export class SearchResultsComponent {
   private router = inject(Router);
   private navMenuSearchDataService = inject(NavMenuSearchDataService);
   @Input() results$: Observable<Anime[]> | undefined = undefined; //is it ok to pass an observable?
+  environment = environment;
 
   onResultClick(id: number) {
     this.navMenuSearchDataService.show$.next(false);

@@ -1,0 +1,10 @@
+<div id="sidemenu-greeting">
+  <h5>Welcome, {{username}}</h5>
+</div>
+<ul id="admin-nav">
+  @for (tab of tabs; track tab) {
+    <a routerLink="{{tab.toLowerCase()}}" (click)="onTabClick(tab)">
+      <li [ngClass]="{'active-tab': activeTab === tab}">{{tab}}</li>
+    </a>
+  }
+</ul>

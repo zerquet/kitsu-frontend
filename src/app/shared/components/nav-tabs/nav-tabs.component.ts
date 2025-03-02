@@ -15,7 +15,5 @@ export class NavTabsComponent {
   selectedTab = this.tabs[0];
 
   constructor() {
-    console.log('init');
-    
   }
 }

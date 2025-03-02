@@ -1,0 +1,27 @@
+<div id="form-heading">
+  <h5><a class="cursor" routerLink="../../franchises">Franchises</a> <i class="bi bi-chevron-right"></i></h5>
+</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="edit-intro">
+    <h5>Add Franchise Record</h5>
+  </div>
+  <div id="form-layout">
+    <div class="important-fields">
+
+      <div class="field label">
+        <label for="name">Name</label>
+        <input pInputText pSize="small" formControlName="name" id="name" type="text" />
+        <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="required">
+          <div *ngIf="name?.hasError('required')">
+            Name is required.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="add-btn-section" class="text-center mt-4">
+    <button id="add-btn" type="submit" [disabled]="!form.valid">Add Franchise Record</button>
+  </div>
+</form>

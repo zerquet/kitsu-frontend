@@ -66,6 +66,7 @@ export class LibraryEntryComponent implements OnDestroy {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.libraryEntry$ !== undefined) {
+        console.log(control.value + " and " +  this.libraryEntry$.value?.watchStatus);
         if(control.value === this.libraryEntry$.value?.watchStatus) {
           return null;
         }

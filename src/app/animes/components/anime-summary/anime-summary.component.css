@@ -1,76 +1,79 @@
 /*CENTER SECTION*/
 #anime-main-section {
-    width: 73%;
+  width: 73%;
 }
 
 #title-section {
-    font-size: 1.7rem;
-    padding-top: 10px;
+  font-size: 1.7rem;
+  padding-top: 10px;
+}
+
+#title-section strong:first-of-type {
+  color: #fff;
 }
 
 #anime-quick-info-section {
-    font-size: 0.9rem;
-    color: var(--text-gray2);
+  font-size: 0.9rem;
+  color: #dddddd;
 }
 
 #admin-link {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 #anime-score {
-    color: var(--text-turquoise);
+  color: #22b8b8;
 }
 
 #anime-categories-list {
-    list-style: none;
+  list-style: none;
 }
 
 #anime-categories-list li {
-    background-color: var(--background-white);
-    border: 1px solid var(--border-lightgray);
-    font-size: 12px;
-    padding: 3px 6px;
-    margin-right: 5px;
-    border-radius: 3px;
+  background-color: #484858;
+  border: 1px solid #222232;
+  font-size: 12px;
+  padding: 3px 6px;
+  margin-right: 5px;
+  border-radius: 3px;
 }
 
 #anime-categories-list li:hover {
-    background-color: var(--background-gray);
+  background-color: #404050;
 }
 
 #anime-categories-list li a {
-    text-decoration: none;
-    color: var(--text-gray3);
+  text-decoration: none;
+  color:#ddd;
 }
 
 /*RIGHT SIDE SECTION*/
 #anime-more-details {
-    margin-top: 20px;
-    width: 27%;
-    background-color: var(--background-white);
-    border: 1px solid var(--border-lightgray);
-    border-radius: 3px;
+  margin-top: 20px;
+  width: 27%;
+  background-color: #4c4c5c;
+  border-radius: 3px;
 }
 
 #anime-more-details ul {
-    margin-top: 16px;
-    list-style: none;
-    padding-left: 0px;
+  margin-top: 16px;
+  list-style: none;
+  padding-left: 0px;
 }
 
 #anime-more-details ul li {
-    display: flex;
-    font-size: 13px;
+  display: flex;
+  font-size: 13px;
 }
 
 #anime-more-details ul li strong {
-    max-width: 35%;
-    width: 100px;
+  max-width: 35%;
+  width: 100px;
 }
 
 #anime-more-details ul li span {
-    max-width: 65%;
-    display: inline-flex;
-    align-items: center;
-    padding-bottom: 5px;
+  max-width: 65%;
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 5px;
 }

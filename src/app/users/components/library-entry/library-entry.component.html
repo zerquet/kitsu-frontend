@@ -1,6 +1,6 @@
 @if (libraryEntry$.value !== null) {
   <div id="editModalTitle">
-    <h3>{{libraryEntry$.value.animeInfo?.title}}</h3>
+    <h4>{{libraryEntry$.value.animeInfo?.title}}</h4>
     <span id="closeModal">
       <i class="bi bi-x" (click)="closeModal()"></i>
     </span>
@@ -18,6 +18,7 @@
             </select>
           </div>
         </div>
+
         <div class="flex">
           <div><label for="progress">Progress</label></div>
           <div>
@@ -28,6 +29,7 @@
             <span> of {{libraryEntry$.value.animeInfo?.episodeCount}} episodes</span>
           </div>
         </div>
+
         <div class="flex">
           <div><label for="rating">Rating</label></div>
           <div>
@@ -46,10 +48,11 @@
             </select>
           </div>
         </div>
+        
         @if(authService.loggedUserId$.getValue() === user.id) {   
           <div class="flex">
             <div><button id="removeFromLibraryBtn" type="button" (click)="deleteEntry()"><i class="bi bi-trash3"></i></button></div>
-            <div><input type="button" value="Save Changes" [disabled]="form.valid" (click)="saveChanges()"></div>
+            <div><input type="button" value="Save Changes" [disabled]="form.valid" (click)="saveChanges()" class="save"></div>
           </div>
         }
       }

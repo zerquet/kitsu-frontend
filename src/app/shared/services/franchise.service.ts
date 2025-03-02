@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Franchise } from '../models/franchise.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FranchiseService {
   private http = inject(HttpClient);
-  private readonly baseUrl = "https://localhost:7009/api/Franchise";
+  private readonly baseUrl = `${environment.apiUrl}/franchises`;
 
   addFranchise(request: Franchise): Observable<void> {
     return this.http
@@ -17,7 +18,7 @@ export class FranchiseService {
 
   getFranchisesByKeyword(keyword: string): Observable<Franchise[]> {
     return this.http
-      .get<Franchise[]>(`${this.baseUrl}/GetByKeyword?keyword=${keyword}`);
+      .get<Franchise[]>(`${this.baseUrl}/byName?name=${keyword}`);
   }
 
   getFranchises(): Observable<Franchise[]> {

@@ -3,6 +3,7 @@ import { UserProfile } from '../../../shared/models/userProfile.model';
 import { UsersService } from '../../../shared/services/users.service';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'user-about',
@@ -14,6 +15,7 @@ import { RouterLink } from '@angular/router';
 export class UserAboutComponent implements OnInit {
   private usersService = inject(UsersService);
   //@Input() userProfile: UserProfile | undefined;
+  environment = environment;
 
   ngOnInit(): void {
     this.usersService.setFavoriteAnimesState();

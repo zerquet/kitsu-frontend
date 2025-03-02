@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { Category } from '../models/category.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'https://localhost:7017/api/categories';
+  private readonly baseUrl = `${environment.apiUrl}/categories`;
 
   private _categories$ = new BehaviorSubject<Category[]>([]);
 

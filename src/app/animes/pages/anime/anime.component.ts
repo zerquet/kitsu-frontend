@@ -13,6 +13,7 @@ import { UsersService } from '../../../shared/services/users.service';
 import { NavTabsComponent } from '../../../shared/components/nav-tabs/nav-tabs.component';
 import { AnimeContainerComponent } from '../../components/anime-container/anime-container.component';
 import { CoverPhotoComponent } from "../../../shared/components/cover-photo/cover-photo.component";
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'anime',
@@ -42,6 +43,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
     status: new FormControl(),
   });
   tabs = ['summary', 'episodes', 'characters', 'franchise'];
+  environment = environment;
   
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];

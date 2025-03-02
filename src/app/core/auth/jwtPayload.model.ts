@@ -4,4 +4,5 @@ export interface JwtPayload {
     nameid: any;
     exp: any;
     given_name: any;
+    is_admin: any;
 }

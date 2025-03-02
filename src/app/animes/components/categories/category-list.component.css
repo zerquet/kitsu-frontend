@@ -1,27 +1,31 @@
 #categories-section-heading {
-    border-bottom: 1px solid rgba(0,0,0,.09);
-    font-size: 14px;
-    font-weight: bold;
+  border-bottom: 1px solid rgba(220, 220, 220, .09);
+  font-size: 14px;
+  font-weight: bold;
 }
 
 #categories-section {
-    border: 1px solid var(--border-lightgray2);    
+  background-color: #4c4c5c !important;
 }
 
 #categories-list {
-    display: flex;
-    flex-flow: row wrap;
-    list-style: none;
-    padding-left: 0px;
-    font-size: 12px;
-    margin-top: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  list-style: none;
+  padding-left: 0px;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
 #categories-list li {
-    min-width: 50%;
+  min-width: 50%;
 }
 
 #categories-list li a {
-    color: #000;
-    text-decoration: none;
+  color: #dddddd;
+  text-decoration: none;
+}
+
+#categories-list li a:hover {
+  color: #fff;
 }

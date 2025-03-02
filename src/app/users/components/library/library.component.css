@@ -1,366 +1,394 @@
 #library-main-section {
-    width: 70%;
-    padding-right: 15px;
+  width: 70%;
+  padding-right: 15px;
 }
 
 #library-sidemenu {
-    width: 30%;
+  width: 30%;
 }
 
 /*LIBRARY SEARCH SECTION*/
 #library-search-form {
-    position: relative;
+  position: relative;
 }
 
 #library-search-form i {
-    position: absolute;
-    top: 14px;
-    left: 18px;
-    color: #999;
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  color: #999;
 }
 
 #library-search-container {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 #library-search-input {
-    width: 100%;
-    padding-left: 50px;
-    font-size: 17px;
-    border: 1px solid var(--border-lightgray2);
-    border-radius: 5px;
-    height: 50px;
-    outline-style: none !important;
-    outline-color: transparent !important;
+  width: 100%;
+  background-color: #4b4b5b;
+  color: #dddddd;
+  padding-left: 50px;
+  font-size: 17px;
+  border: none;
+  border-radius: 5px;
+  height: 50px;
+  outline-style: none !important;
+  outline-color: transparent !important;
+}
+
+#library-search-input:hover {
+  color: #fff;
+}
+
+#library-search-input:active, #library-search-input:focus {
+  background-color: #4f4f5f;
 }
 
 #sort-by-txt {
-    font-size: 12px;
-    margin-right: 5px;
+  font-size: 12px;
+  margin-right: 5px;
 }
 
 #sort-options-btn {
-    background-color: var(--background-white);
-    font-size: 12px;
-    border: 1px solid var(--border-gray);
-    color: var(--text-gray3);
+  background-color: #4b4b5b;
+  font-size: 12px;
+  border: none;
+  color: #dddddd;
+}
+
+#sort-options-btn:hover {
+  background-color: #4f4f5f;
 }
 
 #sort-symbol {
-    font-weight: bold;
-    transform: translateY(1px);
+  font-weight: bold;
+  transform: translateY(1px);
 }
 
 #sort-symbol:hover {
-    cursor: pointer;
+  cursor: pointer;
+  color: #fff;
+}
+
+#library-sort-options-section .dropdown-menu {
+  background-color: #2c2c3c;
+}
+
+#library-sort-options-section .dropdown-menu .dropdown-item {
+  color: #dddddd
+}
+
+#library-sort-options-section .dropdown-menu .dropdown-item:hover {
+  background-color: #323242
 }
 
 /*TABLE SECTION*/
 #library-table {
-    border: 1px solid var(--border-lightgray);
-    border-radius: 3px;
+  border: 1px solid #2c2c3c;
+  border-radius: 3px;
 }
 
 table {
-    width: 100%;
-    box-shadow: 0 1px 4px rgba(0,0,0,.04)
+  width: 100%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .04)
 }
 
 table th {
-    padding: 10px;
-    font-size: 12px;
+  padding: 10px;
+  font-size: 12px;
 }
 
 table tr {
-    display: flex;
-    flex-flow: row nowrap;
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 table td {
-    padding: 10px;
+  padding: 10px;
 }
 
 thead, tbody {
-    display: flex;
-    flex-flow: column nowrap; /*each flex item (tr) will be stacked on top of each other (column-like) instead of all being inline*/
+  display: flex;
+  flex-flow: column nowrap;
+  /*each flex item (tr) will be stacked on top of each other (column-like) instead of all being inline*/
 }
 
 tbody tr {
-    border-top: 1px solid var(--border-lightgray2);
+  border-top: 1px solid #2c2c3c;
 }
 
 .status-bar-cell {
-    padding: 2px !important;
-    margin-right: 8px;
+  padding: 2px !important;
+  margin-right: 8px;
 }
 
 .title-cell {
-    min-width: 574px;
-    padding-left: 0;
-    flex-grow: 1; 
-    /*the only item in flex container to have flex-grow. having read the definition, this will take up the remaining positive flex space than the other unset flex grow items*/
+  min-width: 574px;
+  padding-left: 0;
+  flex-grow: 1;
+  /*the only item in flex container to have flex-grow. having read the definition, this will take up the remaining positive flex space than the other unset flex grow items*/
 }
 
 .rating-cell {
-    text-align: center;
-    min-width: 68px;
+  text-align: center;
+  min-width: 68px;
 }
 
 td.rating-cell {
-    /* only td elements with rating-cell class*/
-    border-left: 1px solid var(--border-lightgray2);
-    border-right: 1px solid var(--border-lightgray2);
-    line-height: 35px;
+  /* only td elements with rating-cell class*/
+  border-left: 1px solid #2c2c3c;
+  border-right: 1px solid #2c2c3c;
+  line-height: 35px;
 }
 
 .progress-cell {
-    text-align: center;
-    min-width: 106px;
+  text-align: center;
+  min-width: 106px;
 }
 
 td.progress-cell {
-    border-right: 1px solid var(--border-lightgray2);
-    line-height: 35px;
-    font-size: 14px;
+  border-right: 1px solid #2c2c3c;
+  line-height: 35px;
+  font-size: 14px;
 }
 
 .edit-btn-cell {
-    text-align: center;
-    min-width: 56px;
-    margin-bottom: auto;
-    margin-top: auto;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    width: 80px;
+  text-align: center;
+  min-width: 56px;
+  margin-bottom: auto;
+  margin-top: auto;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  width: 80px;
 }
 
 tbody {
-    background-color: var(--background-white);
+  background-color: #4c4c5c;
 }
 
 .title-cell-thumbnail-span {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    overflow: hidden;
-    border-radius: 3px;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 3px;
 }
 
 .title-cell-thumbnail-span img {
-    object-fit: contain;
-    width: 100%;
+  object-fit: contain;
+  width: 100%;
 }
 
 .title-cell-span {
-    vertical-align: top;
-    margin-left: 10px;
+  vertical-align: top;
+  margin-left: 10px;
 }
 
 .title-cell-span:hover {
-    color: var(--hover-orange);
-    cursor: pointer;
+  color: #22b8b8;
+  cursor: pointer;
 }
 
 .rating-cell-span, .progress-cell-span {
-    cursor: pointer;
-    color: var(--link-turquoise);
+  cursor: pointer;
+  color: #22b8b8;
 }
 
 .rating-cell-span:hover, .progress-cell-span:hover {
-    color: var(--hover-turquoise);
+  color: #66b8b8;
 }
 
 .rating-cell-span-readonly {
-    color: var(--link-turquoise);
+  color: #22b8b8;
 }
 
 .progress-cell-span {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 input.progress-cell-input {
-    width: 60px;
+  width: 60px;
 }
 
 .increment-episode-span {
-    cursor: pointer;
-    color: var(--link-turquoise);
+  cursor: pointer;
+  color: #22b8b8;
 }
 
 .increment-episode-span:hover {
-    color: var(--hover-turquoise);
+  color: #66b8b8;
 }
 
 .edit-entry-btn {
-    background: #fff;
-    border: 1px solid var(--border-lightgray2);
-    border-radius: 3px;
-    color: var(--text-gray4);
-    font-size: 13px;
-    padding: 3px 8px;
+  background: inherit;
+  border: 1px solid #686878;
+  border-radius: 3px;
+  color: var(--text-gray4);
+  font-size: 13px;
+  padding: 3px 8px;
 }
 
 .edit-entry-btn:hover {
-    border-color: var(--link-turquoise);
-    color: var(--link-turquoise);
+  border-color: #22b8b8;
+  color: #22b8b8;
 }
 
 #empty-library-section {
-    text-align: center;
-    padding: 20px 0px;
-    color: var(--text-gray5);
+  text-align: center;
+  padding: 20px 0px;
+  color: var(--text-gray5);
 }
 
 #browse-anime-btn-container {
-    padding-top: 20px;
+  padding-top: 20px;
 }
 
 #browse-anime-btn {
-    color: #fff;
-    background: var(--link-turquoise);
-    border: none;
-    border-radius: 3px;
-    padding: 10px 40px;
-    letter-spacing: 0.05em;
+  color: #fff;
+  background: #22b8b8;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 40px;
+  letter-spacing: 0.05em;
 }
 
 #browse-anime-btn:hover {
-    background: var(--hover-turquoise);
+  background: #66b8b8;
 }
 
 /*LIBRARY SIDEMENU SECTION*/
 
 #library-sidemenu-container {
-    background-color: var(--background-white);
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.04);
-    border: 1px solid var(--border-lightgray);
+  background-color: #4c4c5c;
+  border-radius: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+  border: none;
 }
 
 #library-sidemenu-container-2 {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 30px;
-    margin-right: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
 }
 
 #library-media-type-select {
-    border: 1px solid var(--border-lightgray);
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
-#library-media-type-select a {
-    text-align: start;
-    width: 100%;
+#library-media-type-select p {
+  text-align: center;
+  width: 100%;
 }
 
 #library-sections {
-    margin-top: 10px;
-    padding-left: 0px;
-    list-style: none;
+  margin-top: 10px;
+  padding-left: 0px;
+  list-style: none;
 }
 
 #library-sections li {
-    padding: 10px;
-    margin-bottom: 3px;
-    font-weight: bold;
-    cursor: pointer;
+  padding: 10px;
+  margin-bottom: 3px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 #library-sections a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 #library-sections span {
-    float: right;
-    opacity: .6;
+  float: right;
+  opacity: .6;
 }
 
 #allAnime {
-    background-color: #e7dee6;
+  background-color: #bebed5;
+  transition: all 80ms ease-in-out;
 }
 
 #allAnime a {
-    color: #8e8b8e;
+  color: #8f8f8f;
 }
 
 #allAnime:hover {
-    background-color: #d1c1d0;
+  background-color: #a9a9c0;
 }
 
 .allAnime-active {
-    background-color: var(--background-burgundy) !important;
-    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+  background-color: #2c2c3c !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .allAnime-active a {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 #watching {
-    background-color: #e2e9ef;
+  background-color: #e2e9ef;
+  transition: all 80ms ease-in-out;
 }
 
 #watching a {
-    color: #8d9398;
+  color: #b4acb8;
 }
 
 #watching:hover {
-    background-color: #c2cfdd;
+  background-color: #dbc8e6;
 }
 
 .watching-active {
-    background-color: #2c3e50 !important;
-    border-bottom: #fff 1px solid;
-    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+  background-color: #8e44ad !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .watching-active a {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 #planning {
-    background-color: #f0f7fc;
+  background-color: #f0f7fc;
+  transition: all 80ms ease-in-out;
 }
 
 #planning a {
-    color: #8e959a;
+  color: #8e959a;
 }
 
 #planning:hover {
-    background-color: #c6e1f2;
+  background-color: #c6e1f2;
 }
 
 .planning-active {
-    background-color: #2980b9 !important;
-    border-bottom: #fff 1px solid;
-    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+  background-color: #2980b9 !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .planning-active a {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 #completed {
-    background-color: #e5f9ee;
+  background-color: #e5f9ee;
+  transition: all 80ms ease-in-out;
 }
 
 #completed a {
-    color: #798e7b;
+  color: #9baaa7;
 }
 
 #completed:hover {
-    background-color: #bbf0d2;
+  background-color: #a4e2d5;
 }
 
 .completed-active {
-    background-color: #27ae60 !important;
-    border-bottom: #fff 1px solid;
-    box-shadow: 0 1px 20px rgba(0,0,0,.3)
+  background-color: #16a085 !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .completed-active a {
-    color: #fff !important;
+  color: #fff !important;
 }

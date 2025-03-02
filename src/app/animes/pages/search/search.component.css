@@ -1,18 +1,18 @@
 #search-container {
-    background: linear-gradient(90deg,#332532 50%,#f7f7f7 50%);
+  background: linear-gradient(90deg, #272737 50%, #404050 50%);
 }
 
 /*FILTERS SECTION*/
 #search-filters-section-placeholder {
-    width: 20%;
+  width: 20%;
 }
 
 /*MAIN SECTION*/
 #search-main-section {
-    width: 80%;
-    background: var(--background-gray);
+  width: 80%;
+  background: #404050;
 }
 
 #search-results-section {
-    margin-top: 67px;
+  margin-top: 67px;
 }

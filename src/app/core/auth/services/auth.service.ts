@@ -14,25 +14,19 @@ export class AuthService {
   private readonly baseUrl = "https://localhost:7017/api";
 
   constructor() {
-    // this.getUser().subscribe(res => {
-    //   this.currentUser$.next(res);
-    // })
     this.decodeToken();
+    //console.log(this.currentUser$.getValue());
+    
   }
 
   loggedUserId$ = new BehaviorSubject<string | null>(null);
   isLoggedIn$ = new BehaviorSubject<boolean>(false);
   currentUser$ = new BehaviorSubject<User | null>(null);
-  isAdminPage$ = new BehaviorSubject<boolean>(false);
+  isAdminPage$ = new BehaviorSubject<boolean>(false); //variable to turn off nav menu in admin dashboard
 
   login(request: LoginDto): Observable<User> {
     return this.http
       .post<User>(`${this.baseUrl}/auth/login`, request)
-  }
-
-  getUser(): Observable<User | null> {
-    return this.http
-      .get<User | null>(`${this.baseUrl}/user`);
   }
 
   get isLoggedIn() {
@@ -60,6 +54,15 @@ export class AuthService {
     const token = localStorage.getItem("access_token");
     if (token) {
       const decoded = jwtDecode<JwtPayload>(token);
+      var loggedUser: User = {
+        id: decoded.nameid,
+        username: decoded.given_name,
+        email: decoded.email,
+        token: token,
+        isAdmin: decoded.is_admin === "True" ? true : false
+      };
+      //need to check whats really needed below now that i got this user object with isadmin
+      this.currentUser$.next(loggedUser);
       this.loggedUserId$.next(decoded.nameid);
       this.isLoggedIn$.next(true);
     }

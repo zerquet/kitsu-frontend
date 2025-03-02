@@ -1,175 +1,157 @@
 <div class="container d-flex">
-    @if (userProfile$ | async; as user) {
-        <div id="library-main-section">
-            <div id="library-search-container">
-                <form id="library-search-form" [formGroup]="form">
-                    <i class="bi bi-search"></i>
-                    <input id="library-search-input" class="form-control form-control-lg" type="text"
-                        placeholder="Search {{user.username}}'s library" formControlName="search">
-                </form>
-            </div>
-            <div id="library-sort-options-section" class="d-flex justify-content-end py-2">
-                <div class="d-flex">
-                    <div><small id="sort-by-txt">Sort By: </small></div>
-                    <div class="dropdown pe-2">
-                        <a id="sort-options-btn" class="btn btn-sm dropdown-toggle" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{this.sortOption$.value}}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:void(0);"
-                                    (click)="changeSortOption('Title')">Title</a></li>
-                            <li><a class="dropdown-item" href="javascript:void(0);"
-                                    (click)="changeSortOption('Length')">Length</a></li>
-                            <li><a class="dropdown-item" href="javascript:void(0);"
-                                    (click)="changeSortOption('Rating')">Rating</a></li>
-                        </ul>
-                    </div>
-                    <i id="sort-symbol" class="bi pe-1"
-                        [ngClass]="this.sortDirection$.value === 'desc' ? 'bi-chevron-up' : 'bi-chevron-down'"
-                        (click)="toggleDirection()"></i>
-                </div>
-            </div>
-            <div id="library-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="status-bar-cell"></th>
-                            <th class="title-cell">Anime Title</th>
-                            <th class="rating-cell">Rating</th>
-                            <th class="progress-cell">Progress</th>
-                            <th class="edit-btn-cell"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngIf="filteredAnimeList$ | async; let animeList">
-                            @for (anime of animeList; track $index) {
-                            <tr>
-                                <td [ngClass]="anime.watchStatus + '-active'" class="status-bar-cell"></td>
-                                <td class="title-cell">
-                                    <span class="title-cell-thumbnail-span">
-                                        <div><img src="/{{anime.animeInfo!.imageUrl}}" alt=""></div>
-                                    </span>
-                                    <span class="title-cell-span"
-                                        routerLink="/anime/{{anime.animeInfo?.animeId}}">{{anime.animeInfo?.title}}</span>
-                                </td>
-                                <td class="rating-cell">
-                                    @if(authService.loggedUserId$.getValue() === user.id) {
-                                        @if(currAnimeIdForEditingRating !== anime.animeInfo!.animeId) {
-                                            <span class="rating-cell-span" (click)="onRatingClick(anime.animeInfo!.animeId)">
-                                                {{anime.userRating! > 0 ? anime.userRating! : "-"}}
-                                            </span>
-                                        }
-                                        @else {
-                                            <span>
-                                                <select class="update-rating-selection" #ratingEditMenu>
-                                                    <option (click)="updateRating(anime.id, '')" [selected]="null === anime.userRating"
-                                                    value="-">-</option>
-                                                    <option (click)="updateRating(anime.id, '1')" [selected]="1 === anime.userRating"
-                                                    value="1">1</option>
-                                                    <option (click)="updateRating(anime.id, '2')" [selected]="2 === anime.userRating"
-                                                    value="2">2</option>
-                                                    <option (click)="updateRating(anime.id, '3')" [selected]="3 === anime.userRating"
-                                                    value="3">3</option>
-                                                    <option (click)="updateRating(anime.id, '4')" [selected]="4 === anime.userRating"
-                                                    value="4">4</option>
-                                                    <option (click)="updateRating(anime.id, '5')" [selected]="5 === anime.userRating"
-                                                    value="5">5</option>
-                                                    <option (click)="updateRating(anime.id, '6')" [selected]="6 === anime.userRating"
-                                                    value="6">6</option>
-                                                    <option (click)="updateRating(anime.id, '7')" [selected]="7 === anime.userRating"
-                                                    value="7">7</option>
-                                                    <option (click)="updateRating(anime.id, '8')" [selected]="8 === anime.userRating"
-                                                    value="8">8</option>
-                                                    <option (click)="updateRating(anime.id, '9')" [selected]="9 === anime.userRating"
-                                                    value="9">9</option>
-                                                    <option (click)="updateRating(anime.id, '10')" [selected]="10 === anime.userRating"
-                                                    value="10">10</option>
-                                                </select>
-                                            </span>
-                                        }
-                                    }
-                                    @else {
-                                        <span class="rating-cell-span-readonly">{{anime.userRating! > 0 ? anime.userRating! : "-"}}</span>
-                                    }
-                                </td>
-                                <td class="progress-cell">
-                                    @if(authService.loggedUserId$.getValue() === user.id) {
-                                        <span>
-                                            @if(currAnimeIdForEditingProgress !== anime.animeInfo!.animeId) {
-                                                <span class="progress-cell-span" (click)="onProgressClick(anime.animeInfo!.animeId)">{{anime.episodesWatched}}</span>
-                                            }
-                                            @else {
-                                                <input #progressEditField class="progress-cell-input" type="number" [max]="anime.animeInfo!.episodeCount" [value]="anime.episodesWatched"
-                                                (change)="onProgressChange(anime, $event)" />
-                                            }
-                                            /{{anime.animeInfo?.episodeCount}}
-                                            @if(anime.episodesWatched! < anime.animeInfo?.episodeCount!) { <span
-                                                class="increment-episode-span" (click)="onIncrementProgressClick(anime.id, anime.episodesWatched)"><i
-                                                class="bi bi-plus-circle-fill"></i></span>
-                                            }
-                                        </span>
-                                    }
-                                    @else {
-                                        <span>{{anime.episodesWatched}}/{{anime.animeInfo!.episodeCount}}</span>
-                                    }
-                                </td>
-                                <td class="edit-btn-cell"><input class="edit-entry-btn" type="button" [value]="authService.loggedUserId$.getValue() === user.id ? 'Edit' : 'More'" (click)="openEditModal(anime)"></td>
-                            </tr>
-                            }
-                            @if(animeList.length === 0) {
-                                <div id="empty-library-section">
-                                    @if(authService.loggedUserId$.getValue() === user.id) {
-                                        <h5><strong>Looks like your library is empty. Ready to start something new?</strong></h5>
-                                        <div id="browse-anime-btn-container">
-                                            <input id="browse-anime-btn" type="button" value="Browse Anime" routerLink="/search" />
-                                        </div>
-                                    }
-                                    @else {
-                                        <h5><strong>Looks like {{user.username}} doesn't have any library entries here.</strong></h5>
-                                    }
-                                    </div>
-                            }
-                        </ng-container>
-                    </tbody>
-                </table>
-            </div>
+  @if (userProfile$ | async; as user) {
+    <div id="library-main-section">
+      <div id="library-search-container">
+        <form id="library-search-form" [formGroup]="form">
+          <i class="bi bi-search"></i>
+          <input id="library-search-input" type="text" placeholder="Search {{user.username}}'s library"
+            formControlName="search">
+        </form>
+      </div>
+      <div id="library-sort-options-section" class="d-flex justify-content-end py-2">
+        <div class="d-flex">
+          <div><small id="sort-by-txt">Sort By: </small></div>
+          <div class="dropdown pe-2">
+            <a id="sort-options-btn" class="btn btn-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{this.sortOption$.value}}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="javascript:void(0);" (click)="changeSortOption('Title')">Title</a></li>
+              <li><a class="dropdown-item" href="javascript:void(0);" (click)="changeSortOption('Length')">Length</a></li>
+              <li><a class="dropdown-item" href="javascript:void(0);" (click)="changeSortOption('Rating')">Rating</a></li>
+            </ul>
+          </div>
+          <i id="sort-symbol" class="bi pe-1"
+            [ngClass]="this.sortDirection$.value === 'desc' ? 'bi-chevron-up' : 'bi-chevron-down'"
+            (click)="toggleDirection()"></i>
         </div>
-        <div id="library-sidemenu">
-            <div id="library-sidemenu-container" class="mt-3">
-                <div id="library-sidemenu-container-2">
-                    <div id="library-media-type-select">
-                        <a class="btn btn-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            {{user.username}}'s Anime
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">{{user.username}}'s Anime</a></li>
-                            <li><a class="dropdown-item" href="#">{{user.username}}'s Manga</a></li>
-                        </ul>
+      </div>
+      <div id="library-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="status-bar-cell"></th>
+              <th class="title-cell">Anime Title</th>
+              <th class="rating-cell">Rating</th>
+              <th class="progress-cell">Progress</th>
+              <th class="edit-btn-cell"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="filteredAnimeList$ | async; let animeList">
+              @for (anime of animeList; track $index) {
+                <tr>
+                  <td [ngClass]="anime.watchStatus + '-active'" class="status-bar-cell"></td>
+                  <td class="title-cell">
+                    <span class="title-cell-thumbnail-span">
+                      <div><img src="/{{anime.animeInfo!.imageUrl}}" alt=""></div>
+                    </span>
+                    <span class="title-cell-span" routerLink="/anime/{{anime.animeInfo?.animeId}}">{{anime.animeInfo?.title}}</span>
+                  </td>
+                  <td class="rating-cell">
+                    @if(authService.loggedUserId$.getValue() === user.id) {
+                      @if(currAnimeIdForEditingRating !== anime.animeInfo!.animeId) {
+                        <span class="rating-cell-span" (click)="onRatingClick(anime.animeInfo!.animeId)">
+                          {{anime.userRating! > 0 ? anime.userRating! : "-"}}
+                        </span>
+                      }
+                      @else {
+                        <span>
+                          <select class="update-rating-selection" #ratingEditMenu>
+                            <option (click)="updateRating(anime.id, '')" [selected]="null === anime.userRating" value="-">-</option>
+                            <option (click)="updateRating(anime.id, '1')" [selected]="1 === anime.userRating" value="1">1</option>
+                            <option (click)="updateRating(anime.id, '2')" [selected]="2 === anime.userRating" value="2">2</option>
+                            <option (click)="updateRating(anime.id, '3')" [selected]="3 === anime.userRating" value="3">3</option>
+                            <option (click)="updateRating(anime.id, '4')" [selected]="4 === anime.userRating" value="4">4</option>
+                            <option (click)="updateRating(anime.id, '5')" [selected]="5 === anime.userRating" value="5">5</option>
+                            <option (click)="updateRating(anime.id, '6')" [selected]="6 === anime.userRating" value="6">6</option>
+                            <option (click)="updateRating(anime.id, '7')" [selected]="7 === anime.userRating" value="7">7</option>
+                            <option (click)="updateRating(anime.id, '8')" [selected]="8 === anime.userRating" value="8">8</option>
+                            <option (click)="updateRating(anime.id, '9')" [selected]="9 === anime.userRating" value="9">9</option>
+                            <option (click)="updateRating(anime.id, '10')" [selected]="10 === anime.userRating" value="10">10</option>
+                          </select>
+                        </span>
+                      }
+                    }
+                    @else {
+                    <span class="rating-cell-span-readonly">{{anime.userRating! > 0 ? anime.userRating! : "-"}}</span>
+                    }
+                  </td>
+                  <td class="progress-cell">
+                    @if(authService.loggedUserId$.getValue() === user.id) {
+                      <span>
+                        @if(currAnimeIdForEditingProgress !== anime.animeInfo!.animeId) {
+                          <span class="progress-cell-span" (click)="onProgressClick(anime.animeInfo!.animeId)">{{anime.episodesWatched}}</span>
+                        }
+                        @else {
+                          <input #progressEditField class="progress-cell-input" type="number" [max]="anime.animeInfo!.episodeCount" [value]="anime.episodesWatched"
+                            (change)="onProgressChange(anime, $event)" />
+                        }
+                        /{{anime.animeInfo?.episodeCount}}
+                        @if(anime.episodesWatched! < anime.animeInfo?.episodeCount!) { 
+                          <span class="increment-episode-span" (click)="onIncrementProgressClick(anime.id, anime.episodesWatched)">
+                            <i class="bi bi-plus-circle-fill"></i>
+                          </span>
+                        }
+                      </span>
+                    }
+                    @else {
+                      <span>{{anime.episodesWatched}}/{{anime.animeInfo!.episodeCount}}</span>
+                    }
+                  </td>
+                  <td class="edit-btn-cell"><input class="edit-entry-btn" type="button"
+                    [value]="authService.loggedUserId$.getValue() === user.id ? 'Edit' : 'More'"
+                    (click)="openEditModal(anime)">
+                  </td>
+                </tr>
+                }
+              @if(animeList.length === 0) {
+                <div id="empty-library-section">
+                  @if(authService.loggedUserId$.getValue() === user.id) {
+                    <h5><strong>Looks like your library is empty. Ready to start something new?</strong></h5>
+                    <div id="browse-anime-btn-container">
+                      <input id="browse-anime-btn" type="button" value="Browse Anime" routerLink="/search" />
                     </div>
-                    <div>
-                        <ul id="library-sections">
-                            <li id="allAnime" [ngClass]="{'allAnime-active': this.libraryType$.value === 'all'}"
-                                (click)="changeLibraryType('all')">
-                                <a href="javascript:void(0);">All Anime <span>10</span></a>
-                            </li>
-                            <li id="watching" [ngClass]="{'watching-active': this.libraryType$.value === 'watching'}"
-                                (click)="changeLibraryType('watching')">
-                                <a href="javascript:void(0);">Currently Watching</a>
-                            </li>
-                            <li id="planning" [ngClass]="{'planning-active': this.libraryType$.value === 'planning'}"
-                                (click)="changeLibraryType('planning')">
-                                <a href="javascript:void(0);">Want to Watch</a>
-                            </li>
-                            <li id="completed" [ngClass]="{'completed-active': this.libraryType$.value === 'completed'}"
-                                (click)="changeLibraryType('completed')">
-                                <a href="javascript:void(0);">Completed</a>
-                            </li>
-                        </ul>
-                    </div>
+                  }
+                  @else {
+                    <h5><strong>Looks like {{user.username}} doesn't have any library entries here.</strong></h5>
+                  }
                 </div>
-            </div>
+              }
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="library-sidemenu">
+      <div id="library-sidemenu-container" class="mt-3">
+        <div id="library-sidemenu-container-2">
+          <div id="library-media-type-select">
+            <p>{{user.username}}'s Anime</p>
+          </div>
+          <div>
+            <ul id="library-sections">
+              <li id="allAnime" [ngClass]="{'allAnime-active': this.libraryType$.value === 'all'}"
+                (click)="changeLibraryType('all')">
+                <a href="javascript:void(0);">All Anime <span>10</span></a>
+              </li>
+              <li id="watching" [ngClass]="{'watching-active': this.libraryType$.value === 'watching'}"
+                (click)="changeLibraryType('watching')">
+                <a href="javascript:void(0);">Currently Watching</a>
+              </li>
+              <li id="planning" [ngClass]="{'planning-active': this.libraryType$.value === 'planning'}"
+                (click)="changeLibraryType('planning')">
+                <a href="javascript:void(0);">Want to Watch</a>
+              </li>
+              <li id="completed" [ngClass]="{'completed-active': this.libraryType$.value === 'completed'}"
+                (click)="changeLibraryType('completed')">
+                <a href="javascript:void(0);">Completed</a>
+              </li>
+            </ul>
+          </div>
         </div>
-    }
+      </div>
+    </div>
+  }
 </div>

@@ -1,0 +1,32 @@
+<div>
+  <h5>Manage Episodes</h5>
+  <div id="admin-search-section">
+    <div id="add-btn-section"><button type="button" routerLink="../add/episode"><i class="bi bi-plus-square"></i> Add Episode</button></div>
+    <form [formGroup]="form">
+      <input id="admin-search-field" type="text" formControlName="searchControl" placeholder="Search for episodes...">
+    </form>
+  </div>
+  <div class="admin-table">
+    <div class="admin-head">
+      <div class="image-cell">Episode</div>
+      <div class="title-cell">Title</div>
+      <div class="actions-cell">Actions</div>
+    </div>
+    <div class="admin-body">
+      @if(filteredSearchList$ | async; as searchList) {
+        @for(episode of searchList; track episode.id) {
+          <div class="admin-row" routerLink="{{episode.id}}">
+            <div class="image-cell">{{episode.number}}</div>
+            <div class="title-cell">{{episode.title}}</div>
+            <div class="actions-cell">
+              <!-- <span routerLink="{{episode.id}}" class="me-1 cursor">
+                <i class="bi bi-pencil-fill"></i>
+              </span> -->
+              <span (click)="deleteEpisode(episode.id!)" class="ms-1 cursor delete-anime"><i class="bi bi-trash3"></i></span>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

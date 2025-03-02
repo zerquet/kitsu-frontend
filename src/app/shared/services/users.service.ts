@@ -7,6 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Anime } from '../models/anime.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { AppToastService } from './app-toast.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,9 @@ import { AppToastService } from './app-toast.service';
 export class UsersService {
   private http = inject(HttpClient);
   private toastService = inject(AppToastService);
-  private readonly baseUrl = 'https://localhost:7017/api/users';
-  private readonly libraryBaseUrl = "https://localhost:7017/api/library";
-  private readonly favoritesBaseUrl = "https://localhost:7017/api/favorites"
+  private readonly baseUrl = `${environment.apiUrl}/users`;
+  private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
+  private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
   private _currentUserProfile$ = new BehaviorSubject<UserProfile | null>(null);
   currentLibraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); 
   //get from state, create via api then update state, delete from api then from state, etc. etc. 
@@ -63,13 +64,17 @@ export class UsersService {
     }
   }
 
-  setLibraryState() {
+  setLibraryState(userId: any) {
     if(this.library$.getValue().length === 0) //This does not handle users with empty library
-      this.getLibrary();
+      this.getLibrary(userId);
   }
 
-  getLibrary() {
-    const userId = this._currentUserProfile$.getValue()?.id;
+  getLibrary(routeUserId: any) {
+    let userId = this._currentUserProfile$.getValue()?.id;
+
+    if(routeUserId !== null || routeUserId !== undefined) {
+      userId = routeUserId;
+    }
 
     this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userId}`).subscribe((library) => {
       this.library$.next(library);

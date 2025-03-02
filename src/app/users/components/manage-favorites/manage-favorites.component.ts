@@ -8,6 +8,7 @@ import { RouterLink } from '@angular/router';
 import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { AnimeService } from '../../../shared/services/anime.service';
 import { NavMenuSearchDataService } from '../../../shared/services/nav-menu-search-data.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'manage-favorites',
@@ -25,6 +26,7 @@ export class ManageFavoritesComponent implements OnInit {
   form = new FormGroup({
     search: new FormControl()
   });
+  environment = environment;
 
   ngOnInit(): void {
     this.usersService.setFavoriteAnimesState();

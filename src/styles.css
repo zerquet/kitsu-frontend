@@ -1,49 +1,53 @@
 /* You can add global styles to this file, and also import other style files */
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --background-burgundy: #402F3F !important;
-    --background-burgundy2: #332532;
-    --background-burgundy3: #241a24;
-    --background-burgundy4: #3f2e3e;
-    --text-burgundy: #cebccd;
-    --background-white: #fff;
-    --text-white: #fff;
-    --text-white2: #edf0f1;
-    --hover-white: RGBA(237, 240, 241, 1);
-    --text-gray2: #999;
-    --text-gray3: #464646;
-    --text-gray4: #b2b2b2;
-    --hover-gray: #fafafa;
-    --hover-gray2: #f2f2f2;
-    --background-gray: #f7f7f7;
-    --border-lightgray: #eaeaea;
-    --border-lightgray2: #e5e5e5;
-    --border-lightgray3: #eee;
-    --background-lightgray: #efeef1;
-    --background-lightgray2: #faf9fa;
-    --border-gray: #ccc;
-    --border-black: #151015;
-    --text-gray: #7c7c7c;
-    --text-gray5: #818a91;
-    --text-gray6: #a3a9b7;
-    --hover-orange: #f75239;
-    --hover-orange2: #f3290a;
-    --link-turquoise: #16a085;
-    --hover-turquoise: #0d5d4d;
-    --hover-turquoise2: #19b698;
-    --text-turquoise: #1abc9c;
-    --disabled-turquoise: #79beb0;
+  --background-burgundy: #402F3F !important;
+  --background-burgundy2: #332532;
+  --background-burgundy3: #241a24;
+  --background-burgundy4: #3f2e3e;
+  --text-burgundy: #cebccd;
+  --background-white: #fff;
+  --text-white: #fff;
+  --text-white2: #edf0f1;
+  --hover-white: RGBA(237, 240, 241, 1);
+  --text-gray2: #999;
+  --text-gray3: #464646;
+  --text-gray4: #b2b2b2;
+  --hover-gray: #fafafa;
+  --hover-gray2: #f2f2f2;
+  --background-gray: #f7f7f7;
+  --border-lightgray: #eaeaea;
+  --border-lightgray2: #e5e5e5;
+  --border-lightgray3: #eee;
+  --background-lightgray: #efeef1;
+  --background-lightgray2: #faf9fa;
+  --border-gray: #ccc;
+  --border-black: #151015;
+  --text-gray: #7c7c7c;
+  --text-gray5: #818a91;
+  --text-gray6: #a3a9b7;
+  --hover-orange: #f75239;
+  --hover-orange2: #f3290a;
+  --link-turquoise: #16a085;
+  --hover-turquoise: #0d5d4d;
+  --hover-turquoise2: #19b698;
+  --text-turquoise: #1abc9c;
+  --disabled-turquoise: #79beb0;
+}
+
+* {
+  font-family: "Roboto Flex", serif;
+  font-optical-sizing: auto;
 }
 
 html, body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    background-color: var(--background-gray);
-    color: var(--text-gray3);
+  margin: 0;
+  background-color: #404050;
+  color: #dddddd;
 }
 
 /* * {
@@ -53,22 +57,33 @@ body {
 
 /*Override Material UI styles*/
 .mdc-slider__track--inactive {
-    border: 1px solid #000 !important;
+  border: 1px solid #000 !important;
 }
 
 .mat-ripple.mat-mdc-focus-indicator {
-    display: none;
+  display: none;
 }
 
 .mdc-slider__track--active_fill {
-    border-color: #2EA291 !important;
+  border-color: #22b8b8 !important;
 }
 
 .mdc-slider__thumb-knob {
-    border-width: 4px !important;
-    width: 15px !important;
-    height: 15px !important;
-    border-color: var(--text-turquoise) !important;
-    background-color: var(--background-burgundy4) !important;
-    
+  border-width: 4px !important;
+  width: 15px !important;
+  height: 15px !important;
+  border-color: #22b8b8 !important;
+  background-color: #22b8b8 !important;
+}
+
+.p-inputtext.ng-invalid.ng-dirty {
+  border-color: var(--p-inputtext-focus-border-color) !important;
+}
+
+.p-floatlabel:has(.ng-invalid.ng-dirty) label {
+  color: var(--p-inputtext-focus-border-color) !important;
+}
+
+.p-datepicker:has(.p-datepicker-input-icon-container) .p-datepicker-input {
+  height: 34px !important;
 }

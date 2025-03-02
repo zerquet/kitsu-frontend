@@ -1,0 +1,92 @@
+:host {
+  display: block;
+  padding: 30px;
+}
+
+#admin-search-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+#add-btn-section {
+  width: 30%;
+}
+
+#add-btn-section button {
+  padding: 5px 18px;
+  background-color: #22b8b8;
+  color: var(--background-white);
+  border-radius: 5px;
+  border: none;
+  margin-top: 5px;
+  margin-left: 1px;
+  transition: all 80ms ease-in-out;
+}
+
+#add-btn-section button:hover {
+  background-color: #66b8b8;
+}
+
+#admin-search-section form {
+  width: 30%;
+}
+
+#admin-search-field {
+  display: block;
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border-lightgray2);
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  outline-style: none;
+  outline-color: transparent;
+}
+
+.admin-head {
+  display: flex;
+  font-weight: bold;
+  padding: 8px;
+}
+
+.admin-row {
+  display: flex;
+  padding: 8px;
+  background-color: #474757;
+  border-radius: 3px;
+  margin-bottom: 6px;
+  transition: all 80ms ease-in-out;
+}
+
+.admin-row:hover {
+  color: #fff;
+  background-color: #5a5a6a;
+  cursor: pointer;
+  transform: translateX(3px);
+}
+
+.title-cell {
+  flex: 12;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.actions-cell {
+  flex: 1;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.delete-anime {
+  transition: color 40ms ease-in-out;
+}
+
+.delete-anime:hover {
+  color: #cc7575;
+}

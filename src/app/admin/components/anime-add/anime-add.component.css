@@ -1,0 +1,220 @@
+:host {
+  display: block;
+  padding: 30px;
+}
+
+.required {
+  color: #ee5555;
+  font-size: 12px;
+  padding-left: 8px;
+  letter-spacing: .5px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+form {
+  padding: 10px;
+  padding-top: 30px;
+  border-radius: 3px;
+  background-color: #5a5a6a;
+}
+
+.edit-intro {
+  padding-left: 20px;
+}
+
+.field {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.field label {
+  margin-right: 10px;
+  min-width: 150px;
+  text-align: end;
+  font-weight: 14px;
+}
+
+#form-heading a {
+  text-decoration: none;
+  color: #22b8b8;
+  font-weight: bold;
+}
+
+#form-heading a:hover {
+  text-decoration: underline;
+}
+
+#form-heading i  {
+  padding: 0 4px;
+  font-size: 15px;
+  position: relative;
+  color: #22b8b8;
+}
+
+#form-layout {
+  display: flex;
+  margin-top: 30px;
+}
+
+#important-fields, #optional-fields {
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#description {
+  width: 70%;
+}
+
+#image, #coverImage {
+  width: 400px;
+  outline-color: transparent;
+  outline-style: none;
+}
+
+#genres {
+  width: 400px;
+}
+
+.image-preview {
+  margin-left: 70px;
+}
+
+.new-img {
+  margin-left: 10px;
+}
+
+.clear-selection {
+  margin-left: 10px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.clear-selection button {
+  text-decoration: none;
+  border: none;
+  border-radius: 3px;
+}
+
+.clear-selection i {
+  color: #ee5555;
+}
+
+.image-thumb {
+  width: 100px;
+}
+
+.c-image-thumb {
+  width: 350px;
+}
+
+.image-thumb div, .c-image-thumb div {
+  text-align: center;
+}
+
+.image-thumb img, .c-image-thumb img {
+  width: 100%;
+  border-radius: 3px;
+}
+
+.dropdown {
+  position: absolute;
+  color: #5a5a6a;
+  width: 250px;
+  padding: 0px 0px;
+  background: #fff;
+  border: 1px solid #ccc;
+  margin-top: -1px;
+  z-index: 9999;
+  box-sizing: border-box;
+  transition: all .3s ease;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0px 6px 12px rgba(0,0,0,.1);
+  border-radius: 3px;
+}
+
+.scroller {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #e5e5e5;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.item:hover {
+  background-color: var(--hover-gray);
+}
+
+.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.resultInfoContainer {
+  padding-left: 10px;
+}
+
+#selectedAnimePill {
+  display: flex;
+  width: 300px;
+  background-color: var(--background-white);
+  border: 1px solid var(--border-lightgray);
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+#selectedAnimePill:hover {
+  background-color: var(--hover-gray2);
+  cursor: pointer;
+}
+
+#selectedAnimeTitleCont {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+#deselectBtn {
+  margin-left: auto; /* Pushes the element to the right */
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+#deselectBtn i {
+  font-size: 18px;
+  color: red;
+  transition: color 0.3s ease;
+}
+
+#deselectBtn i:hover {
+  color: darkred;
+}
+
+#add-btn-section {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#add-btn {
+  padding: 5px 13px;
+  background-color: var(--link-turquoise);
+  color: var(--background-white);
+  border-radius: 5px;
+  border: none;
+  margin-top: 10px;
+  margin-right: 15px;
+}
+
+#add-btn:disabled {
+  background-color: var(--disabled-turquoise);
+}

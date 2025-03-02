@@ -47,6 +47,7 @@ export class LoginComponent {
         this.authService.setUser(res);
         this.toastService.show("Success", `Welcome back ${res.username}!`);
         this.activeModal.close();
+        //reload page?
       },
       error: (err) => this.errMsg = err.error
     });

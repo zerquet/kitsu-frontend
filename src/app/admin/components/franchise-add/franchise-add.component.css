@@ -1,0 +1,85 @@
+:host {
+  display: block;
+  padding: 30px;
+}
+
+.required {
+  color: #ee5555;
+  font-size: 12px;
+  padding-left: 8px;
+  letter-spacing: .5px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+form {
+  padding: 10px;
+  padding-top: 30px;
+  border-radius: 3px;
+  background-color: #5a5a6a;
+}
+
+.edit-intro {
+  padding-left: 20px;
+}
+
+.field {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.field label {
+  margin-right: 10px;
+  min-width: 150px;
+  text-align: end;
+  font-weight: 14px;
+}
+
+#form-heading a {
+  text-decoration: none;
+  color: #22b8b8;
+  font-weight: bold;
+}
+
+#form-heading a:hover {
+  text-decoration: underline;
+}
+
+#form-heading i  {
+  padding: 0 4px;
+  font-size: 15px;
+  position: relative;
+  color: #22b8b8;
+}
+
+#form-layout {
+  display: flex;
+  margin-top: 30px;
+}
+
+#important-fields{
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#add-btn-section {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#add-btn {
+  padding: 5px 13px;
+  background-color: var(--link-turquoise);
+  color: var(--background-white);
+  border-radius: 5px;
+  border: none;
+  margin-top: 10px;
+  margin-right: 15px;
+}
+
+#add-btn:disabled {
+  background-color: var(--disabled-turquoise);
+}

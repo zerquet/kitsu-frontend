@@ -1,13 +1,15 @@
-<div id="anime-tabs"> <!--make tabs compnoent, pass callback to handle custom click events, think react-->
-  <ul>
-    @for (tab of tabs; track tab) {
-      <li 
-        routerLink="../{{tab}}" 
-        [ngClass]="{'active': selectedTab === tab}"
-        (click)="selectedTab = tab"
-        >
-        {{tab | titlecase}}
-      </li>
-    }
-  </ul>
+<div class="container">
+  <div id="anime-tabs"> <!--make tabs compnoent, pass callback to handle custom click events, think react-->
+    <ul>
+      @for (tab of tabs; track tab) {
+        <li
+          routerLink="../{{tab}}"
+          [ngClass]="{'active': selectedTab === tab}"
+          (click)="selectedTab = tab"
+          >
+          {{tab | titlecase}}
+        </li>
+      }
+    </ul>
+  </div>
 </div>

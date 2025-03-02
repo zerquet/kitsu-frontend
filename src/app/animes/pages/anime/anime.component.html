@@ -1,6 +1,6 @@
 @if (anime$ | async; as anime) {
   <cover-photo [coverPhotoUrl]="anime.details.coverImageUrl"></cover-photo>
-  <nav-tabs [tabs]="tabs" class="container"></nav-tabs>
+  <nav-tabs [tabs]="tabs"></nav-tabs>
   <div class="container d-flex">
     <div id="sidebar-section">
       <div>
@@ -12,7 +12,7 @@
             <i (click)="addFavorite(anime)" class="bi bi-heart"></i>
           }
         </div>
-        <img src="/{{anime.imageUrl}}" />
+        <img src="{{environment.imageHostUrl}}/{{anime.imageUrl}}" />
       </div>
       <div id="sidebar-form">
         <!--Anime not in user's library-->
@@ -29,6 +29,7 @@
           <span id="sidebar-heading"><span>Update Library</span></span>
           <div id="sidebar-container">
             <form method="post" [formGroup]="form" (submit)="updateEntry(anime)">
+
               <div class="sidebar-field-container">
                 <label for="status-field">Status: </label>
                 <select formControlName="status" id="status-field">
@@ -37,6 +38,7 @@
                   <option value="planning">Plan to Watch</option>
                 </select>
               </div>
+
               <div class="sidebar-field-container">
                 <label for="sidebar-progress-field">Progress: </label>
                 <div class="mb-1">
@@ -46,6 +48,7 @@
                   </span>
                 </div>
               </div>
+
               <div class="sidebar-field-container">
                 <label for="sidebar-user-rating-field">Score: </label>
                 <select formControlName="rating" id="sidebar-user-rating-field">
@@ -62,10 +65,12 @@
                   <option value="10">10</option>
                 </select>
               </div>
+
               <div class="sidebar-field-container">
                 <input type="submit" value="Update" id="edit-btn"/>
-                <div id="delete-btn-container"><button id="delete-btn" type="button" (click)="deleteEntry(anime)"><i class="bi bi-trash3"></i></button></div>
+                <div id="delete-btn-container"><button id="delete-btn" type="button" (click)="deleteEntry(anime)" title="Delete from library"><i class="bi bi-trash3"></i></button></div>
               </div>
+              
             </form>
           </div>
         }
