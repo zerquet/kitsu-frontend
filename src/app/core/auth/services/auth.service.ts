@@ -5,13 +5,14 @@ import { LoginDto } from '../loginDto.model';
 import { User } from '../user.model';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../jwtPayload.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly baseUrl = "https://localhost:7017/api";
+  private readonly baseUrl = `${environment.apiUrl}`;
 
   constructor() {
     this.decodeToken();
