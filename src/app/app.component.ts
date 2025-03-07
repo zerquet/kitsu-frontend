@@ -13,7 +13,7 @@ import { AuthService } from './core/auth/services/auth.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'kitsu-client';
+  title = 'animetracker-client';
   constructor(public authService: AuthService) {}
   ngOnInit(): void {
     // this.authService.getUser().subscribe(res => {

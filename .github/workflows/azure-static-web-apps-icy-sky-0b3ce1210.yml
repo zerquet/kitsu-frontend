@@ -31,7 +31,7 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
           config_file_location: "src/assets"
-          output_location: "dist/kitsu-client/browser" # Built app content directory - optional
+          output_location: "dist/animetracker-client/browser" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
