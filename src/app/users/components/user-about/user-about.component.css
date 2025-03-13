@@ -5,11 +5,11 @@
 
 #about-container {
   display: flex;
-  width: 75%;
+  width: 100%;
 }
 
 #about-me-section {
-  width: 60%;
+  width: 70%;
   font-size: 13px;
 }
 
@@ -35,7 +35,7 @@
 /*FAVORITES STYLES*/
 #favorites-section {
   margin-left: 10px;
-  width: 40%;
+  width: 30%;
 }
 
 .favorite-poster {

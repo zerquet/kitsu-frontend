@@ -5,11 +5,12 @@ import { FilterValuesComponent } from '../filter-values/filter-values.component'
 import { FilterLegendComponent } from '../filter-legend/filter-legend.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, filter } from 'rxjs';
+import { Checkbox } from 'primeng/checkbox';
 
 @Component({
   selector: 'filter-options',
   standalone: true,
-  imports: [ReactiveFormsModule, MatSliderModule, FilterValuesComponent, FilterLegendComponent],
+  imports: [ReactiveFormsModule, MatSliderModule, FilterValuesComponent, FilterLegendComponent, Checkbox],
   templateUrl: './filter-options.component.html',
   styleUrl: './filter-options.component.css',
   providers: [{provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: {disabled: true}}]

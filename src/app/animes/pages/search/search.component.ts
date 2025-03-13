@@ -8,6 +8,7 @@ import { AnimeGridComponent } from '../../components/anime-grid/anime-grid.compo
 import { AdvancedSearchComponent } from '../../components/advanced-search/advanced-search.component';
 import { FilterOptionsComponent } from '../../components/filter-options/filter-options.component';
 import { SortDropdownComponent } from '../../components/sort-dropdown/sort-dropdown.component';
+import { AdvancedSearchDataService } from '../../services/advanced-search-data.service';
 
 @Component({
   selector: 'search',
@@ -23,63 +24,18 @@ import { SortDropdownComponent } from '../../components/sort-dropdown/sort-dropd
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent implements OnDestroy {
-  private animeService = inject(AnimeService);
+export class SearchComponent {
+  dataService$ = inject(AdvancedSearchDataService);
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private destroy$ = new Subject<void>();
-  term$ = new BehaviorSubject('');
-  minRating$ = new BehaviorSubject('5');
-  maxRating$ = new BehaviorSubject('100');
-  minYear$ = new BehaviorSubject('1975');
-  maxYear$ = new BehaviorSubject('2025');
-  minEpisodes$ = new BehaviorSubject('1');
-  maxEpisodes$ = new BehaviorSubject('100');
-  isTv$ = new BehaviorSubject(false);
-  isMovie$ = new BehaviorSubject(false);
-  //add sort options
-
-  results$ = combineLatest([
-    this.term$,
-    this.minRating$,
-    this.maxRating$,
-    this.minYear$,
-    this.maxYear$,
-    this.minEpisodes$,
-    this.maxEpisodes$,
-    this.isTv$,
-    this.isMovie$,
-  ]).pipe(
-    switchMap(() => this.getAdvancedResults()),
-    takeUntil(this.destroy$)
-  );
-
-  onFormChange = (term: string) => this.term$.next(term);
+  onFormChange = (term: string) => this.dataService$.term$.next(term);
 
   onFiltersChange = (
     prop: {
       value: string, 
       filter: 'minYear$' | 'maxYear$' | 'minRating$' | 'maxRating$' | 'minEpisodes$' | 'maxEpisodes$'
     }
-  ) => this[prop.filter].next(prop.value);
+  ) => this.dataService$[prop.filter].next(prop.value);
 
-  onMediaTypesChange = (filter: 'isTv$' | 'isMovie$') => this[filter].next(!this[filter].getValue())
+  onMediaTypesChange = (filter: 'isTv$' | 'isMovie$') => this.dataService$[filter].next(!this.dataService$[filter].getValue())
   
-  private getAdvancedResults(): Observable<Anime[]> {
-    return this.animeService.advancedSearch(
-      this.term$.value, 
-      this.minYear$.value, 
-      this.maxYear$.value, 
-      this.minRating$.value, 
-      this.maxRating$.value, 
-      this.minEpisodes$.value, 
-      this.maxEpisodes$.value, 
-      this.isTv$.value, 
-      this.isMovie$.value
-    );
-  }
 }

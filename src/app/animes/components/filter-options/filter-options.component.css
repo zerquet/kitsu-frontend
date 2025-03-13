@@ -17,3 +17,7 @@
 mat-slider {
   width: 93%;
 }
+
+.checkbox-field {
+  padding-bottom: 6px;
+}

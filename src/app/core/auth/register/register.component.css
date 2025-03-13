@@ -1,3 +1,19 @@
+:host {
+  background: #4c4c5c;
+  border-radius: 5px;
+}
+
+input {
+  outline-color: transparent;
+  outline-style: none;
+}
+
+#register-btn {
+  text-decoration: none;
+  border: none;
+  border-radius: 3px;
+}
+
 .required {
-    color: red;
+  color: #ee5555;
 }

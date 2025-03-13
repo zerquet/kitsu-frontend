@@ -1,6 +1,6 @@
 @if (anime$ | async; as anime) {
   <cover-photo [coverPhotoUrl]="anime.details.coverImageUrl"></cover-photo>
-  <nav-tabs [tabs]="tabs"></nav-tabs>
+  <nav-tabs [tabs]="tabs" [scootRight]="true"></nav-tabs>
   <div class="container d-flex">
     <div id="sidebar-section">
       <div>

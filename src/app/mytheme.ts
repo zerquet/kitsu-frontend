@@ -551,7 +551,7 @@ export const MyPreset = definePreset(Aura, {
                 primary: {
                     color: "#22b8b8",
                     contrastColor: "{surface.900}",
-                    hoverColor: "{primary.300}",
+                    hoverColor: "#66b8b8",
                     activeColor: "{primary.200}"
                 },
                 highlight: {

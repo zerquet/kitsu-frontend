@@ -4,11 +4,11 @@
   background-color: #2c2c3c;
 }
 
-#anime-tabs {
+.tab-left-pad {
   margin-left: 16%;
 }
 
-#anime-tabs ul {
+.anime-tabs ul {
   display: flex;
   list-style: none;
   padding-left: 0px;
@@ -17,19 +17,19 @@
   margin-left: 1%;
 }
 
-#anime-tabs ul li {
+.anime-tabs ul li {
   padding: 8px 16px;
   transition: all 80ms ease-in-out;
 }
 
-#anime-tabs ul li:hover {
+.anime-tabs ul li:hover {
   background-color: #222232;
 }
 
-#anime-tabs ul li.active {
+.anime-tabs ul li.active {
   background-color: #222232;
 }
 
-#anime-tabs ul li.active:hover {
+.anime-tabs ul li.active:hover {
   background-color: #1d1d2d;
 }

@@ -3,7 +3,6 @@
   margin-bottom: 9px;
 }
 
-
 button {
   color: #dddddd !important;
   font-size: 12px;
@@ -11,4 +10,20 @@ button {
 
 button:hover {
   color: #22b8b8 !important;
+}
+
+.dropdown-menu {
+  background-color: #2c2c3c;
+}
+
+.dropdown-menu .dropdown-item {
+  color: #dddddd
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #323242
+}
+
+.cursor {
+  cursor: pointer;
 }

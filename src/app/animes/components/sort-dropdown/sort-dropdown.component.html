@@ -1,9 +1,9 @@
 <div class="dropdown">
   <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-    Average Rating
+    {{dataService.sortOption$.getValue()}}
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item">Average Rating</a></li>
-    <li><a class="dropdown-item">Recently Added</a></li>
+    <li><a class="dropdown-item cursor" (click)="changeSortOption('Rating')">Average Rating</a></li>
+    <li><a class="dropdown-item cursor" (click)="changeSortOption('Title')">Anime Title</a></li>
   </ul>
 </div>

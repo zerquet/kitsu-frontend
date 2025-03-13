@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 export class NavTabsComponent {
   @Input() tabs: string[] = [];
   @Input() resourceId: number | undefined;
+  @Input() scootRight: boolean = false;
   selectedTab = this.tabs[0];
 
   constructor() {

@@ -13,7 +13,7 @@
       <advanced-search (formChange)="onFormChange($event)"></advanced-search>
       <div id="search-results-section" class="pt-2 ps-4">
         <sort-dropdown></sort-dropdown>
-        @if(results$ | async; as animes) {
+        @if(dataService$.filteredSearchResults$| async; as animes) {
           <anime-grid [animes]="animes" [showCardTitle]="true"></anime-grid>
         }    
       </div>
