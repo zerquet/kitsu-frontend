@@ -12,11 +12,12 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { TrimDirective } from '../../../core/directives/trim.directive';
 
 @Component({
   selector: 'app-episode-add',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, NgClass, AsyncPipe, FloatLabelModule, InputTextModule, InputNumberModule, TextareaModule, DatePickerModule, RouterLink],
+  imports: [ReactiveFormsModule, NgIf, NgClass, AsyncPipe, FloatLabelModule, InputTextModule, InputNumberModule, TextareaModule, DatePickerModule, RouterLink, TrimDirective],
   templateUrl: './episode-add.component.html',
   styleUrl: './episode-add.component.css'
 })

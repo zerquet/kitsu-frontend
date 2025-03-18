@@ -21,8 +21,9 @@ export class PrimaryInfoComponent {
 
   userProfile$ = this.usersService.getCurrentUserProfile();
 
-  onEditProfileClick(profileInfo: UserProfile) {
+  onEditProfileClick() {
     const modal = this.modalService.open(EditProfileComponent);
-    modal.componentInstance.initializeModalData(profileInfo);
+    modal.componentInstance.initializeModalData();
+    //set input() to open to a tab
   }
 }

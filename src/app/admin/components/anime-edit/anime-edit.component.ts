@@ -3,15 +3,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AnimeService } from '../../../shared/services/anime.service';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputNumber } from 'primeng/inputnumber';
 import { DatePicker } from 'primeng/datepicker';
-import { FileUpload } from 'primeng/fileupload';
-import { AutoComplete } from 'primeng/autocomplete';
 import { Subject, Observable, BehaviorSubject, combineLatest, distinctUntilChanged, map, switchMap, takeUntil, of, debounceTime, tap } from 'rxjs';
 import { Franchise } from '../../../shared/models/franchise.model';
 import { AppToastService } from '../../../shared/services/app-toast.service';
@@ -20,16 +17,12 @@ import { FranchiseService } from '../../../shared/services/franchise.service';
 import { Anime } from '../../../shared/models/anime.model';
 import { Utils } from '../../../core/services/utils';
 import { Category } from '../../../shared/models/category.model';
-
-interface AutoCompleteCompleteEvent {
-  originalEvent: Event;
-  query: string;
-}
+import { TrimDirective } from '../../../core/directives/trim.directive';
 
 @Component({
   selector: 'app-anime-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputTextModule, TextareaModule, Select, MultiSelectModule, InputNumber, DatePicker, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, InputTextModule, TextareaModule, Select, MultiSelectModule, InputNumber, DatePicker, RouterLink, TrimDirective],
   templateUrl: './anime-edit.component.html',
   styleUrl: './anime-edit.component.css'
 })
@@ -274,7 +267,7 @@ export class AnimeEditComponent implements OnInit {
 
   get franchiseId() { return this.form.get('franchiseId'); }
 
-  /**FORM VALIDATORS */
+  /**FORM VALIDATORS (move to separate class)*/
   titleIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {

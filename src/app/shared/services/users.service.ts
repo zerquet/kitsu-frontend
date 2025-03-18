@@ -34,16 +34,28 @@ export class UsersService {
     return this._currentUserProfile$;
   }
 
-  updateUserProfile(data: UserProfile, activeModal?: NgbActiveModal) {
-    this.http.put<void>(`${this.baseUrl}`, data).subscribe({
-      next: () => {
-        this._currentUserProfile$.next(data);
+  updateUserProfile(data: FormData, activeModal?: NgbActiveModal) {
+    this.http.put<{profileId: string, coverId: string}>(`${this.baseUrl}`, data).subscribe({
+      next: (res) => {
+        const profileUpdates: UserProfile = {
+          id: data.get('id')!.toString(),
+          username: data.get('username')!.toString(),
+          location: data.get('location')!.toString(),
+          bio: data.get('bio')!.toString(),
+          birthday: data.get('birthday') !== null ? data.get('birthday') as unknown as Date : null,
+          gender: data.get('gender')!.toString(),
+          profilePhotoId: res.profileId,
+          coverPhotoId: res.coverId
+        }
+        this._currentUserProfile$.next(profileUpdates);
 
         this.toastService.show("Success", "Profile successfully updated!");
         if(activeModal)
           activeModal.close();
       },
-      error: () => {
+      error: (err) => {
+        console.log(err);
+        
         this.toastService.show("Error", "Updates could not be saved.");
       }
     });

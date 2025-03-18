@@ -5,6 +5,7 @@ import { UsersService } from '../../../shared/services/users.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../../../shared/models/userProfile.model';
 import { ManageFavoritesComponent } from '../manage-favorites/manage-favorites.component';
+import { Utils } from '../../../core/services/utils';
 
 @Component({
   selector: 'app-edit-profile',
@@ -24,12 +25,17 @@ export class EditProfileComponent {
     location: new FormControl(''),
     birthday: new FormControl<Date | null>(null),
     gender: new FormControl(''),
-    bio: new FormControl('')
+    bio: new FormControl(''),
+    profilePhoto: new FormControl<File | undefined>(undefined),
+    coverPhoto: new FormControl<File | undefined>(undefined)
   });
+  newProfilePhoto: string | undefined = undefined;
+  newProfilePhotoSelected: boolean = false;
+  newCoverPhoto: string = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
 
   profileInfo$ = this.usersService.getCurrentUserProfile();
 
-  initializeModalData() {
+  initializeModalData(openToTab: string = 'about') {
     this.profileInfo$.subscribe((profile) => {
       if (profile !== null) {
         this.form.patchValue({"id": profile.id});
@@ -38,6 +44,22 @@ export class EditProfileComponent {
         this.form.patchValue({"birthday": profile.birthday});
         this.form.patchValue({"gender": profile.gender});
         this.form.patchValue({"bio": profile.bio});
+        this.newProfilePhoto = profile.profilePhotoId;
+        if (profile.profilePhotoId === null) {
+          this.newProfilePhoto = "https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg"; //not the best name. also check logic and fix bug
+        }
+        else {
+          this.newProfilePhoto = `/media/users/profile/${profile.profilePhotoId}.jpg`
+        }
+
+        if (profile.coverPhotoId === null) {
+          this.newCoverPhoto = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
+        }
+        else {
+          this.newCoverPhoto = `/media/users/cover/${profile.coverPhotoId}.jpg`;
+        }
+
+        this.currentTab = openToTab;
       } 
     });
   }
@@ -48,17 +70,51 @@ export class EditProfileComponent {
   get birthday() { return this.form.get("birthday")}
   get gender() { return this.form.get("gender")}
   get bio() { return this.form.get("bio")}
+  get profilePhoto() { return this.form.get("profilePhoto")}
+  get coverPhoto() { return this.form.get("coverPhoto")}
 
   saveChanges() {
-    const data: UserProfile = {
-      id: this.id!.value!,
-      username: this.username!.value!,
-      location: this.location!.value!,
-      bio: this.bio!.value!,
-      birthday: this.birthday!.value!,
-      gender: this.gender!.value!
-    }  
+    const data = new FormData();
+    data.append('id', this.id!.value!);
+    data.append('username', this.username!.value!);
+    data.append('location', this.location!.value!);
+    data.append('bio', this.bio!.value!);
+    if (!Utils.IsNullOrUndefined(this.birthday!.value)) data.append('birthday', new Date(this.birthday!.value!).toLocaleDateString());
+    data.append('gender', this.gender!.value!);
+    data.append('profilePhoto', this.profilePhoto!.value!)
+    data.append('coverPhoto', this.coverPhoto!.value!); 
     
     this.usersService.updateUserProfile(data, this.activeModal);
+  }
+
+  onProfilePhotoClick() {
+    document.getElementById("profile-photo-input")?.click();
+  }
+
+  onCoverPhotoClick() {
+    document.getElementById("cover-photo-input")?.click();
+  }
+
+  onProfilePhotoChange(event: Event) {
+    const file = (event.target as HTMLInputElement).files![0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.newProfilePhoto = reader.result?.toString();
+    }
+    this.form.patchValue({profilePhoto: file});
+    this.newProfilePhotoSelected = true;
+  }
+
+  onCoverPhotoChange(event: Event) {
+    const file = (event.target as HTMLInputElement).files![0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (reader.result !== null) {
+        this.newCoverPhoto = reader.result.toString();
+      }
+    }
+    this.form.patchValue({coverPhoto: file});
   }
 }

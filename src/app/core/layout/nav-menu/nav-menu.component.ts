@@ -20,10 +20,11 @@ import { SearchResultsComponent } from '../../../shared/components/search-result
   styleUrl: './nav-menu.component.css'
 })
 export class NavMenuComponent {
-  private destroy$ = new Subject<void>();
   private modalService = inject(NgbModal);
   private animeService = inject(AnimeService);
   public authService = inject(AuthService);
+  
+  private destroy$ = new Subject<void>();
   private navMenuSearchDataService = inject(NavMenuSearchDataService);
   show$ = this.navMenuSearchDataService.show$;
   term$ = this.navMenuSearchDataService.term$;

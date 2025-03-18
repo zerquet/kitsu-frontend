@@ -1,6 +1,18 @@
 @if (profileInfo$ | async; as profileInfo) {
   @if (profileInfo !== null) {
-    <div id="modal-cover-photo"></div>
+    <div style="background: url({{newCoverPhoto}})" id="modal-cover-photo">
+      <a id="cover-photo-overlay" (click)="onCoverPhotoClick()">
+        <span class="change-photo-span"><i class="bi bi-camera"></i></span>
+      </a>
+      <input id="cover-photo-input" type="file" (change)="onCoverPhotoChange($event)">
+    </div>
+    <div id="modal-profile-photo">
+      <a id="profile-photo-overlay" (click)="onProfilePhotoClick()">
+        <span class="change-photo-span"><i class="bi bi-camera"></i></span>
+      </a>
+      <img [src]="newProfilePhoto">
+      <input id="profile-photo-input" type="file" (change)="onProfilePhotoChange($event)">
+    </div>
     <div id="anime-tabs-container" class="container">
       <div id="anime-tabs">
         <ul>

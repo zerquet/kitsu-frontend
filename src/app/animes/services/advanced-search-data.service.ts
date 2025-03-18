@@ -7,6 +7,7 @@ import { Anime } from '../../shared/models/anime.model';
   providedIn: 'root'
 })
 export class AdvancedSearchDataService {
+  /**This is a service that holds methods, properties, and state of the /search page. This allows multiple components to talk to the same service elegantly/share the same state */
   private animeService = inject(AnimeService);
 
   constructor() { 

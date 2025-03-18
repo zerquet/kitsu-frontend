@@ -4,6 +4,8 @@ import { UsersService } from '../../../shared/services/users.service';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditProfileComponent } from '../edit-profile/edit-profile.component';
 
 @Component({
   selector: 'user-about',
@@ -14,6 +16,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class UserAboutComponent implements OnInit {
   private usersService = inject(UsersService);
+  private modalService = inject(NgbModal);
   //@Input() userProfile: UserProfile | undefined;
   environment = environment;
 
@@ -23,4 +26,10 @@ export class UserAboutComponent implements OnInit {
 
   userProfile$ = this.usersService.getCurrentUserProfile();
   favoriteAnimes$ = this.usersService.getFavoriteAnimes();
+
+  onEditProfileClick() {
+    const modal = this.modalService.open(EditProfileComponent);
+    modal.componentInstance.initializeModalData('favorites');
+    //set input() to open to a tab
+  }
 }

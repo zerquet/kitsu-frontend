@@ -7,11 +7,12 @@ import { FranchiseService } from '../../../shared/services/franchise.service';
 import { NgIf } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { TrimDirective } from '../../../core/directives/trim.directive';
 
 @Component({
   selector: 'app-franchise-add',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, FloatLabelModule, InputTextModule],
+  imports: [ReactiveFormsModule, NgIf, FloatLabelModule, InputTextModule, TrimDirective],
   templateUrl: './franchise-add.component.html',
   styleUrl: './franchise-add.component.css'
 })

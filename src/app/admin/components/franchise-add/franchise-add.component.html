@@ -10,7 +10,7 @@
 
       <div class="field label">
         <label for="name">Name</label>
-        <input pInputText pSize="small" formControlName="name" id="name" type="text" />
+        <input appTrim pInputText pSize="small" formControlName="name" id="name" type="text" />
         <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="required">
           <div *ngIf="name?.hasError('required')">
             Name is required.

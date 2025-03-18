@@ -60,7 +60,9 @@ export class AuthService {
         username: decoded.given_name,
         email: decoded.email,
         token: token,
-        isAdmin: decoded.is_admin === "True" ? true : false
+        isAdmin: decoded.is_admin === "True" ? true : false,
+        profilePhotoId: decoded.profile_photo_id,
+        coverPhotoId: decoded.cover_photo_id
       };
       //need to check whats really needed below now that i got this user object with isadmin
       this.currentUser$.next(loggedUser);

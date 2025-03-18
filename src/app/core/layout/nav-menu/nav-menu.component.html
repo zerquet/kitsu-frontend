@@ -8,10 +8,10 @@
     <div class="collapse navbar-collapse" id="navbar-content">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         @if(authService.isLoggedIn$.getValue() === true) {
-          <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);"
-              routerLink="/users/{{this.authService.loggedUserId$.getValue()}}/about">Library</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0);"
+            routerLink="/users/{{this.authService.loggedUserId$.getValue()}}/library">Library</a>
+        </li>
         }
         <li class="nav-item">
           <a class="nav-link" href="javascript:void(0);" routerLink="/explore">Anime</a>
@@ -25,28 +25,36 @@
           <input id="navbar-search-field" type="search" placeholder="Search" formControlName="searchControl">
         </form>
         @if(show$.value === true ) {
-          <search-results [results$]="searchResults$"></search-results>
+        <search-results [results$]="searchResults$"></search-results>
         }
       </div>
       <ul class="navbar-nav me-autp mb-2 mb-lg-0 ms-3">
         @if (authService.isLoggedIn$.getValue() === false) {
-          <li class="nav-item"><a class="nav-link cursor" (click)="openSignInModal()">Sign In</a></li>
-          <li class="nav-item"><a class="nav-link cursor" (click)="openSignUpModal()">Sign Up</a></li>
+        <li class="nav-item"><a class="nav-link cursor" (click)="openSignInModal()">Sign In</a></li>
+        <li class="nav-item"><a class="nav-link cursor" (click)="openSignUpModal()">Sign Up</a></li>
         }
         @else {
-          <li class="nav-item profile-icon-container">
-            <div class="dropdown pe-2">
-              <a id="sort-options-btn" class="btn btn-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                <div class="profile-icon">
-                  <img src="https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg" alt="">
-                </div>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item cursor" routerLink="/users/{{this.authService.loggedUserId$.getValue()}}/about">View Profile</a></li>
-                <li><a class="dropdown-item cursor" (click)="logout()">Logout</a></li>
-              </ul>
-            </div>
-          </li>
+        <li class="nav-item profile-icon-container">
+          <div class="dropdown pe-2">
+            <a id="sort-options-btn" class="btn btn-sm dropdown-toggle" href="#" role="button"
+              data-bs-toggle="dropdown">
+              <div class="profile-icon">
+                <!--may need to get auth user's profile on app start and set state from there-->
+                @if(authService.currentUser$.getValue()?.profilePhotoId !== null) {
+                <img src="/media/users/profile/{{authService.currentUser$.getValue()?.profilePhotoId}}.jpg">
+                }
+                @else {
+                <img src="https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg" alt="">
+                }
+              </div>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item cursor"
+                  routerLink="/users/{{this.authService.loggedUserId$.getValue()}}/about">View Profile</a></li>
+              <li><a class="dropdown-item cursor" (click)="logout()">Logout</a></li>
+            </ul>
+          </div>
+        </li>
         }
       </ul>
     </div>

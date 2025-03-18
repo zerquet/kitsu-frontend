@@ -5,4 +5,6 @@ export interface JwtPayload {
     exp: any;
     given_name: any;
     is_admin: any;
+    profile_photo_id: any;
+    cover_photo_id: any;
 }

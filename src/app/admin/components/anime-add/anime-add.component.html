@@ -33,7 +33,7 @@
 
       <div class="field label">
         <label for="title">Title</label>
-        <input pInputText pSize="small" formControlName="title" id="title" type="text" />
+        <input appTrim pInputText pSize="small" formControlName="title" id="title" type="text"/>
         <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="required">
           <div *ngIf="title?.hasError('required')">
             Title is required.
@@ -63,7 +63,7 @@
 
       <div class="field">
         <label for="description" class="align-top">Description</label>
-        <textarea pTextarea pSize="small" formControlName="description" id="description" rows="6"></textarea>
+        <textarea appTrim pTextarea pSize="small" formControlName="description" id="description" rows="6"></textarea>
       </div>
 
     </div>
@@ -124,22 +124,22 @@
 
       <div class="field">
         <label for="season">Season (Season Year)</label> <!--should be dropdown-->
-        <input pInputText formControlName="season" id="season" type="text" pSize="small">
+        <input appTrim pInputText formControlName="season" id="season" type="text" pSize="small">
       </div>
 
       <div class="field">
         <label for="englishTitle">Title (English)</label>
-        <input pInputText formControlName="englishTitle" id="englishTitle" type="text" pSize="small">
+        <input appTrim pInputText formControlName="englishTitle" id="englishTitle" type="text" pSize="small">
       </div>
 
       <div class="field">
         <label for="japaneseTitle">Title (Japanese)</label>
-        <input pInputText formControlName="japaneseTitle" id="japaneseTitle" type="text" pSize="small">
+        <input appTrim pInputText formControlName="japaneseTitle" id="japaneseTitle" type="text" pSize="small">
       </div>
 
       <div class="field">
         <label for="japaneseRomaji">Title (Romaji)</label>
-        <input pInputText formControlName="japaneseRomaji" id="japaneseRomaji" type="text" pSize="small">
+        <input appTrim pInputText formControlName="japaneseRomaji" id="japaneseRomaji" type="text" pSize="small">
       </div>
 
       <div class="field">
