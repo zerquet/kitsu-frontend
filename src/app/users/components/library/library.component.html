@@ -132,22 +132,24 @@
           </div>
           <div>
             <ul id="library-sections">
-              <li id="allAnime" [ngClass]="{'allAnime-active': this.libraryType$.value === 'all'}"
-                (click)="changeLibraryType('all')">
-                <a href="javascript:void(0);">All Anime <span>10</span></a>
-              </li>
-              <li id="watching" [ngClass]="{'watching-active': this.libraryType$.value === 'watching'}"
-                (click)="changeLibraryType('watching')">
-                <a href="javascript:void(0);">Currently Watching</a>
-              </li>
-              <li id="planning" [ngClass]="{'planning-active': this.libraryType$.value === 'planning'}"
-                (click)="changeLibraryType('planning')">
-                <a href="javascript:void(0);">Want to Watch</a>
-              </li>
-              <li id="completed" [ngClass]="{'completed-active': this.libraryType$.value === 'completed'}"
-                (click)="changeLibraryType('completed')">
-                <a href="javascript:void(0);">Completed</a>
-              </li>
+              @if (library$ | async; as unfilteredLibrary) {
+                <li id="allAnime" [ngClass]="{'allAnime-active': this.libraryType$.value === 'all'}"
+                  (click)="changeLibraryType('all')">
+                  <a href="javascript:void(0);">All Anime <span>{{unfilteredLibrary.length}}</span></a>
+                </li>
+                <li id="watching" [ngClass]="{'watching-active': this.libraryType$.value === 'watching'}"
+                  (click)="changeLibraryType('watching')">
+                  <a href="javascript:void(0);">Currently Watching <span>{{getLibraryTypeCount(unfilteredLibrary, 'watching')}}</span></a>
+                </li>
+                <li id="planning" [ngClass]="{'planning-active': this.libraryType$.value === 'planning'}"
+                  (click)="changeLibraryType('planning')">
+                  <a href="javascript:void(0);">Want to Watch <span>{{getLibraryTypeCount(unfilteredLibrary, 'planning')}}</span></a>
+                </li>
+                <li id="completed" [ngClass]="{'completed-active': this.libraryType$.value === 'completed'}"
+                  (click)="changeLibraryType('completed')">
+                  <a href="javascript:void(0);">Completed <span>{{getLibraryTypeCount(unfilteredLibrary, 'completed')}}</span></a>
+                </li>
+              }
             </ul>
           </div>
         </div>

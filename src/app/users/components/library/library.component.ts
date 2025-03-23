@@ -129,6 +129,10 @@ export class LibraryComponent implements OnInit  {
     this.pendingProgressUpdate = undefined;
   }
 
+  getLibraryTypeCount(list: LibraryEntry[], type: string) {
+    return list.filter(a => a.watchStatus === type).length;
+  }
+
   private sorter(list: LibraryEntry[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {    
     if(library !== "all")
       list = list.filter(i => i.watchStatus === library);
