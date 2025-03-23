@@ -19,7 +19,7 @@
       @if(filteredSearchList$ | async; as searchList) {
         @for(anime of searchList; track anime.id) {
           <div class="admin-row" routerLink="{{anime.id}}">
-            <div class="image-cell"><div><img src="{{environment.imageHostUrl}}/{{anime.imageUrl}}"></div></div>
+            <div class="image-cell"><div><img src="{{environment.imageHostUrl}}/anime/poster/{{anime.imageUrl}}"></div></div>
             <div class="title-cell">{{anime.title}}</div>
             <div class="year-cell">{{anime.year}}</div>
             <div class="type-cell">{{anime.details.mediaType}}</div>

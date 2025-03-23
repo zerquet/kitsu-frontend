@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditProfileComponent } from '../edit-profile/edit-profile.component';
 import { UsersService } from '../../../shared/services/users.service';
 import { AsyncPipe } from '@angular/common';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'primary-info',
@@ -18,6 +19,7 @@ export class PrimaryInfoComponent {
   modalService = inject(NgbModal);
   private usersService = inject(UsersService);
   //@Input() userProfile: UserProfile | undefined;
+  environment = environment;
 
   userProfile$ = this.usersService.getCurrentUserProfile();
 

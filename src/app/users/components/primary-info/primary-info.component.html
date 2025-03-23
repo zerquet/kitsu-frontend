@@ -6,7 +6,7 @@
       <img src="https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg" alt="Profile Picture">
       }
       @else {
-      <img src="/media/users/profile/{{userProfile.profilePhotoId}}.jpg" alt="Profile Picture">
+      <img src="{{environment.imageHostUrl}}/users/profile/{{userProfile.profilePhotoId}}.jpg" alt="Profile Picture">
       }
     </div>
     <div id="mini-bio">

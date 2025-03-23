@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
   apiUrl: 'https://localhost:7017/api',
-  imageHostUrl: ''
+  imageHostUrl: 'https://animetrackerstorage.blob.core.windows.net/images-test'
 };

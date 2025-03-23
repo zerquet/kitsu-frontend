@@ -13,7 +13,7 @@
         <label></label>
         <div class="image-thumb">
           <div>Current</div>
-          <img src="/{{this.anime.getValue()?.imageUrl}}" />
+          <img src="{{environment.imageHostUrl}}/anime/poster/{{this.anime.getValue()?.imageUrl}}" />
         </div>
         @if(this.newAnimeImage !== undefined) {
           <div class="image-thumb new-img">
@@ -85,7 +85,7 @@
         <label></label>
         <div class="c-image-thumb">
           <div>Current</div>
-          <img src="/{{this.anime.getValue()?.details?.coverImageUrl}}" />
+          <img src="{{environment.imageHostUrl}}/anime/cover/{{this.anime.getValue()?.details?.coverImageUrl}}" />
         </div>
       </div>
         @if(this.newCoverImage !== undefined) {

@@ -44,7 +44,7 @@ export class UsersService {
           bio: data.get('bio')!.toString(),
           birthday: data.get('birthday') !== null ? data.get('birthday') as unknown as Date : null,
           gender: data.get('gender')!.toString(),
-          profilePhotoId: res.profileId,
+          profilePhotoId: res.profileId, //we get the new ID, update JWT token and profile state?
           coverPhotoId: res.coverId
         }
         this._currentUserProfile$.next(profileUpdates);

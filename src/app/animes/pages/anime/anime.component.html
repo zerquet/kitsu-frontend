@@ -1,5 +1,5 @@
 @if (anime$ | async; as anime) {
-  <cover-photo [coverPhotoUrl]="anime.details.coverImageUrl"></cover-photo>
+  <cover-photo coverPhotoUrl="{{environment.imageHostUrl}}/anime/cover/{{anime.details.coverImageUrl}}"></cover-photo>
   <nav-tabs [tabs]="tabs" [scootRight]="true"></nav-tabs>
   <div class="container d-flex">
     <div id="sidebar-section">
@@ -12,7 +12,7 @@
             <i (click)="addFavorite(anime)" class="bi bi-heart"></i>
           }
         </div>
-        <img src="{{environment.imageHostUrl}}/{{anime.imageUrl}}" />
+        <img src="{{environment.imageHostUrl}}/anime/poster/{{anime.imageUrl}}" />
       </div>
       <div id="sidebar-form">
         <!--Anime not in user's library-->

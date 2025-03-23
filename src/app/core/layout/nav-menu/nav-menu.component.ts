@@ -11,6 +11,7 @@ import { RegisterComponent } from '../../auth/register/register.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SearchResultsComponent } from '../../../shared/components/search-results/search-results.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'nav-menu',
@@ -29,6 +30,7 @@ export class NavMenuComponent {
   show$ = this.navMenuSearchDataService.show$;
   term$ = this.navMenuSearchDataService.term$;
   form = new FormGroup({ searchControl : new FormControl()});
+  environment = environment;  
 
   searchResults$: Observable<Anime[]> = combineLatest([this.term$]) 
     .pipe(

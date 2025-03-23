@@ -3,7 +3,7 @@
     <div *ngIf="results$ | async; let results " class="search-results-scroller pt-1">
         @for (result of results; track result.id) {
             <div class="search-result-item">
-                <div class="search-result-item-image-container"><img class="search-result-item-img" src="{{environment.imageHostUrl}}/{{result.imageUrl}}"></div>
+                <div class="search-result-item-image-container"><img class="search-result-item-img" src="{{environment.imageHostUrl}}/anime/poster/{{result.imageUrl}}"></div>
                 <div class="search-result-item-section"><a (click)="onResultClick(result.id)">{{result.title}}</a></div>
             </div>
         }

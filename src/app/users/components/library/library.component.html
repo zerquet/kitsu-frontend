@@ -45,7 +45,7 @@
                   <td [ngClass]="anime.watchStatus + '-active'" class="status-bar-cell"></td>
                   <td class="title-cell">
                     <span class="title-cell-thumbnail-span">
-                      <div><img src="/{{anime.animeInfo!.imageUrl}}" alt=""></div>
+                      <div><img src="{{environment.imageHostUrl}}/anime/poster/{{anime.animeInfo!.imageUrl}}" alt=""></div>
                     </span>
                     <span class="title-cell-span" routerLink="/anime/{{anime.animeInfo?.animeId}}">{{anime.animeInfo?.title}}</span>
                   </td>

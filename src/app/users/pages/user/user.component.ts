@@ -8,6 +8,7 @@ import { NavTabsComponent } from '../../../shared/components/nav-tabs/nav-tabs.c
 import { PrimaryInfoComponent } from '../../components/primary-info/primary-info.component';
 import { UserAboutComponent } from '../../components/user-about/user-about.component';
 import { CoverPhotoComponent } from '../../../shared/components/cover-photo/cover-photo.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-user',
@@ -28,6 +29,7 @@ export class UserComponent {
   private route = inject(ActivatedRoute);
 
   tabs = ['about', 'library'];
+  environment = environment;
 
   private destroy$ = new Subject<void>();
   

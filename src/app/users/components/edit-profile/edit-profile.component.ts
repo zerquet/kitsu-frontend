@@ -6,6 +6,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../../../shared/models/userProfile.model';
 import { ManageFavoritesComponent } from '../manage-favorites/manage-favorites.component';
 import { Utils } from '../../../core/services/utils';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-profile',
@@ -32,6 +33,7 @@ export class EditProfileComponent {
   newProfilePhoto: string | undefined = undefined;
   newProfilePhotoSelected: boolean = false;
   newCoverPhoto: string = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
+  environment = environment;
 
   profileInfo$ = this.usersService.getCurrentUserProfile();
 
@@ -49,14 +51,14 @@ export class EditProfileComponent {
           this.newProfilePhoto = "https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg"; //not the best name. also check logic and fix bug
         }
         else {
-          this.newProfilePhoto = `/media/users/profile/${profile.profilePhotoId}.jpg`
+          this.newProfilePhoto = `${this.environment.imageHostUrl}/users/profile/${profile.profilePhotoId}.jpg`
         }
 
         if (profile.coverPhotoId === null) {
           this.newCoverPhoto = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
         }
         else {
-          this.newCoverPhoto = `/media/users/cover/${profile.coverPhotoId}.jpg`;
+          this.newCoverPhoto = `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`;
         }
 
         this.currentTab = openToTab;

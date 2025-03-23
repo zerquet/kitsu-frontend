@@ -8,6 +8,7 @@ import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LibraryEntryComponent } from '../library-entry/library-entry.component';
 import { UsersService } from '../../../shared/services/users.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-library',
@@ -45,6 +46,7 @@ export class LibraryComponent implements OnInit  {
   progressCellMode = "read";
   currAnimeIdForEditingProgress = -1;
   pendingProgressUpdate: LibraryEntry | undefined = undefined;
+  environment = environment;
 
   ngOnInit(): void {
     this.form.controls["search"].valueChanges.pipe(

@@ -41,7 +41,7 @@
               <div class="profile-icon">
                 <!--may need to get auth user's profile on app start and set state from there-->
                 @if(authService.currentUser$.getValue()?.profilePhotoId !== null) {
-                <img src="/media/users/profile/{{authService.currentUser$.getValue()?.profilePhotoId}}.jpg">
+                <img src="{{environment.imageHostUrl}}/users/profile/{{authService.currentUser$.getValue()?.profilePhotoId}}.jpg">
                 }
                 @else {
                 <img src="https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg" alt="">

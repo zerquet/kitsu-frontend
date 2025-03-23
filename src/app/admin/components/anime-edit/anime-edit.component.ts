@@ -18,6 +18,7 @@ import { Anime } from '../../../shared/models/anime.model';
 import { Utils } from '../../../core/services/utils';
 import { Category } from '../../../shared/models/category.model';
 import { TrimDirective } from '../../../core/directives/trim.directive';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-anime-edit',
@@ -64,7 +65,8 @@ export class AnimeEditComponent implements OnInit {
   anime = new BehaviorSubject<Anime | null>(null);
   newAnimeImage: string | undefined = undefined;     
   newCoverImage: string | undefined = undefined;                                           
-
+  environment = environment;
+  
   ngOnInit(): void {
     this.route.params.pipe(
       distinctUntilChanged(),

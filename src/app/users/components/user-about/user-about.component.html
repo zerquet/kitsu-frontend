@@ -21,7 +21,7 @@
         @for (favorite of favorites; track favorite.id) {
           <div class="favorite-poster">
             <span class="tooltiptext">{{favorite.title}}</span>
-            <img src="{{environment.imageHostUrl}}/{{favorite.imageUrl}}" routerLink="/anime/{{favorite.id}}/summary" />
+            <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.imageUrl}}" routerLink="/anime/{{favorite.id}}/summary" />
           </div>
         }
       }

@@ -5,7 +5,7 @@
     (mouseleave)="onAnimePosterHoverOut()" 
     routerLink="/anime/{{anime.id}}/summary"
     >
-    <img class="anime-poster-img" src="{{environment.imageHostUrl}}/{{anime.imageUrl}}" />
+    <img class="anime-poster-img" src="{{environment.imageHostUrl}}/anime/poster/{{anime.imageUrl}}" />
   </div>
 }
 @if(showTooltip) {
