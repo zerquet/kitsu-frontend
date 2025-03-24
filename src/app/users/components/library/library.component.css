@@ -306,20 +306,20 @@ input.progress-cell-input {
 }
 
 #allAnime {
-  background-color: #bebed5;
+  background-color: #2c2c3c;
   transition: all 80ms ease-in-out;
 }
 
 #allAnime a {
-  color: #8f8f8f;
+  color: #bbb;
 }
 
 #allAnime:hover {
-  background-color: #a9a9c0;
+  background-color: #3b3b50;
 }
 
 .allAnime-active {
-  background-color: #2c2c3c !important;
+  background-color: #474761 !important;
   box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
@@ -328,16 +328,16 @@ input.progress-cell-input {
 }
 
 #watching {
-  background-color: #e2e9ef;
+  background-color: #3b1a49;
   transition: all 80ms ease-in-out;
 }
 
 #watching a {
-  color: #b4acb8;
+  color: #bbb;
 }
 
 #watching:hover {
-  background-color: #dbc8e6;
+  background-color: #4a2063;
 }
 
 .watching-active {
@@ -350,16 +350,16 @@ input.progress-cell-input {
 }
 
 #planning {
-  background-color: #f0f7fc;
+  background-color: #133b55;
   transition: all 80ms ease-in-out;
 }
 
 #planning a {
-  color: #8e959a;
+  color: #bbb;
 }
 
 #planning:hover {
-  background-color: #c6e1f2;
+  background-color: #184868;
 }
 
 .planning-active {
@@ -372,16 +372,16 @@ input.progress-cell-input {
 }
 
 #completed {
-  background-color: #e5f9ee;
+  background-color: #0c4d40;
   transition: all 80ms ease-in-out;
 }
 
 #completed a {
-  color: #9baaa7;
+  color: #bbb;
 }
 
 #completed:hover {
-  background-color: #a4e2d5;
+  background-color: #0f6856;
 }
 
 .completed-active {
