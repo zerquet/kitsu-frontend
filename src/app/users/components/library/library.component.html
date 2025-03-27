@@ -50,7 +50,7 @@
                     <span class="title-cell-span" routerLink="/anime/{{anime.animeInfo?.animeId}}">{{anime.animeInfo?.title}}</span>
                   </td>
                   <td class="rating-cell">
-                    @if(authService.loggedUserId$.getValue() === user.id) {
+                    @if(authService.currentUser$.getValue()!.id === user.id) {
                       @if(currAnimeIdForEditingRating !== anime.animeInfo!.animeId) {
                         <span class="rating-cell-span" (click)="onRatingClick(anime.animeInfo!.animeId)">
                           {{anime.userRating! > 0 ? anime.userRating! : "-"}}
@@ -79,7 +79,7 @@
                     }
                   </td>
                   <td class="progress-cell">
-                    @if(authService.loggedUserId$.getValue() === user.id) {
+                    @if(authService.currentUser$.getValue()!.id === user.id) {
                       <span>
                         @if(currAnimeIdForEditingProgress !== anime.animeInfo!.animeId) {
                           <span class="progress-cell-span" (click)="onProgressClick(anime.animeInfo!.animeId)">{{anime.episodesWatched}}</span>
@@ -101,14 +101,14 @@
                     }
                   </td>
                   <td class="edit-btn-cell"><input class="edit-entry-btn" type="button"
-                    [value]="authService.loggedUserId$.getValue() === user.id ? 'Edit' : 'More'"
+                    [value]="authService.currentUser$.getValue()!.id === user.id ? 'Edit' : 'More'"
                     (click)="openEditModal(anime)">
                   </td>
                 </tr>
                 }
               @if(animeList.length === 0) {
                 <div id="empty-library-section">
-                  @if(authService.loggedUserId$.getValue() === user.id) {
+                  @if(authService.currentUser$.getValue()!.id === user.id) {
                     <h5><strong>Looks like your library is empty. Ready to start something new?</strong></h5>
                     <div id="browse-anime-btn-container">
                       <input id="browse-anime-btn" type="button" value="Browse Anime" routerLink="/search" />

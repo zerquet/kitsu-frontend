@@ -24,7 +24,7 @@ export class UserAboutComponent implements OnInit {
     this.usersService.setFavoriteAnimesState();
   }
 
-  userProfile$ = this.usersService.getCurrentUserProfile();
+  userProfile$ = this.usersService.getProfile();
   favoriteAnimes$ = this.usersService.getFavoriteAnimes();
 
   onEditProfileClick() {

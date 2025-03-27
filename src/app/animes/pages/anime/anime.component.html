@@ -16,7 +16,7 @@
       </div>
       <div id="sidebar-form">
         <!--Anime not in user's library-->
-        @if(this.libraryEntry$.getValue() === null || this.authService.isLoggedIn$.getValue() === false) {
+        @if(this.libraryEntry$.getValue() === null || this.authService.currentUser$.getValue() === null) {
           <span id="sidebar-heading"><span>Add to Library</span></span>
           <div id="sidebar-container">
             <div><input class="sidebar-watch-status-btn mb-2" id="completed-status-btn" type="button" value="Completed" (click)="createEntry('completed', anime)"/></div>

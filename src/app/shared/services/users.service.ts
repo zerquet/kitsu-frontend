@@ -8,6 +8,8 @@ import { Anime } from '../models/anime.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { AppToastService } from './app-toast.service';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/auth/services/auth.service';
+import { CurrentUser } from '../../core/auth/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +17,12 @@ import { environment } from '../../../environments/environment';
 export class UsersService {
   private http = inject(HttpClient);
   private toastService = inject(AppToastService);
+  private authService = inject(AuthService);
   private readonly baseUrl = `${environment.apiUrl}/users`;
   private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
   private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
-  private _currentUserProfile$ = new BehaviorSubject<UserProfile | null>(null);
+  profile$ = new BehaviorSubject<UserProfile | null>(null);
+
   currentLibraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); 
   //get from state, create via api then update state, delete from api then from state, etc. etc. 
   //currLibraryEntry represents the entry for an anime when the user is viewing the anime page.
@@ -26,15 +30,15 @@ export class UsersService {
 
   library$ = new BehaviorSubject<LibraryEntry[]>([]);
 
-  getUserProfileById(id: string): Observable<UserProfile> {
+  fetchProfileById(id: string): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.baseUrl}/${id}`);
   }
 
-  getCurrentUserProfile(): Observable<UserProfile | null> {
-    return this._currentUserProfile$;
+  getProfile(): Observable<UserProfile | null> {
+    return this.profile$;
   }
 
-  updateUserProfile(data: FormData, activeModal?: NgbActiveModal) {
+  updateProfile(data: FormData, activeModal?: NgbActiveModal) {
     this.http.put<{profileId: string, coverId: string}>(`${this.baseUrl}`, data).subscribe({
       next: (res) => {
         const profileUpdates: UserProfile = {
@@ -47,7 +51,23 @@ export class UsersService {
           profilePhotoId: res.profileId, //we get the new ID, update JWT token and profile state?
           coverPhotoId: res.coverId
         }
-        this._currentUserProfile$.next(profileUpdates);
+        this.profile$.next(profileUpdates);
+
+        const oldCurrentUser = this.authService.currentUser$.getValue();
+        const newCurrentUser: CurrentUser = {
+          id: profileUpdates.id,
+          username: profileUpdates.username,
+          location: profileUpdates.location,
+          bio: profileUpdates.bio,
+          birthday: profileUpdates.birthday,
+          gender: profileUpdates.gender,
+          email: oldCurrentUser!.email,
+          profilePhotoId: res.profileId,
+          coverPhotoId: res.coverId,
+          isAdmin: oldCurrentUser!.isAdmin,
+          token: oldCurrentUser!.token
+        }
+        this.authService.currentUser$.next(newCurrentUser);
 
         this.toastService.show("Success", "Profile successfully updated!");
         if(activeModal)
@@ -61,8 +81,8 @@ export class UsersService {
     });
   }
 
-  setUserProfileState(userProfile: UserProfile) {
-    this._currentUserProfile$.next(userProfile);
+  setProfileState(profile: UserProfile) {
+    this.profile$.next(profile);
   }
 
   /*LIBRARY METHODS*/
@@ -77,12 +97,12 @@ export class UsersService {
   }
 
   setLibraryState(userId: any) {
-    if(this.library$.getValue().length === 0) //This does not handle users with empty library
+     //This does not handle users with empty library
       this.getLibrary(userId);
   }
 
   getLibrary(routeUserId: any) {
-    let userId = this._currentUserProfile$.getValue()?.id;
+    let userId = this.profile$.getValue()?.id;
 
     if(routeUserId !== null || routeUserId !== undefined) {
       userId = routeUserId;

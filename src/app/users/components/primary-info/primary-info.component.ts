@@ -16,12 +16,15 @@ import { environment } from '../../../../environments/environment';
 })
 export class PrimaryInfoComponent {
   authService = inject(AuthService);
+  userService = inject(UsersService);
   modalService = inject(NgbModal);
   private usersService = inject(UsersService);
   //@Input() userProfile: UserProfile | undefined;
   environment = environment;
 
-  userProfile$ = this.usersService.getCurrentUserProfile();
+  userProfile$ = this.usersService.getProfile();
+
+  canEdit = this.authService.currentUser$.getValue()?.id === this.usersService.profile$.getValue()?.id;
 
   onEditProfileClick() {
     const modal = this.modalService.open(EditProfileComponent);
