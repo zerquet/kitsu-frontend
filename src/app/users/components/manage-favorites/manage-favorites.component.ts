@@ -87,4 +87,8 @@ export class ManageFavoritesComponent implements OnInit {
       this.term$.next("");
     });
   }
+
+  closeModal() {
+    this.parentModelRef?.close();
+  }
 }

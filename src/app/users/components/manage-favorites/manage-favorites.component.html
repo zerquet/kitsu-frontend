@@ -22,7 +22,7 @@
           <div class="favorite-record-container">
             <div class="favorite-info-section">
               <div class="favorite-photo-section">
-                <a routerLink="/anime/{{favorite.id}}/summary" href="javascript:void(0);">
+                <a routerLink="/anime/{{favorite.id}}/summary" href="javascript:void(0);" (click)="closeModal()">
                   <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.imageUrl}}" />
                 </a>
               </div>
