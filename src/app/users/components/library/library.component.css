@@ -294,6 +294,7 @@ input.progress-cell-input {
   margin-bottom: 3px;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 3px;
 }
 
 #library-sections a {
@@ -306,21 +307,16 @@ input.progress-cell-input {
 }
 
 #allAnime {
-  background-color: #bebed5;
+  background-color: #2c2c3c;
   transition: all 80ms ease-in-out;
+}
+
+#allAnime:hover>a {
+  color: #bfbbbb;
 }
 
 #allAnime a {
   color: #8f8f8f;
-}
-
-#allAnime:hover {
-  background-color: #a9a9c0;
-}
-
-.allAnime-active {
-  background-color: #2c2c3c !important;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .allAnime-active a {
@@ -328,21 +324,16 @@ input.progress-cell-input {
 }
 
 #watching {
-  background-color: #e2e9ef;
+  background-color: #8e44ad;
   transition: all 80ms ease-in-out;
 }
 
+#watching:hover>a {
+  color: #c8bccf;
+}
+
 #watching a {
-  color: #b4acb8;
-}
-
-#watching:hover {
-  background-color: #dbc8e6;
-}
-
-.watching-active {
-  background-color: #8e44ad !important;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
+  color: #a58fb1;
 }
 
 .watching-active a {
@@ -350,21 +341,16 @@ input.progress-cell-input {
 }
 
 #planning {
-  background-color: #f0f7fc;
+  background-color: #2980b9;
   transition: all 80ms ease-in-out;
 }
 
+#planning:hover>a {
+  color: #ccd5db;
+}
+
 #planning a {
-  color: #8e959a;
-}
-
-#planning:hover {
-  background-color: #c6e1f2;
-}
-
-.planning-active {
-  background-color: #2980b9 !important;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
+  color: #8093a1;
 }
 
 .planning-active a {
@@ -372,21 +358,16 @@ input.progress-cell-input {
 }
 
 #completed {
-  background-color: #e5f9ee;
+  background-color: #16a085;
   transition: all 80ms ease-in-out;
 }
 
+#completed:hover>a {
+  color: #cadbd8;
+}
+
 #completed a {
-  color: #9baaa7;
-}
-
-#completed:hover {
-  background-color: #a4e2d5;
-}
-
-.completed-active {
-  background-color: #16a085 !important;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
+  color: #92b5ae;
 }
 
 .completed-active a {
