@@ -1,3 +1,4 @@
+//User whose profile is currently being viewed
 export interface UserProfile {
   id: string;
   username: string;

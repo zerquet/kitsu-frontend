@@ -27,6 +27,7 @@
 }
 
 .anime-tabs ul li.active {
+  color: #fff;
   background-color: #222232;
 }
 

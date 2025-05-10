@@ -12,7 +12,7 @@
     <div id="mini-bio">
       <div id="cover-username">{{userProfile.username}}</div>
       <div id="cover-btn-container">
-        @if(authService.loggedUserId$.getValue() === userProfile.id) {
+        @if(canEdit) {
           <input (click)="onEditProfileClick()" type="button" id="edit-btn" value="Edit" />
         }
         @else {

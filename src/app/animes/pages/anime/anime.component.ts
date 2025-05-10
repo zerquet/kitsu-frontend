@@ -48,7 +48,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
     
-    this.usersService.getLibraryEntry(this.authService.loggedUserId$.getValue()!, animeId).subscribe((entry) => {
+    this.usersService.getLibraryEntry(this.authService.currentUser$.getValue()!.id, animeId).subscribe((entry) => {
       this.libraryEntry$.next(entry);
       if(entry === null) return;
       
@@ -87,7 +87,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
   );
 
   createEntry(watchStatus: string, anime: Anime) {
-    if(this.authService.isLoggedIn$.getValue() === false) {
+    if(this.authService.currentUser$.getValue() === null) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }
@@ -147,7 +147,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
   } 
 
   addFavorite(anime: Anime) {
-    if(this.authService.isLoggedIn$.getValue() === false) {
+    if(this.authService.currentUser$.getValue() === null) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }

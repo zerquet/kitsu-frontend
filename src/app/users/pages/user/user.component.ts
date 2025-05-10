@@ -34,8 +34,8 @@ export class UserComponent {
   private destroy$ = new Subject<void>();
   
   userProfile$ = this.route.params.pipe(
-    switchMap(params => this.usersService.getUserProfileById(params['id'])),
-    tap((userProfile) => this.usersService.setUserProfileState(userProfile)),
+    switchMap(params => this.usersService.fetchProfileById(params['id'])), //pass params to library as well so it updates?
+    tap((userProfile) => this.usersService.setProfileState(userProfile)),
     takeUntil(this.destroy$)
   );
   //get rid of activity tab. rename to about. for this project, don't add multi user activity like following

@@ -33,7 +33,7 @@ export class LibraryEntryComponent implements OnDestroy {
   
   private destroy$ = new Subject<void>();
   libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); //itd be nice if this was handled by a service
-  userProfile$ = this.usersService.getCurrentUserProfile();
+  userProfile$ = this.usersService.getProfile();
   
   initializeModalData(entry: LibraryEntry) {    
     this.libraryEntry$.next(entry);

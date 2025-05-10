@@ -56,7 +56,15 @@ export class LibraryComponent implements OnInit  {
         this.searchTerm$.next(term.toLowerCase())
     ); 
     //use (input) instead to avoid
-    this.usersService.setLibraryState(this.route.snapshot.params['id']); //this needs to react to the route param for userid. 
+    
+    this.route.params.subscribe({
+      next: (params) => {
+        //this needs to react to the route param for userid. 
+        console.log('library');
+        
+        this.usersService.setLibraryState(params['id']); 
+      }
+    })
   }
 
   library$ = this.usersService.library$;
@@ -65,7 +73,7 @@ export class LibraryComponent implements OnInit  {
   libraryType$ = new BehaviorSubject("all");
   searchTerm$ = new BehaviorSubject("");
 
-  userProfile$ = this.usersService.getCurrentUserProfile();
+  userProfile$ = this.usersService.getProfile();
 
   //When behavior subject values are updated, the filteted list is too.
   //https://chatgpt.com/share/675410d9-9a68-8003-9599-c495ff36fb9e
@@ -127,6 +135,10 @@ export class LibraryComponent implements OnInit  {
   updateProgress(entryId: number, newProgress: number) {
     this.usersService.updateEntryProgress(entryId, newProgress);
     this.pendingProgressUpdate = undefined;
+  }
+
+  getLibraryTypeCount(list: LibraryEntry[], type: string) {
+    return list.filter(a => a.watchStatus === type).length;
   }
 
   private sorter(list: LibraryEntry[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {    

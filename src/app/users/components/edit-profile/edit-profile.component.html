@@ -46,12 +46,12 @@
             <label for="bio">Bio</label>
             <textarea formControlName="bio" id="bio"></textarea>
           </div>
-          <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
         </form>
       }
       @else if (currentTab === 'favorites') {
         <manage-favorites [parentModelRef]="activeModal"></manage-favorites> 
       }
+      <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
     </div>
   }
 }

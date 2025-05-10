@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { UsersService } from '../../../shared/services/users.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -35,7 +35,9 @@ export class EditProfileComponent {
   newCoverPhoto: string = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
   environment = environment;
 
-  profileInfo$ = this.usersService.getCurrentUserProfile();
+  profileInfo$ = this.usersService.getProfile();
+
+  @ViewChild(ManageFavoritesComponent) favoritesComponent!: ManageFavoritesComponent;
 
   initializeModalData(openToTab: string = 'about') {
     this.profileInfo$.subscribe((profile) => {
@@ -86,7 +88,11 @@ export class EditProfileComponent {
     data.append('profilePhoto', this.profilePhoto!.value!)
     data.append('coverPhoto', this.coverPhoto!.value!); 
     
-    this.usersService.updateUserProfile(data, this.activeModal);
+    this.usersService.updateProfile(data, this.currentTab === 'about' ? this.activeModal : undefined);
+
+    if (this.currentTab === 'favorites') {
+      this.favoritesComponent.saveChanges();
+    }
   }
 
   onProfilePhotoClick() {
