@@ -303,7 +303,6 @@ input.progress-cell-input {
 
 #library-sections span {
   float: right;
-  opacity: .6;
 }
 
 #allAnime {
@@ -328,6 +327,10 @@ input.progress-cell-input {
   transition: all 80ms ease-in-out;
 }
 
+.watching {
+  background-color: #8e44ad;
+}
+
 #watching:hover>a {
   color: #c8bccf;
 }
@@ -343,6 +346,10 @@ input.progress-cell-input {
 #planning {
   background-color: #2980b9;
   transition: all 80ms ease-in-out;
+}
+
+.planning {
+  background-color: #2980b9;
 }
 
 #planning:hover>a {
@@ -362,6 +369,10 @@ input.progress-cell-input {
   transition: all 80ms ease-in-out;
 }
 
+.completed {
+  background-color: #16a085;
+}
+
 #completed:hover>a {
   color: #cadbd8;
 }
@@ -370,6 +381,6 @@ input.progress-cell-input {
   color: #92b5ae;
 }
 
-.completed-active a {
+.completed-active a, .completed-active {
   color: #fff !important;
 }

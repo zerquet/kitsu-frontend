@@ -42,7 +42,7 @@
             <ng-container *ngIf="filteredAnimeList$ | async; let animeList">
               @for (anime of animeList; track $index) {
                 <tr>
-                  <td [ngClass]="anime.watchStatus + '-active'" class="status-bar-cell"></td>
+                  <td [ngClass]="anime.watchStatus" class="status-bar-cell"></td>
                   <td class="title-cell">
                     <span class="title-cell-thumbnail-span">
                       <div><img src="{{environment.imageHostUrl}}/anime/poster/{{anime.animeInfo!.imageUrl}}" alt=""></div>
@@ -147,7 +147,7 @@
                 </li>
                 <li id="completed" [ngClass]="{'completed-active': this.libraryType$.value === 'completed'}"
                   (click)="changeLibraryType('completed')">
-                  <a href="javascript:void(0);">Completed <span>{{getLibraryTypeCount(unfilteredLibrary, 'completed')}}</span></a>
+                  <a href="javascript:void(0);">Completed <span [ngClass]="{'completed-active': this.libraryType$.value === 'completed'}">{{getLibraryTypeCount(unfilteredLibrary, 'completed')}}</span></a>
                 </li>
               }
             </ul>
