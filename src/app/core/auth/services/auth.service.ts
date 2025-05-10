@@ -6,6 +6,7 @@ import { User } from '../user.model';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../jwtPayload.model';
 import { environment } from '../../../../environments/environment';
+import { Utils } from '../../services/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -52,22 +53,29 @@ export class AuthService {
   }
   //local method; can be static
   decodeToken() {
+    debugger;
     const token = localStorage.getItem("access_token");
     if (token) {
       const decoded = jwtDecode<JwtPayload>(token);
-      var loggedUser: User = {
-        id: decoded.nameid,
-        username: decoded.given_name,
-        email: decoded.email,
-        token: token,
-        isAdmin: decoded.is_admin === "True" ? true : false,
-        profilePhotoId: decoded.profile_photo_id,
-        coverPhotoId: decoded.cover_photo_id
-      };
-      //need to check whats really needed below now that i got this user object with isadmin
-      this.currentUser$.next(loggedUser);
-      this.loggedUserId$.next(decoded.nameid);
-      this.isLoggedIn$.next(true);
+
+      if (!Utils.JwtTokenIsExpired(decoded.exp)) {  
+        var loggedUser: User = {
+          id: decoded.nameid,
+          username: decoded.given_name,
+          email: decoded.email,
+          token: token,
+          isAdmin: decoded.is_admin === "True" ? true : false,
+          profilePhotoId: decoded.profile_photo_id,
+          coverPhotoId: decoded.cover_photo_id
+        };
+        //need to check whats really needed below now that i got this user object with isadmin
+        this.currentUser$.next(loggedUser);
+        this.loggedUserId$.next(decoded.nameid);
+        this.isLoggedIn$.next(true);
+      }
+      else {
+        this.logout();
+      }
     }
   }
 }

@@ -43,6 +43,7 @@ export class LoginComponent {
     
     this.authService.login(loginDto).subscribe({
       next: (res) => {
+        debugger;
         this.authService.setToken(res.token);
         this.authService.setUser(res);
         this.toastService.show("Success", `Welcome back ${res.username}!`);
