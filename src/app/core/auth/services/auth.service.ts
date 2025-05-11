@@ -20,17 +20,22 @@ export class AuthService {
   constructor() {
     if(!this._tokenIsDecoded) {
       this.decodeToken();
-      //not injecting UserService. Getting profile and cover Ids from API instead of JWT token.
-      this.http.get<UserProfile>(`${environment.apiUrl}/users/${this.currentUser$.getValue()!.id}`).subscribe((res) => {
-        let currentUser = this.currentUser$.getValue();
+      console.log('ya');
 
-        if (currentUser !== null) {
-          currentUser.profilePhotoId = res.profilePhotoId;
-          currentUser.coverPhotoId = res.coverPhotoId;
-        }
-
-        this.currentUser$.next(currentUser);
-      })
+      if (this.currentUser$.getValue() !== null) {
+        //not injecting UserService. Getting profile and cover Ids from API instead of JWT token.
+        this.http.get<UserProfile>(`${environment.apiUrl}/users/${this.currentUser$.getValue()!.id}`).subscribe((res) => {
+          //redundant?
+          let currentUser = this.currentUser$.getValue();
+        
+          if (currentUser !== null) {
+            currentUser.profilePhotoId = res.profilePhotoId;
+            currentUser.coverPhotoId = res.coverPhotoId;
+          }
+          
+          this.currentUser$.next(currentUser);
+        })
+      }
     }
   }
 
@@ -58,13 +63,13 @@ export class AuthService {
   }
   //local method; can be static
   decodeToken() {
-    debugger;
     const token = localStorage.getItem("access_token");
     if (token) {
       const decoded = jwtDecode<JwtPayload>(token);
       if (!Utils.JwtTokenIsExpired(decoded.exp)) {  
         var currentUser: CurrentUser = {
           id: decoded.nameid,
+          displayId: decoded.display_id,
           username: decoded.given_name,
           email: decoded.email,
           token: token,

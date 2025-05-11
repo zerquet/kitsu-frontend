@@ -22,6 +22,7 @@ export class EditProfileComponent {
   currentTab = 'about';
   form = new FormGroup({
     id: new FormControl(''),
+    displayId: new FormControl(''),
     username: new FormControl(''),
     location: new FormControl(''),
     birthday: new FormControl<Date | null>(null),
@@ -43,6 +44,7 @@ export class EditProfileComponent {
     this.profileInfo$.subscribe((profile) => {
       if (profile !== null) {
         this.form.patchValue({"id": profile.id});
+        this.form.patchValue({"displayId": profile.displayId});
         this.form.patchValue({"username": profile.username});
         this.form.patchValue({"location": profile.location});
         this.form.patchValue({"birthday": profile.birthday});
@@ -69,6 +71,7 @@ export class EditProfileComponent {
   }
 
   get id() { return this.form.get('id')}
+  get displayId() { return this.form.get('displayId')}
   get username() { return this.form.get('username')}
   get location() { return this.form.get("location")}
   get birthday() { return this.form.get("birthday")}
@@ -80,6 +83,7 @@ export class EditProfileComponent {
   saveChanges() {
     const data = new FormData();
     data.append('id', this.id!.value!);
+    data.append('displayId', this.displayId!.value!);
     data.append('username', this.username!.value!);
     data.append('location', this.location!.value!);
     data.append('bio', this.bio!.value!);

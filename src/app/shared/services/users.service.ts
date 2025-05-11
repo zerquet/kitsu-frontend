@@ -43,6 +43,7 @@ export class UsersService {
       next: (res) => {
         const profileUpdates: UserProfile = {
           id: data.get('id')!.toString(),
+          displayId: data.get('displayId')!.toString(),
           username: data.get('username')!.toString(),
           location: data.get('location')!.toString(),
           bio: data.get('bio')!.toString(),
@@ -56,6 +57,7 @@ export class UsersService {
         const oldCurrentUser = this.authService.currentUser$.getValue();
         const newCurrentUser: CurrentUser = {
           id: profileUpdates.id,
+          displayId: profileUpdates.displayId,
           username: profileUpdates.username,
           location: profileUpdates.location,
           bio: profileUpdates.bio,
@@ -102,7 +104,7 @@ export class UsersService {
   }
 
   getLibrary(routeUserId: any) {
-    let userId = this.profile$.getValue()?.id;
+    let userId = this.profile$.getValue()?.displayId;
 
     if(routeUserId !== null || routeUserId !== undefined) {
       userId = routeUserId;

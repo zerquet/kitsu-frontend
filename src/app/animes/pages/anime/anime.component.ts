@@ -48,20 +48,22 @@ export class AnimeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
     
-    this.usersService.getLibraryEntry(this.authService.currentUser$.getValue()!.id, animeId).subscribe((entry) => {
-      this.libraryEntry$.next(entry);
-      if(entry === null) return;
-      
-      this.form.patchValue({"episodeProgress": entry.episodesWatched});
-      this.form.patchValue({"status": entry.watchStatus});
-      this.form.patchValue({"rating": entry.userRating});
-    })
+    if (this.authService.currentUser$.getValue() !== null) {
+      this.usersService.getLibraryEntry(this.authService.currentUser$.getValue()!.id, animeId).subscribe((entry) => {
+        this.libraryEntry$.next(entry);
+        if(entry === null) return;
+        
+        this.form.patchValue({"episodeProgress": entry.episodesWatched});
+        this.form.patchValue({"status": entry.watchStatus});
+        this.form.patchValue({"rating": entry.userRating});
+      })
 
-    this.usersService.getFavoriteAnime(animeId).subscribe((fa) => {
-      this.isFavorite$.next(fa !== null);
-      console.log(this.isFavorite$.getValue());
-      
-    });
+      this.usersService.getFavoriteAnime(animeId).subscribe((fa) => {
+        this.isFavorite$.next(fa !== null);
+        console.log(this.isFavorite$.getValue());
+
+      });
+    }
     
   }
   

@@ -1,6 +1,7 @@
 //User who is logged in
 export interface CurrentUser {
   id: string;
+  displayId: string,
   username: string;
   location: string;
   bio: string;
