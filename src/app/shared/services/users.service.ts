@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, numberAttribute } from '@angular/core';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { UserProfile } from '../models/userProfile.model';
 import { LibraryEntry } from '../models/libraryEntry.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,10 @@ import { AppToastService } from './app-toast.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/services/auth.service';
 import { CurrentUser } from '../../core/auth/user.model';
+import { MediaReaction } from '../models/mediaReaction.model';
+import { GetMediaReactionsByUserItemResponse } from '../contracts/getMediaReactionByUserItemResponse.interface';
+import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
+import { mapGetMediaReactionByUserItemResponseToMediaReaction } from '../mapper';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +25,7 @@ export class UsersService {
   private readonly baseUrl = `${environment.apiUrl}/users`;
   private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
   private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
+  private readonly reactionsBaseUrl = `${environment.apiUrl}/mediaReactions`;
   profile$ = new BehaviorSubject<UserProfile | null>(null);
 
   currentLibraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); 
@@ -29,6 +34,8 @@ export class UsersService {
   private _favoriteAnimes$ = new BehaviorSubject<Anime[]>([]);
 
   library$ = new BehaviorSubject<LibraryEntry[]>([]);
+
+  mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
 
   fetchProfileById(id: string): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.baseUrl}/${id}`);
@@ -103,7 +110,8 @@ export class UsersService {
       this.getLibrary(userId);
   }
 
-  getLibrary(routeUserId: any) {
+  //this can be made private
+  private getLibrary(routeUserId: any) {
     let userId = this.profile$.getValue()?.displayId;
 
     if(routeUserId !== null || routeUserId !== undefined) {
@@ -232,4 +240,66 @@ export class UsersService {
     })
   }
 
+  /** MEDIA REACTIONS METHODS */
+  addMediaReaction(req: FormData): Observable<MediaReaction> {
+    return this.http.post<MediaReaction>(this.reactionsBaseUrl, req)
+      .pipe(
+        tap((res) => {
+          const mediaReactions = this.mediaReactions$.getValue();
+          mediaReactions.push(res);
+          this.mediaReactions$.next(mediaReactions);
+        })
+      );
+  }
+
+  updateMediaReaction(req: UpdateMediaReactionRequest): Observable<void> {
+    return this.http.put<void>(this.reactionsBaseUrl, req)
+      .pipe(
+        tap(() => {
+          const mediaReactions = this.mediaReactions$.getValue();
+          let mediaReactionIndex = mediaReactions.findIndex((e) => e.id == req.reactionId);
+          let mediaReactionToUpdate = mediaReactions[mediaReactionIndex];
+
+          mediaReactionToUpdate.reaction = req.reaction;
+
+          mediaReactions[mediaReactionIndex] = mediaReactionToUpdate
+  
+          this.mediaReactions$.next(mediaReactions);
+        })
+      );
+  }
+
+  deleteMediaReaction(reactionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.reactionsBaseUrl}/${reactionId}`)
+      .pipe(
+        tap(() => {
+          const mediaReactions = this.mediaReactions$.value.filter((x) => x.id !== reactionId);
+          this.mediaReactions$.next(mediaReactions);
+        })
+      );
+  }
+
+  setMediaReactionsStateByUserId(routeUserId: any) {
+    if(routeUserId !== null || routeUserId !== undefined) {
+      this.getMediaReactionsByUserId()
+        .subscribe((res) => {
+          this.mediaReactions$.next(res);
+        });
+    }
+  }
+
+  //this can be made private
+  private getMediaReactionsByUserId() {
+    return this.http.get<GetMediaReactionsByUserItemResponse[]>(this.reactionsBaseUrl)
+      .pipe(
+        map((reactions) => reactions.map(item => mapGetMediaReactionByUserItemResponseToMediaReaction(item)))
+      );
+  }
+
+  getMediaReactionById(id: number) {
+    return this.http.get<GetMediaReactionsByUserItemResponse>(`${this.reactionsBaseUrl}/${id}`)
+      .pipe(
+        map(reaction => mapGetMediaReactionByUserItemResponseToMediaReaction(reaction))
+      );
+  }
 }

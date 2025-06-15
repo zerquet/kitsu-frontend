@@ -2,29 +2,29 @@ import { Category } from "./category.model";
 
 export interface AnimeDetails {
     animeId: number;
-    releaseStatus: string | null;
+    releaseStatus?: string;
     coverImageUrl: string;
-    episodeCount: number | null;
-    mediaType: string | null;
-    englishTitle: string | null;
-    japaneseTitle: string | null;
-    japaneseTitleRomaji: string | null;
-    season: string | null;
-    startAirDate: Date | null;
-    endAirDate: Date | null;
-    tvRating: string | null;
-    episodeLength: number | null;
-    franchiseId: number | null;
-    franchiseName: string | null;
+    episodeCount?: number;
+    mediaType?: string;
+    englishTitle?: string;
+    japaneseTitle?: string;
+    japaneseTitleRomaji?: string;
+    season?: string;
+    startAirDate?: Date;
+    endAirDate?: Date;
+    tvRating?: string;
+    episodeLength?: number;
+    franchiseId?: number;
+    franchiseName?: string;
 }
 
 export interface Anime {
     id: number;
     title: string;
-    description: string | null;
+    description?: string;
     imageUrl: string; 
-    year: number | null;
-    score: number | null;
+    year?: number;
+    score?: number;
     categories: Category[]; 
-    details: AnimeDetails;
+    details?: AnimeDetails;
 }

@@ -47,7 +47,12 @@
                     <span class="title-cell-thumbnail-span">
                       <div><img src="{{environment.imageHostUrl}}/anime/poster/{{anime.animeInfo!.imageUrl}}" alt=""></div>
                     </span>
-                    <span class="title-cell-span" routerLink="/anime/{{anime.animeInfo?.animeId}}/summary">{{anime.animeInfo?.title}}</span>
+                    <div class="title-cell-span">
+                      <div class="title-cell-title" routerLink="/anime/{{anime.animeInfo?.animeId}}/summary">{{anime.animeInfo?.title}}</div>
+                      <div class="media-reaction-add">
+                        <i class="bi bi-plus-circle" (click)="onAddMediaReactionClick(anime, user.id)"></i>
+                      </div>
+                    </div>
                   </td>
                   <td class="rating-cell">
                     @if(authService.currentUser$.getValue()!.id === user.id) {

@@ -9,9 +9,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LibraryEntryComponent } from '../library-entry/library-entry.component';
 import { UsersService } from '../../../shared/services/users.service';
 import { environment } from '../../../../environments/environment';
+import { AddMediaReactionComponent } from '../add-media-reaction/add-media-reaction.component';
 
 @Component({
-  selector: 'app-library',
+  selector: 'library',
   standalone: true,
   imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink],
   templateUrl: './library.component.html',
@@ -139,6 +140,11 @@ export class LibraryComponent implements OnInit  {
 
   getLibraryTypeCount(list: LibraryEntry[], type: string) {
     return list.filter(a => a.watchStatus === type).length;
+  }
+
+  onAddMediaReactionClick(anime: LibraryEntry, userId: string) {
+    const modal = this.modalService.open(AddMediaReactionComponent);
+    modal.componentInstance.initializeModalData(anime, userId);
   }
 
   private sorter(list: LibraryEntry[] ,column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {    

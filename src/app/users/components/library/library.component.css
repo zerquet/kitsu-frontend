@@ -180,13 +180,22 @@ tbody {
 }
 
 .title-cell-span {
+  display: inline-block;
   vertical-align: top;
   margin-left: 10px;
 }
 
-.title-cell-span:hover {
+.title-cell-title:hover, .media-reaction-add i:hover {
   color: #22b8b8;
   cursor: pointer;
+}
+
+.media-reaction-add {
+  display: none;
+}
+
+.title-cell:hover .media-reaction-add {
+  display: block;
 }
 
 .rating-cell-span, .progress-cell-span {

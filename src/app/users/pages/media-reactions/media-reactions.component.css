@@ -1,0 +1,89 @@
+.reaction-container {
+  display: flex;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reaction-container div {
+  flex: 1;
+}
+
+.users-reactions-container {
+  width: 100%;
+}
+
+.users-reactions {
+  width: 100%;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #686878;
+  text-align: center;
+  padding: 8px; 
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.users-reactions:hover {
+  border-color: #22b8b8;
+  color: #22b8b8;
+}
+
+.profile-card {
+  margin-top: 24px;
+  margin-left: 30px;
+  width: 80%;
+  border-radius: 5px;
+  height: 150px;
+  background-color: white;
+}
+
+.profile-card > div {
+ height: 50%;
+}
+
+.user-background {
+  background-size: cover !important;
+  border-radius: 5px;
+}
+
+.user-bottom a {
+  position: relative;
+  color: #ffffff;
+}
+
+.user-avatar {
+  position: absolute;
+  top: -65px;
+  left: -20px;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+}
+
+.user-username {
+  position: absolute;
+  top: -50px;
+  right: -250px;
+}
+
+.reaction-button, .reaction-button-public {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.reaction-button button {
+  border-style: none;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 12px;
+  cursor:not-allowed;
+}
+
+.reaction-button-public button {
+  border-style: none;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 12px;
+}

@@ -10,7 +10,7 @@
         @if(authService.currentUser$.getValue() !== null) {
           <li class="nav-item">
             <a class="nav-link" href="javascript:void(0);"
-              routerLink="/users/{{this.authService.currentUser$.getValue()!.displayId}}/library">Library</a>
+              routerLink="/users/{{this.authService.currentUser$.getValue()?.displayId}}/library">Library</a>
           </li>
         }
         <li class="nav-item">

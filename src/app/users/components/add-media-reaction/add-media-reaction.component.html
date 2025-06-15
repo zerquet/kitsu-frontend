@@ -1,0 +1,33 @@
+<div 
+  class="add-reaction-modal" 
+  style="background: url({{environment.imageHostUrl}}/anime/poster/{{animeMetadata?.animeInfo?.imageUrl}})"
+>
+  <div class="add-reaction-background-overlay"></div>
+  <div class="add-reaction-form-container">
+    <div class="reaction-anime-name">
+      <div>{{animeMetadata?.animeInfo?.title}}</div>
+      <div class="text-left">140</div>
+    </div>
+    <form 
+      [formGroup]="addMediaReactionForm" 
+      (submit)="onMediaReactionAddSubmit()"
+    >
+      <div>
+        <textarea 
+          class="reaction-text-field"
+          formControlName="reaction" 
+          maxlength="140" 
+          placeholder="Overrated, don't waste your time on this one."
+          required
+        ></textarea>
+      </div>
+      <div class="post-reaction-container">
+        <input 
+          type="submit" 
+          value="Post" 
+          [disabled]="!addMediaReactionForm.valid"
+        >
+      </div>
+    </form>
+  </div>
+</div>

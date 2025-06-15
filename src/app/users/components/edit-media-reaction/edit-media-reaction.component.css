@@ -1,0 +1,67 @@
+:host {
+  border-radius: 5px;
+}
+
+.edit-reaction-modal {
+  min-height: 300px;
+  border-radius: 5px;
+}
+
+.edit-reaction-background-overlay {
+  position: absolute;
+  background: rgb(0,0,0,.5);
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.edit-reaction-form-container {
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  bottom: 0;
+  padding: 20px;
+}
+
+.reaction-anime-name {
+  width: 100%;
+  border-bottom: 1px solid #dddddd;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.reaction-text-field {
+  background: transparent;
+  border: none;
+  outline: none;
+  border-style: none;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.text-left {
+  color: #22b8b8;
+}
+
+.post-reaction-container {
+  display: flex;
+  justify-content: end;
+}
+
+.post-reaction-container input[type='submit'] {
+  background: #22b8b8;
+  border-radius: 3px;
+  border-style: none;
+  padding: 5px 8px;
+}
+
+.post-reaction-container input[type='submit']:hover {
+  background: #66b8b8;
+}
+
+.post-reaction-container input[disabled],
+.post-reaction-container input[disabled]:hover {
+  background: #dddddd;
+  color: #ffffff;
+}

@@ -12,6 +12,7 @@ import { EpisodeAddComponent } from './admin/components/episode-add/episode-add.
 import { FranchiseListComponent } from './admin/components/franchise-list/franchise-list.component';
 import { FranchiseAddComponent } from './admin/components/franchise-add/franchise-add.component';
 import { AdminGuard } from './core/guards/admin.guard';
+import { MediaReactionsComponent } from './users/pages/media-reactions/media-reactions.component';
 
 export const routes: Routes = [
     {path: "explore", component: ExploreComponent},
@@ -21,6 +22,7 @@ export const routes: Routes = [
     {path: "search", component: SearchComponent},
     {path: "users/:id", component: UserComponent},
     {path: "users/:id/:tab", component: UserComponent},
+    {path: "media-reactions/:id", component: MediaReactionsComponent},
     {path: "admin", component: AdminComponent, children: [
       {
         path: "anime",

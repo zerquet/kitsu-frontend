@@ -9,18 +9,20 @@ import { PrimaryInfoComponent } from '../../components/primary-info/primary-info
 import { UserAboutComponent } from '../../components/user-about/user-about.component';
 import { CoverPhotoComponent } from '../../../shared/components/cover-photo/cover-photo.component';
 import { environment } from '../../../../environments/environment';
+import { ReactionsComponent } from "../../components/reactions/reactions.component";
 
 @Component({
   selector: 'app-user',
   standalone: true,
   imports: [
-    LibraryComponent, 
-    AsyncPipe, 
-    NavTabsComponent, 
-    PrimaryInfoComponent, 
-    UserAboutComponent, 
-    CoverPhotoComponent  
-  ],
+    LibraryComponent,
+    AsyncPipe,
+    NavTabsComponent,
+    PrimaryInfoComponent,
+    UserAboutComponent,
+    CoverPhotoComponent,
+    ReactionsComponent
+],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
@@ -28,7 +30,7 @@ export class UserComponent {
   private usersService = inject(UsersService);
   private route = inject(ActivatedRoute);
 
-  tabs = ['about', 'library'];
+  tabs = ['about', 'library', 'reactions'];
   environment = environment;
 
   private destroy$ = new Subject<void>();

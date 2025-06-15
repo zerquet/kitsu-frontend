@@ -1,0 +1,7 @@
+<div class="d-flex flex-row flex-wrap reactions-container">
+  @if (mediaReactions$ | async; as mediaReactions) {
+    @for (reaction of mediaReactions; track reaction.id) {
+      <reaction-card [reaction]="reaction"></reaction-card> 
+    }
+  }
+</div>
