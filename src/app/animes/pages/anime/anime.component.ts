@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, BehaviorSubject, Observable, distinctUntilChanged, mergeMap, takeUntil, map, combineLatest, switchMap, of, tap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Subject, BehaviorSubject, distinctUntilChanged, takeUntil, map, switchMap } from 'rxjs';
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { Anime } from '../../../shared/models/anime.model';
 import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
@@ -14,6 +14,8 @@ import { NavTabsComponent } from '../../../shared/components/nav-tabs/nav-tabs.c
 import { AnimeContainerComponent } from '../../components/anime-container/anime-container.component';
 import { CoverPhotoComponent } from "../../../shared/components/cover-photo/cover-photo.component";
 import { environment } from '../../../../environments/environment';
+import { CreateLibraryEntryRequest } from '../../../shared/contracts/createLibraryEntryRequest.interface';
+import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
 
 @Component({
   selector: 'anime',
@@ -32,12 +34,12 @@ import { environment } from '../../../../environments/environment';
 export class AnimeComponent implements OnInit, OnDestroy {
   public authService = inject(AuthService);
 
-  private animeService = inject(AnimeService); //in this component, should not get all animes. create setState methods and call them according to the component
   private route = inject(ActivatedRoute);
+  private animeService = inject(AnimeService); //in this component, should not get all animes. create setState methods and call them according to the component
   private usersService = inject(UsersService);
   private modalService = inject(NgbModal);
   
-  form = new FormGroup({
+  updateLibraryEntryForm = new FormGroup({
     episodeProgress: new FormControl(),
     rating: new FormControl(),
     status: new FormControl(),
@@ -48,21 +50,23 @@ export class AnimeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
     
-    if (this.authService.currentUser$.getValue() !== null) {
-      this.usersService.getLibraryEntry(this.authService.currentUser$.getValue()!.id, animeId).subscribe((entry) => {
-        this.libraryEntry$.next(entry);
-        if(entry === null) return;
-        
-        this.form.patchValue({"episodeProgress": entry.episodesWatched});
-        this.form.patchValue({"status": entry.watchStatus});
-        this.form.patchValue({"rating": entry.userRating});
-      })
+    if (this.authService.authenticatedUser$.getValue() !== null) {
+      this.usersService.getLibraryEntry(this.authService.authenticatedUser$.getValue()!.id, animeId)
+        .subscribe({
+          next: (entry) => {
+            this.libraryEntry$.next(entry);
+            if(entry === null) return;
 
-      this.usersService.getFavoriteAnime(animeId).subscribe((fa) => {
-        this.isFavorite$.next(fa !== null);
-        console.log(this.isFavorite$.getValue());
+            this.updateLibraryEntryForm.patchValue({"episodeProgress": entry.episodesWatched});
+            this.updateLibraryEntryForm.patchValue({"status": entry.watchStatus});
+            this.updateLibraryEntryForm.patchValue({"rating": entry.userRating});
+          }
+        });
 
-      });
+      this.usersService.getFavoriteAnime(animeId)
+        .subscribe({
+          next: (res) => this.isFavorite$.next(res !== null)
+        });
     }
     
   }
@@ -78,7 +82,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
 
   anime$ = this.route.params.pipe(
     distinctUntilChanged(),
-    switchMap(params => this.animeService.getAnime(params['id'])),
+    switchMap(params => this.animeService.getAnimeById(params['id'])),
     takeUntil(this.destroy$)
   );
 
@@ -88,86 +92,97 @@ export class AnimeComponent implements OnInit, OnDestroy {
     takeUntil(this.destroy$)
   );
 
-  createEntry(watchStatus: string, anime: Anime) {
-    if(this.authService.currentUser$.getValue() === null) {
+  onAddToLibraryClick(libraryName: string, anime: Anime) {
+    if(this.authService.authenticatedUser$.getValue() === null) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }
     else {
-      const episodesCompleted = watchStatus === 'completed' ? anime.details.episodeCount : 0;
-      this.usersService.createEntry(anime, watchStatus, episodesCompleted!).subscribe((entryId) => {
-        this.form.patchValue({"episodeProgress": episodesCompleted});
-        this.form.patchValue({"status": watchStatus});
-
-        //this is local so it's fine if we don't provide animeInfo
-        const entry: LibraryEntry = {
-          id: entryId,
-          watchStatus: watchStatus,
-          userRating: null,
-          episodesWatched: episodesCompleted!,
-          animeInfo: null
-        };
-
-        this.libraryEntry$.next(entry);
-      })
+      const episodesCompleted = libraryName === 'completed' ? anime.episodeCount : 0;
+      let req: CreateLibraryEntryRequest = {
+        animeId: anime.id,
+        watchStatus: libraryName,
+        episodesWatched: episodesCompleted!
+      }
+      this.usersService.createEntry(req)
+        .subscribe({
+          next: (res) => {
+            this.updateLibraryEntryForm.patchValue({"episodeProgress": episodesCompleted});
+            this.updateLibraryEntryForm.patchValue({"status": libraryName});
+            this.libraryEntry$.next(res);
+          }
+        });
     }
   }
 
   onIncrementProgressClick(episodeCount: number) {
     const currentProgress = this.episodeProgress?.value;
-    if(currentProgress + 1 <= episodeCount!)
+    if(currentProgress + 1 <= episodeCount){
       this.episodeProgress?.patchValue(currentProgress + 1);
+    }
   }
 
-  updateEntry(anime: Anime) {
-    const entry: LibraryEntry = {
-      id: this.libraryEntry$.value!.id,
-      watchStatus: this.status?.value,
-      userRating: this.rating?.value,
-      episodesWatched: this.episodeProgress?.value,
-      animeInfo: {
-        animeId: anime.id,
-        title: anime.title,
-        imageUrl: anime.imageUrl,
-        episodeCount: anime.details.episodeCount
-      }
+  onUpdateLibraryEntryFormSubmit() {
+    let req: UpdateLibraryEntryRequest = {
+      libraryEntryId: 0,
+      episodesWatched: 0
     }
 
-    this.usersService.updateEntry(entry).subscribe(() => {
-      this.form.patchValue({"episodeProgress": entry.episodesWatched});
-      this.form.patchValue({"status": entry.watchStatus});
-      this.form.patchValue({"rating": entry.userRating});
+    if(this.libraryEntry$.value !== null) {
+      req.libraryEntryId = this.libraryEntry$.value.id
+    }
+    if(this.episodeProgress !== null) {
+      req.episodesWatched = this.episodeProgress.value
+    }
+    if(this.status !== null) {
+      req.watchStatus = this.status.value
+    }
+    if(this.rating !== null) {
+      req.userRating = this.rating.value
+    }
 
-      this.libraryEntry$.next(entry)
-    });
+    this.usersService.updateEntry(req)
+      .subscribe({
+        next: (res) => {
+          this.updateLibraryEntryForm.patchValue({"episodeProgress": req.episodesWatched});
+          this.updateLibraryEntryForm.patchValue({"status": req.watchStatus});
+          this.updateLibraryEntryForm.patchValue({"rating": req.userRating});
+          this.libraryEntry$.next(res)
+        }
+      });
   }
 
-  deleteEntry = (anime: Anime) => {
-    this.usersService.deleteEntry(anime.id).subscribe(() => 
-      this.libraryEntry$.next(null)
-    );
+  onDeleteEntryBtnClick = (anime: Anime) => {
+    this.usersService.deleteEntry(anime.id)
+      .subscribe({
+        next: () => this.libraryEntry$.next(null)
+      });
   } 
 
-  addFavorite(anime: Anime) {
-    if(this.authService.currentUser$.getValue() === null) {
+  onAddToFavoritesClick(anime: Anime) {
+    if(this.authService.authenticatedUser$.getValue() === null) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }
     else {
-      this.usersService.addFavoriteAnime(anime);
-      this.isFavorite$.next(true);
+      this.usersService.addFavoriteAnime(anime.id) 
+        .subscribe({
+          next: () => this.isFavorite$.next(true)
+        });
     }
   }
 
-  removeFavorite(animeId: number) {
-    this.usersService.deleteFavoriteAnime(animeId);
-    this.isFavorite$.next(false);
+  onUnfavoriteClick(animeId: number) {
+    this.usersService.deleteFavoriteAnime(animeId)
+      .subscribe({
+        next: () => this.isFavorite$.next(false)
+      });
   }
 
   /**FORM GETTERS */
-  get episodeProgress() { return this.form.get("episodeProgress"); }
+  get episodeProgress() { return this.updateLibraryEntryForm.get("episodeProgress"); }
 
-  get rating() { return this.form.get("rating"); }
+  get rating() { return this.updateLibraryEntryForm.get("rating"); }
 
-  get status() { return this.form.get("status"); }
+  get status() { return this.updateLibraryEntryForm.get("status"); }
 }

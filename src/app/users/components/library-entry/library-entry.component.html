@@ -1,17 +1,17 @@
 @if (libraryEntry$.value !== null) {
   <div id="editModalTitle">
-    <h4>{{libraryEntry$.value.animeInfo?.title}}</h4>
+    <h4>{{libraryEntry$.value.anime.title}}</h4>
     <span id="closeModal">
-      <i class="bi bi-x" (click)="closeModal()"></i>
+      <i class="bi bi-x" (click)="onCloseClick()"></i>
     </span>
   </div>
   <div id="editEntryModalContainer">
-    <form [formGroup]="form">
+    <form [formGroup]="updateLibraryEntryForm">
       @if(userProfile$ | async; as user) {
         <div class="flex">
           <div><label for="status">Library Status</label></div>
           <div>
-            <select formControlName="status" id="status" [disabled]="authService.currentUser$.getValue()!.id !== user.id">
+            <select formControlName="status" id="status" [disabled]="authService.authenticatedUser$.getValue()!.id !== user.id">
               <option value="completed">Completed</option>
               <option value="watching">Currently Watching</option>
               <option value="planning">Want to Watch</option>
@@ -23,17 +23,17 @@
           <div><label for="progress">Progress</label></div>
           <div>
             <input formControlName="progress" type="number" id="progress" 
-              [max]="libraryEntry$.value.animeInfo?.episodeCount!" min="0" [value]="libraryEntry$.value.episodesWatched" 
-              [disabled]="authService.currentUser$.getValue()!.id !== user.id"
-              [readonly]="authService.currentUser$.getValue()!.id !== user.id">
-            <span> of {{libraryEntry$.value.animeInfo?.episodeCount}} episodes</span>
+              [max]="libraryEntry$.value.anime.episodeCount!" min="0" [value]="libraryEntry$.value.episodesWatched" 
+              [disabled]="authService.authenticatedUser$.getValue()!.id !== user.id"
+              [readonly]="authService.authenticatedUser$.getValue()!.id !== user.id">
+            <span> of {{libraryEntry$.value.anime.episodeCount}} episodes</span>
           </div>
         </div>
 
         <div class="flex">
           <div><label for="rating">Rating</label></div>
           <div>
-            <select formControlName="rating" id="rating" [disabled]="authService.currentUser$.getValue()!.id !== user.id">
+            <select formControlName="rating" id="rating" [disabled]="authService.authenticatedUser$.getValue()!.id !== user.id">
               <option value="">-</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -49,10 +49,10 @@
           </div>
         </div>
         
-        @if(authService.currentUser$.getValue()!.id === user.id) {   
+        @if(authService.authenticatedUser$.getValue()!.id === user.id) {   
           <div class="flex">
-            <div><button id="removeFromLibraryBtn" type="button" (click)="deleteEntry()"><i class="bi bi-trash3"></i></button></div>
-            <div><input type="button" value="Save Changes" [disabled]="form.valid" (click)="saveChanges()" class="save"></div>
+            <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteEntryBtnClick()"><i class="bi bi-trash3"></i></button></div>
+            <div><input type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid" (click)="onUpdateLibraryEntryFormSubmit()" class="save"></div>
           </div>
         }
       }

@@ -49,7 +49,7 @@ export class EditMediaReactionComponent {
   }
 
   onMediaReactionEditSubmit() {
-    var req: UpdateMediaReactionRequest = {
+    let req: UpdateMediaReactionRequest = {
       reactionId: 0,
       reaction: ""
     };

@@ -70,14 +70,14 @@ export class AnimeEditComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.pipe(
       distinctUntilChanged(),
-      switchMap(params => this.animeService.getAnime(params['animeId'])),
+      switchMap(params => this.animeService.getAnimeById(params['animeId'])),
       takeUntil(this.destroy$)
     ).subscribe(res => {
         if(res !== undefined) {
           this.anime.next(res);
           this.prefillform(res);
           //send dto from api and assign as Franchise 
-          this.selectedFranchise = res.details.franchiseId !== null && res.details.franchiseName !== null ? {id: res.details.franchiseId, name: res.details.franchiseName} : null;           
+          this.selectedFranchise = res.franchiseId !== null && res.franchise?.name !== undefined ? {id: res.franchiseId, name: res.franchise?.name} : null;           
         }
       })
 
@@ -133,7 +133,7 @@ export class AnimeEditComponent implements OnInit {
     if(!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString());
   
     this.animeService
-      .updateAnime(data, this.selectedFranchise ?? undefined)
+      .updateAnime(data)
       .subscribe({
         next: () => {
           this.toastService.show('Success', `Updated '${this.title?.value}'.`)
@@ -211,21 +211,21 @@ export class AnimeEditComponent implements OnInit {
       animeId: res.id,
       title: res.title,
       description: res.description,
-      releaseStatus: res.details.releaseStatus,
+      releaseStatus: res.releaseStatus,
       categories: res.categories.map(x => x.id), //might need to use Id instead. I assume it's comparing [value] to see which are selected
-      episodes: res.details.episodeCount,
+      episodes: res.episodeCount,
       year: res.year,
-      mediaType: res.details.mediaType,
+      mediaType: res.mediaType,
       score: res.score,
-      englishTitle: res.details.englishTitle,
-      japaneseTitle: res.details.japaneseTitle,
-      japaneseRomaji: res.details.japaneseTitleRomaji,
-      season: res.details.season,
-      startAirDate: res.details.startAirDate === null ? null : new Date(res.details.startAirDate),
-      endAirDate: res.details.endAirDate === null ? null : new Date(res.details.endAirDate),
-      rating: res.details.tvRating !== "null" ? res.details.tvRating : null,
-      episodeLength: res.details.episodeLength,
-      franchiseId: res.details.franchiseId ?? null
+      englishTitle: res.englishTitle,
+      japaneseTitle: res.japaneseTitle,
+      japaneseRomaji: res.japaneseTitleRomaji,
+      season: res.season,
+      startAirDate: res.startAirDate === undefined ? null : new Date(res.startAirDate),
+      endAirDate: res.endAirDate === undefined ? null : new Date(res.endAirDate),
+      rating: res.tvRating !== "null" ? res.tvRating : null,
+      episodeLength: res.episodeLength,
+      franchiseId: res.franchiseId ?? null
     });
   }
 
@@ -320,7 +320,7 @@ export class AnimeEditComponent implements OnInit {
   releaseStatusIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.releaseStatus)
+        if(control.value === this.anime.value?.releaseStatus)
           return null;
       }
       return {releaseStatusIsDifferent:true};
@@ -343,7 +343,7 @@ export class AnimeEditComponent implements OnInit {
   episodeCountIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.episodeCount)
+        if(control.value === this.anime.value?.episodeCount)
           return null;
       }
       return {episodeCountIsDifferent:true};
@@ -353,7 +353,7 @@ export class AnimeEditComponent implements OnInit {
   mediaTypeIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.mediaType)
+        if(control.value === this.anime.value?.mediaType)
           return null;
       }
       return {mediaTypeIsDifferent:true};
@@ -383,7 +383,7 @@ export class AnimeEditComponent implements OnInit {
   englishTitleIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.englishTitle)
+        if(control.value === this.anime.value?.englishTitle)
           return null;
       }
       return {englishTitleIsDifferent:true};
@@ -393,7 +393,7 @@ export class AnimeEditComponent implements OnInit {
   japaneseTitleIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.japaneseTitle)
+        if(control.value === this.anime.value?.japaneseTitle)
           return null;
       }
       return {japaneseTitleIsDifferent:true};
@@ -403,7 +403,7 @@ export class AnimeEditComponent implements OnInit {
   japaneseRomajiIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.japaneseTitleRomaji)
+        if(control.value === this.anime.value?.japaneseTitleRomaji)
           return null;
       }
       return {japaneseRomajiIsDifferent:true};
@@ -413,7 +413,7 @@ export class AnimeEditComponent implements OnInit {
   seasonIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.season)
+        if(control.value === this.anime.value?.season)
           return null;
       }
       return {seasonIsDifferent:true};
@@ -429,7 +429,7 @@ export class AnimeEditComponent implements OnInit {
           date = null;
         }
         else {
-          date = this.anime.value?.details.startAirDate === null ? null : new Date(this.anime.value!.details.startAirDate);
+          date = this.anime.value?.startAirDate === undefined ? null : new Date(this.anime.value!.startAirDate);
         }
                 
         if(date !== null) {
@@ -455,7 +455,7 @@ export class AnimeEditComponent implements OnInit {
           date = null;
         }
         else {
-          date = this.anime.value?.details.endAirDate === null ? null : new Date(this.anime.value!.details.endAirDate);
+          date = this.anime.value?.endAirDate === undefined ? null : new Date(this.anime.value!.endAirDate);
         }
           
         if(date !== null) {
@@ -476,7 +476,7 @@ export class AnimeEditComponent implements OnInit {
   ratingIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.tvRating)
+        if(control.value === this.anime.value?.tvRating)
           return null;
       }
       return {ratingIsDifferent:true};
@@ -486,7 +486,7 @@ export class AnimeEditComponent implements OnInit {
   episodeLengthIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.details.episodeLength)
+        if(control.value === this.anime.value?.episodeLength)
           return null;
       }
       return {episodeLengthIsDifferent:true};
@@ -497,8 +497,8 @@ export class AnimeEditComponent implements OnInit {
     return (control: AbstractControl): ValidationErrors | null => {      
       if(this.anime !== undefined) {
         console.log(control.value);
-        console.log(this.anime.value?.details.franchiseId);
-        if(control.value === this.anime.value?.details.franchiseId)
+        console.log(this.anime.value?.franchiseId);
+        if(control.value === this.anime.value?.franchiseId)
           return null;
       }
       return {franchiseIdIsDifferent:true};

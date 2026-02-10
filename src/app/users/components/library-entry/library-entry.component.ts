@@ -6,6 +6,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UsersService } from '../../../shared/services/users.service';
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
+import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
 
 @Component({
   selector: 'app-library-entry',
@@ -20,10 +21,10 @@ export class LibraryEntryComponent implements OnDestroy {
   private usersService = inject(UsersService);
   private activeModal = inject(NgbActiveModal);
   
-  form = new FormGroup({
-    status: new FormControl('',[this.statusIsDifferentValidator()]),
-    rating: new FormControl(0, [this.ratingIsDifferentValidator()]),
-    progress: new FormControl(0, [this.progressIsDifferentValidator()])
+  updateLibraryEntryForm = new FormGroup({
+    status: new FormControl<any>('',[this.statusIsDifferentValidator()]),
+    rating: new FormControl<any>(0, [this.ratingIsDifferentValidator()]),
+    progress: new FormControl<any>(0, [this.progressIsDifferentValidator()])
   });
   
   ngOnDestroy(): void {
@@ -32,33 +33,49 @@ export class LibraryEntryComponent implements OnDestroy {
   }
   
   private destroy$ = new Subject<void>();
-  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); //itd be nice if this was handled by a service
-  userProfile$ = this.usersService.getProfile();
+  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
+  userProfile$ = this.usersService.profile$;
   
   initializeModalData(entry: LibraryEntry) {    
     this.libraryEntry$.next(entry);
 
-    this.form.patchValue({"status": entry.watchStatus});
-    this.form.patchValue({"rating": entry.userRating});
-    this.form.patchValue({"progress": entry.episodesWatched});
+    this.updateLibraryEntryForm.patchValue({"status": entry.watchStatus});
+    this.updateLibraryEntryForm.patchValue({"rating": entry.userRating});
+    this.updateLibraryEntryForm.patchValue({"progress": entry.episodesWatched});
   }
 
-  closeModal = () => this.activeModal.close();
+  onCloseClick = () => this.activeModal.close();
 
-  saveChanges() {
-    const entry = this.libraryEntry$.value;
-    const updates: LibraryEntry = {
-      ...entry!, 
-      watchStatus: this.status.value, 
-      episodesWatched: this.progress.value!, 
-      userRating: this.rating.value
-    };
+  onUpdateLibraryEntryFormSubmit() {
+    let req: UpdateLibraryEntryRequest = {
+      libraryEntryId: 0,
+      episodesWatched: 0
+    }
 
-    this.usersService.updateEntry(updates, this.activeModal).subscribe();
+    if(this.libraryEntry$.value !== null) {
+      req.libraryEntryId = this.libraryEntry$.value.id
+    }
+    if(this.progress !== null) {
+      req.episodesWatched = this.progress.value
+    }
+    if(this.status !== null) {
+      req.watchStatus = this.status.value
+    }
+    if(this.rating !== null) {
+      req.userRating = this.rating.value
+    }
+
+    this.usersService.updateEntry(req)
+      .subscribe({
+        next: () => this.activeModal.close()
+      });
   }
 
-  deleteEntry() {
-    this.usersService.deleteEntry(this.libraryEntry$.value?.animeInfo?.animeId!, this.activeModal).subscribe();
+  onDeleteEntryBtnClick() {
+    this.usersService.deleteEntry(this.libraryEntry$.value?.animeId!)
+      .subscribe({
+        next: () => this.activeModal.close()
+      });
   } 
 
   //FORM "VALIDATORS"
@@ -102,9 +119,9 @@ export class LibraryEntryComponent implements OnDestroy {
   }
 
   //FORM GETTERS
-  get status() { return this.form.controls["status"]; }
+  get status() { return this.updateLibraryEntryForm.get("status") }
 
-  get rating() { return this.form.controls["rating"]; }
+  get rating() { return this.updateLibraryEntryForm.get("rating") }
 
-  get progress() { return this.form.controls["progress"]; }
+  get progress() { return this.updateLibraryEntryForm.get("progress") }
 }

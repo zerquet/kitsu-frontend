@@ -14,8 +14,7 @@ export class CategoryService {
   private _categories$ = new BehaviorSubject<Category[]>([]);
 
   constructor() {
-    this.http
-      .get<Category[]>(this.baseUrl)
+    this.http.get<Category[]>(this.baseUrl)
       .subscribe((categories) => {
         this._categories$.next(categories);
       });
@@ -24,17 +23,16 @@ export class CategoryService {
   getCategory(name: string): Observable<Category> {
     return this._categories$.pipe(
       switchMap((categories) => {
-        let r = categories.find((category) => category.name === name);
-        if(r === undefined) {
-          let fake: Category = {
+        let category = categories.find((category) => category.name === name);
+        if(category === undefined) {
+          let noCategory: Category = {
             id: 0,
-            name: 'Explore',
-            description: null
+            name: 'Explore'
           }
-          return of(fake);
+          return of(noCategory);
         }
         
-        return of(r);
+        return of(category);
       })
     );
   }

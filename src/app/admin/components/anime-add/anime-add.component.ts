@@ -116,7 +116,7 @@ export class AnimeAddComponent {
     if(!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString())
   
     this.animeService
-      .addAnime(data, this.selectedFranchise ?? undefined)
+      .addAnime(data)
       .subscribe({
         next: () => {
           this.toastService.show('Success', 'Added anime record')
@@ -144,7 +144,6 @@ export class AnimeAddComponent {
   onImageClear() {
     this.newAnimeImage = undefined;
     this.form.patchValue({image: undefined});
-    //why is the form submitted when this method runs?
     return;
   }
 

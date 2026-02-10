@@ -23,7 +23,7 @@
     </div>
     <div>
       @if (currentTab === 'about') {
-        <form [formGroup]="form" (ngSubmit)="null">
+        <form [formGroup]="updateProfileForm" (ngSubmit)="null">
           <div><h4>About Me</h4></div>
           <div class="field-section">
             <label for="location">Location</label>
@@ -51,7 +51,7 @@
       @else if (currentTab === 'favorites') {
         <manage-favorites [parentModelRef]="activeModal"></manage-favorites> 
       }
-      <div id="btn-section"><input type="button" value="Update Profile" (click)="saveChanges()"></div>
+      <div id="btn-section"><input type="button" value="Update Profile" (click)="onUpdateProfileClick()"></div>
     </div>
   }
 }

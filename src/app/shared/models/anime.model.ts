@@ -1,8 +1,15 @@
 import { Category } from "./category.model";
+import { Franchise } from "./franchise.model";
 
-export interface AnimeDetails {
-    animeId: number;
+export interface Anime {
+    id: number;
+    title: string;
+    description?: string;
+    score?: number;
+    categories: Category[]; 
     releaseStatus?: string;
+    imageUrl: string; 
+    year?: number;
     coverImageUrl: string;
     episodeCount?: number;
     mediaType?: string;
@@ -15,16 +22,6 @@ export interface AnimeDetails {
     tvRating?: string;
     episodeLength?: number;
     franchiseId?: number;
-    franchiseName?: string;
-}
-
-export interface Anime {
-    id: number;
-    title: string;
-    description?: string;
-    imageUrl: string; 
-    year?: number;
-    score?: number;
-    categories: Category[]; 
-    details?: AnimeDetails;
+    franchise?: Franchise;
+    //add the rest?
 }

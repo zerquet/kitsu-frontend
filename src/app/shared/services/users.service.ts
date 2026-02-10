@@ -1,97 +1,64 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, numberAttribute } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { UserProfile } from '../models/userProfile.model';
 import { LibraryEntry } from '../models/libraryEntry.model';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Anime } from '../models/anime.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
-import { AppToastService } from './app-toast.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/services/auth.service';
-import { CurrentUser } from '../../core/auth/user.model';
 import { MediaReaction } from '../models/mediaReaction.model';
 import { GetMediaReactionsByUserItemResponse } from '../contracts/getMediaReactionByUserItemResponse.interface';
 import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
 import { mapGetMediaReactionByUserItemResponseToMediaReaction } from '../mapper';
+import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
+import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryRequest.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
   private http = inject(HttpClient);
-  private toastService = inject(AppToastService);
   private authService = inject(AuthService);
+  
   private readonly baseUrl = `${environment.apiUrl}/users`;
   private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
   private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
   private readonly reactionsBaseUrl = `${environment.apiUrl}/mediaReactions`;
+  
   profile$ = new BehaviorSubject<UserProfile | null>(null);
-
-  currentLibraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null); 
-  //get from state, create via api then update state, delete from api then from state, etc. etc. 
-  //currLibraryEntry represents the entry for an anime when the user is viewing the anime page.
-  private _favoriteAnimes$ = new BehaviorSubject<Anime[]>([]);
-
+  favoriteAnimes$ = new BehaviorSubject<FavoriteAnime[]>([]);
   library$ = new BehaviorSubject<LibraryEntry[]>([]);
-
   mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
+  toastService: any;
 
-  fetchProfileById(id: string): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.baseUrl}/${id}`);
+  setProfileStateByUserId(userDisplayId: string) {
+    this.getProfileByDisplayId(userDisplayId)
+      .subscribe({
+        next: (res) => this.profile$.next(res)
+      });
   }
 
-  getProfile(): Observable<UserProfile | null> {
-    return this.profile$;
+  private getProfileByDisplayId(userDisplayId: any) {
+    return this.http.get<UserProfile>(`${this.baseUrl}/${userDisplayId}`);
   }
 
-  updateProfile(data: FormData, activeModal?: NgbActiveModal) {
-    this.http.put<{profileId: string, coverId: string}>(`${this.baseUrl}`, data).subscribe({
-      next: (res) => {
-        const profileUpdates: UserProfile = {
-          id: data.get('id')!.toString(),
-          displayId: data.get('displayId')!.toString(),
-          username: data.get('username')!.toString(),
-          location: data.get('location')!.toString(),
-          bio: data.get('bio')!.toString(),
-          birthday: data.get('birthday') !== null ? data.get('birthday') as unknown as Date : null,
-          gender: data.get('gender')!.toString(),
-          profilePhotoId: res.profileId, //we get the new ID, update JWT token and profile state?
-          coverPhotoId: res.coverId
-        }
-        this.profile$.next(profileUpdates);
-
-        const oldCurrentUser = this.authService.currentUser$.getValue();
-        const newCurrentUser: CurrentUser = {
-          id: profileUpdates.id,
-          displayId: profileUpdates.displayId,
-          username: profileUpdates.username,
-          location: profileUpdates.location,
-          bio: profileUpdates.bio,
-          birthday: profileUpdates.birthday,
-          gender: profileUpdates.gender,
-          email: oldCurrentUser!.email,
-          profilePhotoId: res.profileId,
-          coverPhotoId: res.coverId,
-          isAdmin: oldCurrentUser!.isAdmin,
-          token: oldCurrentUser!.token
-        }
-        this.authService.currentUser$.next(newCurrentUser);
-
-        this.toastService.show("Success", "Profile successfully updated!");
-        if(activeModal)
-          activeModal.close();
-      },
-      error: (err) => {
-        console.log(err);
-        
-        this.toastService.show("Error", "Updates could not be saved.");
-      }
-    });
-  }
-
-  setProfileState(profile: UserProfile) {
-    this.profile$.next(profile);
+  updateProfile(req: FormData) : Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.baseUrl}`, req)
+      .pipe(
+        tap((res) => {
+          this.profile$.next(res);
+          const currentAuthenticatedUser = this.authService.authenticatedUser$.getValue();
+          if (currentAuthenticatedUser !== null) {
+            currentAuthenticatedUser.bio = res.bio;
+            currentAuthenticatedUser.birthday = res.birthday;
+            currentAuthenticatedUser.coverPhotoId = res.coverPhotoId;
+            currentAuthenticatedUser.gender = res.gender;
+            currentAuthenticatedUser.location = res.location;
+            currentAuthenticatedUser.profilePhotoId = res.profilePhotoId;
+          }
+          this.authService.authenticatedUser$.next(currentAuthenticatedUser);
+        })
+      );
   }
 
   /*LIBRARY METHODS*/
@@ -105,144 +72,108 @@ export class UsersService {
     }
   }
 
-  setLibraryState(userId: any) {
-     //This does not handle users with empty library
-      this.getLibrary(userId);
+  setLibraryStateByUserId(userDisplayId: any) {
+    //This does not handle users with empty library
+    let userId = this.profile$.getValue()?.displayId;
+    if(userDisplayId !== null || userDisplayId !== undefined) {
+      userId = userDisplayId;
+    }
+    this.getLibraryByDisplayId(userDisplayId)
+      .subscribe((library) => {
+        this.library$.next(library);
+      });
   }
 
   //this can be made private
-  private getLibrary(routeUserId: any) {
-    let userId = this.profile$.getValue()?.displayId;
-
-    if(routeUserId !== null || routeUserId !== undefined) {
-      userId = routeUserId;
-    }
-
-    this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userId}`).subscribe((library) => {
-      this.library$.next(library);
-    })
+  private getLibraryByDisplayId(userDisplayId: any) {
+    return this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userDisplayId}`);
   }
 
-  createEntry(anime: Anime, status: string, episodesWatched: number): Observable<number> {
-    return this.http.post<number>(`${this.libraryBaseUrl}`, 
-      {
-        AnimeId: anime.id,
-        WatchStatus: status,
-        EpisodesWatched: episodesWatched
-      }).pipe(
+  createEntry(req: CreateLibraryEntryRequest): Observable<LibraryEntry> {
+    return this.http.post<LibraryEntry>(`${this.libraryBaseUrl}`, req)
+      .pipe(
         tap((res) => {
-          const entry: LibraryEntry = {
-            id: res,
-            watchStatus: status,
-            userRating: null,
-            episodesWatched: episodesWatched,
-            animeInfo: {
-              animeId: anime.id,
-              title: anime.title,
-              imageUrl: anime.imageUrl,
-              episodeCount: anime.details.episodeCount
-            }
-          }
-
           const library = this.library$.getValue();
-          library.push(entry);
-
+          library.push(res);
           this.library$.next(library);
         })
-      )
+      );
   }
 
-  updateEntryRating(entryId: number, rating: string) {
-    let entry = this.library$.getValue().find((e) => e.id == entryId);
-    
-    if(entry !== undefined) {
-      entry.userRating = Number(rating);
-      this.updateEntry(entry).subscribe();
-    }
+  updateEntry(req: UpdateLibraryEntryRequest): Observable<LibraryEntry> {
+    req.userRating = Number(req.userRating) === 0 ? undefined : Number(req.userRating);
+    return this.http.put<LibraryEntry>(`${this.libraryBaseUrl}`, req)
+      .pipe(
+        tap((res) => {
+          const library = this.library$.getValue();
+          library[library.findIndex((e) => e.id == res.id)] = res;
+          this.library$.next(library);
+        })
+      );
   }
 
-  updateEntryProgress(entryId: number, progress: number) {
-    let entry = this.library$.getValue().find((e) => e.id == entryId);
-    
-    if(entry !== undefined) {
-      entry.episodesWatched = progress;
-      this.updateEntry(entry).subscribe();
-    }
-  }
-
-  updateEntry(entry: LibraryEntry, activeModal?: NgbActiveModal): Observable<void> {
-    entry.userRating = Number(entry.userRating) === 0 ? null : Number(entry.userRating);
-    
-    return this.http.put<void>(`${this.libraryBaseUrl}`, entry).pipe(
-      tap((res) => {
-        const library = this.library$.getValue();
-        library[library.findIndex((e) => e.id == entry.id)] = entry;
-  
-        this.library$.next(library);
-  
-        if(activeModal)
-          activeModal.close();
-      })
-    );
-  }
-
-  deleteEntry(animeId: number, activeModal?: NgbActiveModal) {
-    return this.http.delete<void>(`${this.libraryBaseUrl}/${animeId}`).pipe(
-      tap((res) => {
-        const library = this.library$.value.filter((e) => e.animeInfo!.animeId !== animeId);
-      
-        this.library$.next(library);
-  
-        if(activeModal)
-          activeModal.close();
-      })
-    );
+  deleteEntry(animeId: number) {
+    return this.http.delete<void>(`${this.libraryBaseUrl}/${animeId}`)
+      .pipe(
+        tap(() => {
+          let library = this.library$.getValue();
+          library = library.filter((e) => e.anime.id !== animeId);
+          this.library$.next(library);
+        })
+      );
   }
 
   /* FAVORITES METHODS */
 
   setFavoriteAnimesState() {
-    if(this._favoriteAnimes$.getValue().length === 0) {
-      this.http.get<Anime[]>(`${this.favoritesBaseUrl}`).subscribe((favorites) => {
-        this._favoriteAnimes$.next(favorites);
-      })
+    //By UserId in JWT token claim
+    if(this.favoriteAnimes$.getValue().length === 0) {
+      this.http.get<FavoriteAnime[]>(`${this.favoritesBaseUrl}`)
+        .subscribe((favorites) => {
+          this.favoriteAnimes$.next(favorites);
+        })
     }
   }
 
-  addFavoriteAnime(anime: Anime) {
-    this.http.post<void>(`${this.favoritesBaseUrl}/${anime.id}`, null).subscribe(() => {
-      const favorites = this._favoriteAnimes$.getValue();
-      favorites.push(anime);
-      this._favoriteAnimes$.next(favorites);
-    });
-  }
-
-  getFavoriteAnimes(): Observable<Anime[]> {
-    return this._favoriteAnimes$;
+  addFavoriteAnime(animeId: number) {
+    return this.http.post<FavoriteAnime>(`${this.favoritesBaseUrl}/${animeId}`, null)
+      .pipe(
+        tap((res) => {
+          const favorites = this.favoriteAnimes$.getValue();
+          favorites.push(res);
+          this.favoriteAnimes$.next(favorites);
+        })
+      );
   }
 
   getFavoriteAnime(animeId: number) {
     return this.http.get<FavoriteAnime>(`${this.favoritesBaseUrl}/${animeId}`);
   }
 
-  updateFavoriteAnimes(animes: Anime[]) {
-    const favorites = animes.map(a => a.id);
-    this.http.put<void>(`${this.favoritesBaseUrl}/updatebulk`, favorites).subscribe(() => {
-      this._favoriteAnimes$.next(animes);
-    });
+  updateFavoriteAnimes(favoriteAnimes: FavoriteAnime[]) {
+    const animeIds = favoriteAnimes.map(a => a.animeId);
+    return this.http.put<void>(`${this.favoritesBaseUrl}/updatebulk`, animeIds)
+      .pipe(
+        tap(() => {
+          this.favoriteAnimes$.next(favoriteAnimes);
+        })
+      );
   }
 
   deleteFavoriteAnime(animeId: number) {
-    this.http.delete<void>(`${this.favoritesBaseUrl}/${animeId}`).subscribe(() => {
-      let favorites = this._favoriteAnimes$.getValue();
-      favorites = favorites.filter(f => f.id !== animeId);
-      this._favoriteAnimes$.next(favorites);
-    })
+    return this.http.delete<void>(`${this.favoritesBaseUrl}/${animeId}`)
+      .pipe(
+        tap(() => {
+          let favorites = this.favoriteAnimes$.getValue();
+          favorites = favorites.filter(f => f.animeId !== animeId);
+          this.favoriteAnimes$.next(favorites);
+        })
+      );
   }
 
   /** MEDIA REACTIONS METHODS */
   addMediaReaction(req: FormData): Observable<MediaReaction> {
-    return this.http.post<MediaReaction>(this.reactionsBaseUrl, req)
+    return this.http.post<any>(this.reactionsBaseUrl, req)
       .pipe(
         tap((res) => {
           const mediaReactions = this.mediaReactions$.getValue();

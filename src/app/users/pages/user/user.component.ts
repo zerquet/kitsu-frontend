@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, switchMap, takeUntil, distinctUntilChanged, map, tap } from 'rxjs';
 import { UsersService } from '../../../shared/services/users.service';
@@ -26,7 +26,7 @@ import { ReactionsComponent } from "../../components/reactions/reactions.compone
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
   private usersService = inject(UsersService);
   private route = inject(ActivatedRoute);
 
@@ -34,12 +34,16 @@ export class UserComponent {
   environment = environment;
 
   private destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.route.params.pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (params) => this.usersService.setProfileStateByUserId(params['id'])
+      });
+  }
   
-  userProfile$ = this.route.params.pipe(
-    switchMap(params => this.usersService.fetchProfileById(params['id'])), //pass params to library as well so it updates?
-    tap((userProfile) => this.usersService.setProfileState(userProfile)),
-    takeUntil(this.destroy$)
-  );
+  userProfile$ = this.usersService.profile$
+    
   //get rid of activity tab. rename to about. for this project, don't add multi user activity like following
   //keep it a simple media tracker. leave the reddit-like app for another project. 
   currentTab$ = this.route.params.pipe(

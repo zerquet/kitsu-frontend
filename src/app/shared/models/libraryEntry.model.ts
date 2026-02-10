@@ -1,14 +1,13 @@
-export interface LibraryEntry {
-    id: number;
-    watchStatus: string | null;
-    userRating: number | null;
-    episodesWatched: number;
-    animeInfo: AnimeInfo | null;
-}
+import { Anime } from "./anime.model";
+import { MediaReaction } from "./mediaReaction.model";
 
-export interface AnimeInfo {
+export interface LibraryEntry {
+    id: number; 
+    displayId: string;
     animeId: number;
-    title: string;
-    imageUrl: string | null;
-    episodeCount: number | null;
+    watchStatus?: string;
+    userRating?: number;
+    episodesWatched: number;
+    anime: Anime;
+    mediaReaction?: MediaReaction;
 }

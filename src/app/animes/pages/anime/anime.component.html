@@ -1,34 +1,34 @@
 @if (anime$ | async; as anime) {
-  <cover-photo coverPhotoUrl="{{environment.imageHostUrl}}/anime/cover/{{anime.details.coverImageUrl}}"></cover-photo>
+  <cover-photo coverPhotoUrl="{{environment.imageHostUrl}}/anime/cover/{{anime.coverImageUrl}}"></cover-photo>
   <nav-tabs [tabs]="tabs" [scootRight]="true"></nav-tabs>
   <div class="container d-flex">
     <div id="sidebar-section">
       <div>
         <div id="favorite-section">
           @if (isFavorite$.getValue() === true) {
-            <i (click)="removeFavorite(anime.id)" class="bi bi-heart-fill" style="color: palevioletred" ></i>
+            <i (click)="onUnfavoriteClick(anime.id)" class="bi bi-heart-fill" style="color: palevioletred" ></i>
           }
           @else {
-            <i (click)="addFavorite(anime)" class="bi bi-heart"></i>
+            <i (click)="onAddToFavoritesClick(anime)" class="bi bi-heart"></i>
           }
         </div>
         <img src="{{environment.imageHostUrl}}/anime/poster/{{anime.imageUrl}}" />
       </div>
       <div id="sidebar-form">
         <!--Anime not in user's library-->
-        @if(this.libraryEntry$.getValue() === null || this.authService.currentUser$.getValue() === null) {
+        @if(this.libraryEntry$.getValue() === null || this.authService.authenticatedUser$.getValue() === null) {
           <span id="sidebar-heading"><span>Add to Library</span></span>
           <div id="sidebar-container">
-            <div><input class="sidebar-watch-status-btn mb-2" id="completed-status-btn" type="button" value="Completed" (click)="createEntry('completed', anime)"/></div>
-            <div><input class="sidebar-watch-status-btn mb-2" id="planning-status-btn" type="button" value="Want to Watch" (click)="createEntry('planning', anime)"/></div>
-            <div><input class="sidebar-watch-status-btn mb-2" id="watching-status-btn" type="button" value="Started Watching" (click)="createEntry('watching', anime)"/></div>
+            <div><input class="sidebar-watch-status-btn mb-2" id="completed-status-btn" type="button" value="Completed" (click)="onAddToLibraryClick('completed', anime)"/></div>
+            <div><input class="sidebar-watch-status-btn mb-2" id="planning-status-btn" type="button" value="Want to Watch" (click)="onAddToLibraryClick('planning', anime)"/></div>
+            <div><input class="sidebar-watch-status-btn mb-2" id="watching-status-btn" type="button" value="Started Watching" (click)="onAddToLibraryClick('watching', anime)"/></div>
           </div>
         }
         <!--User completed anime-->
         @else {
           <span id="sidebar-heading"><span>Update Library</span></span>
           <div id="sidebar-container">
-            <form method="post" [formGroup]="form" (submit)="updateEntry(anime)">
+            <form method="post" [formGroup]="updateLibraryEntryForm" (submit)="onUpdateLibraryEntryFormSubmit()">
 
               <div class="sidebar-field-container">
                 <label for="status-field">Status: </label>
@@ -42,9 +42,9 @@
               <div class="sidebar-field-container">
                 <label for="sidebar-progress-field">Progress: </label>
                 <div class="mb-1">
-                  <input formControlName="episodeProgress" type="text" id="sidebar-progress-field" min="0" [max]="anime.details.episodeCount">
-                  <span>/ {{anime.details.episodeCount}}
-                    <span class="increment-episode-span" (click)="onIncrementProgressClick(anime.details.episodeCount!)"><i class="bi bi-plus-circle-fill"></i></span>
+                  <input formControlName="episodeProgress" type="text" id="sidebar-progress-field" min="0" [max]="anime.episodeCount">
+                  <span>/ {{anime.episodeCount}}
+                    <span class="increment-episode-span" (click)="onIncrementProgressClick(anime.episodeCount!)"><i class="bi bi-plus-circle-fill"></i></span>
                   </span>
                 </div>
               </div>
@@ -68,7 +68,7 @@
 
               <div class="sidebar-field-container">
                 <input type="submit" value="Update" id="edit-btn"/>
-                <div id="delete-btn-container"><button id="delete-btn" type="button" (click)="deleteEntry(anime)" title="Delete from library"><i class="bi bi-trash3"></i></button></div>
+                <div id="delete-btn-container"><button id="delete-btn" type="button" (click)="onDeleteEntryBtnClick(anime)" title="Delete from library"><i class="bi bi-trash3"></i></button></div>
               </div>
               
             </form>

@@ -1,5 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { UserProfile } from '../../../shared/models/userProfile.model';
+import { Component, inject, OnInit } from '@angular/core';
 import { UsersService } from '../../../shared/services/users.service';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -24,8 +23,8 @@ export class UserAboutComponent implements OnInit {
     this.usersService.setFavoriteAnimesState();
   }
 
-  userProfile$ = this.usersService.getProfile();
-  favoriteAnimes$ = this.usersService.getFavoriteAnimes();
+  userProfile$ = this.usersService.profile$;
+  favoriteAnimes$ = this.usersService.favoriteAnimes$;
 
   onEditProfileClick() {
     const modal = this.modalService.open(EditProfileComponent);

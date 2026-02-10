@@ -11,7 +11,7 @@ export class AdminGuard implements CanActivate {
   private router = inject(Router);
 
   canActivate(): Observable<boolean> {
-    return this.authService.currentUser$.pipe(
+    return this.authService.authenticatedUser$.pipe(
       map((user) => {
         console.log(user);
         

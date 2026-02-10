@@ -7,8 +7,9 @@ import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { AnimeService } from '../../../shared/services/anime.service';
-import { NavMenuSearchDataService } from '../../../shared/services/nav-menu-search-data.service';
 import { environment } from '../../../../environments/environment';
+import { FavoriteAnime } from '../../../shared/models/favoriteAnime.model';
+import { AuthService } from '../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'manage-favorites',
@@ -20,10 +21,11 @@ import { environment } from '../../../../environments/environment';
 export class ManageFavoritesComponent implements OnInit {
   private usersService = inject(UsersService);
   private animeService = inject(AnimeService); //use setState fn to stop fetching all anime in ctor
+  private authService = inject(AuthService);
   @Input() parentModelRef: NgbActiveModal | null = null;
 
-  showResults = false;
-  form = new FormGroup({
+  showSearchResults = false;
+  searchAnimesForm = new FormGroup({
     search: new FormControl()
   });
   environment = environment;
@@ -31,64 +33,77 @@ export class ManageFavoritesComponent implements OnInit {
   ngOnInit(): void {
     this.usersService.setFavoriteAnimesState();
 
-    this.form.controls['search'].valueChanges.pipe(
+    this.searchAnimesForm.controls['search'].valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      tap(term => {
-        if(term && term.trim().length > 0)
-          this.showResults = true;
+      tap(keyword => {
+        if(keyword && keyword.trim().length > 0)
+          this.showSearchResults = true;
         else 
-        this.showResults = false;
-    }),
-    takeUntil(this.destroy$))
-    .subscribe(term => this.term$.next(term));
+          this.showSearchResults = false;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe(keyword => this.term$.next(keyword));
   }
 
   private destroy$ = new Subject<void>();
   term$ = new BehaviorSubject<string>("");
-  favorites$ = this.usersService.getFavoriteAnimes();
-  newList$ = this.favorites$;
+  pendingFavorites$ = this.usersService.favoriteAnimes$;
   //search logic is already duplicated 3 times throughout app. add to service?
   searchResults$ = combineLatest([this.term$]).pipe(
-      map(([term]) => term),
-      switchMap(term => this.search(term)),
+      map(([keyword]) => keyword),
+      switchMap(keyword => this.search(keyword)),
       takeUntil(this.destroy$));
-  
-  private search(term: string) {
-      term = term.toLowerCase().trim();
-      if(term.length === 0)
-        return of([]);
-      return this.animeService.miniSearch(term);
-  } 
 
-  removeFavorite(anime: Anime) {
-    this.newList$.subscribe((animes) => {
-      this.newList$ = of(animes.filter((a) => a.id !== anime.id));
-    })
+  onUnfavoriteClick(animeId: number) {
+    let pendingFavorites = this.pendingFavorites$.getValue();
+    pendingFavorites = pendingFavorites.filter((a) => a.animeId !== animeId);
+    this.pendingFavorites$.next(pendingFavorites);
   }
 
-  saveChanges() {
-    this.newList$.subscribe((animes) => {
-      this.usersService.updateFavoriteAnimes(animes);
-      this.parentModelRef?.close();
-    });
+  onUpdateProfileClick() {
+    this.usersService.updateFavoriteAnimes(this.pendingFavorites$.getValue())
+      .subscribe({
+        next: () => this.parentModelRef?.close()
+      });
   }
 
-  addFavorite(anime: Anime) {    
-    this.newList$.subscribe((animes) => {
-      var found = animes.includes(animes[animes.findIndex(a => a.id === anime.id)]);
-      
-      if(found === false) {
-        let pendingList = [...animes];
-        pendingList.push(anime);
-        this.newList$ = of(pendingList);
+  onAnimeSelect(anime: Anime) {    
+    let pendingFavorites = this.pendingFavorites$.getValue();
+    let favoriteExists = pendingFavorites.includes(pendingFavorites[pendingFavorites.findIndex(a => a.animeId === anime.id)]);
+    
+    if(favoriteExists === false) {
+      //*Questionable: Creating instance of FavoriteAnime at this point which is later used in state after saving changes.
+      //               Also, authenticated user's userId must always have a value.  */
+      let favoriteToAdd: FavoriteAnime = {
+        userId: '',
+        animeId: 0,
+        anime: undefined!
       }
-      this.showResults = false;
-      this.term$.next("");
-    });
+      if(this.authService.authenticatedUser$.value !== null) {
+        favoriteToAdd.userId = this.authService.authenticatedUser$.value.id;
+        favoriteToAdd.animeId = anime.id;
+        favoriteToAdd.anime = anime;
+      }
+      else {
+        return;
+      }
+      pendingFavorites.push(favoriteToAdd);
+      //*Questionable */
+      this.pendingFavorites$.next(pendingFavorites);
+    }
+    this.showSearchResults = false;
+    this.term$.next("");
   }
 
-  closeModal() {
+  onFavoriteImageClick() {
     this.parentModelRef?.close();
   }
+
+  private search(term: string) {
+    term = term.toLowerCase().trim();
+    if(term.length === 0)
+      return of([]);
+    return this.animeService.miniSearch(term);
+  } 
 }

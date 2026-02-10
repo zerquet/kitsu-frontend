@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { LoginDto } from '../loginDto.model';
-import { CurrentUser } from '../user.model';
+import { BehaviorSubject, tap } from 'rxjs';
+import { LoginRequest } from '../loginRequest.model';
+import { AuthenticatedUser } from '../authenticatedUser.model';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../jwtPayload.model';
 import { environment } from '../../../../environments/environment';
-import { UserProfile } from '../../../shared/models/userProfile.model';
 import { Utils } from '../../services/utils';
 
 @Injectable({
@@ -18,56 +17,36 @@ export class AuthService {
   private _tokenIsDecoded = false;
 
   constructor() {
-    if(!this._tokenIsDecoded) {
+    if(this._tokenIsDecoded === false) {
       this.decodeToken();
-      console.log('ya');
-
-      if (this.currentUser$.getValue() !== null) {
-        //not injecting UserService. Getting profile and cover Ids from API instead of JWT token.
-        this.http.get<UserProfile>(`${environment.apiUrl}/users/${this.currentUser$.getValue()!.id}`).subscribe((res) => {
-          //redundant?
-          let currentUser = this.currentUser$.getValue();
-        
-          if (currentUser !== null) {
-            currentUser.profilePhotoId = res.profilePhotoId;
-            currentUser.coverPhotoId = res.coverPhotoId;
-          }
-          
-          this.currentUser$.next(currentUser);
-        })
-      }
     }
   }
 
-  currentUser$ = new BehaviorSubject<CurrentUser | null>(null);
+  authenticatedUser$ = new BehaviorSubject<AuthenticatedUser | null>(null);
   isAdminPage$ = new BehaviorSubject<boolean>(false); //variable to turn off nav menu in admin dashboard
 
-  //calls setUser() and setToken()
-  login(request: LoginDto): Observable<CurrentUser> {
-    return this.http
-      .post<CurrentUser>(`${this.baseUrl}/auth/login`, request)
+  login(req: LoginRequest) {
+    return this.http.post<AuthenticatedUser>(`${this.baseUrl}/auth/login`, req)
+      .pipe(
+        tap((res) => {
+          localStorage.setItem("access_token", res.token);
+          this.authenticatedUser$.next(res); 
+        })
+      );
   }
 
   logout() {
     localStorage.setItem("access_token", "");
-    this.currentUser$.next(null);
+    this.authenticatedUser$.next(null);
   }
-
-  //when user logs in
-  setUser(user: CurrentUser) {
-    this.currentUser$.next(user); 
-  }
-  //when user logs in
-  setToken(token: string) {
-    localStorage.setItem("access_token", token);
-  }
-  //local method; can be static
+  
   decodeToken() {
     const token = localStorage.getItem("access_token");
     if (token) {
       const decoded = jwtDecode<JwtPayload>(token);
-      if (!Utils.JwtTokenIsExpired(decoded.exp)) {  
-        var currentUser: CurrentUser = {
+      if (!Utils.JwtTokenIsExpired(decoded.exp)) {
+        /*Sets authenticated user state using JWT token */
+        var authenticatedUser: AuthenticatedUser = {
           id: decoded.nameid,
           displayId: decoded.display_id,
           username: decoded.given_name,
@@ -78,11 +57,10 @@ export class AuthService {
           coverPhotoId: decoded.cover_photo_id,
           location: '',
           bio: '',
-          birthday: null,
+          birthday: undefined,
           gender: ''
         };
-        //need to check whats really needed below now that i got this user object with isadmin
-        this.currentUser$.next(currentUser);
+        this.authenticatedUser$.next(authenticatedUser);
         this._tokenIsDecoded = true;
       }
       else {

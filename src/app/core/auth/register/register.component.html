@@ -1,5 +1,5 @@
 <div class="modal-body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="registerForm" (ngSubmit)="onRegisterFormSubmit()">
         <div class="text-center mb-3">
             <p><strong>What should we call you?</strong></p>
             <input id="username" placeholder="Username" formControlName="username">
@@ -27,6 +27,6 @@
                 </div>
             </div>
         </div>
-        <div class="text-center"><button id="register-btn" type="submit" [disabled]="!form.valid">Let's create that account</button></div>
+        <div class="text-center"><button id="register-btn" type="submit" [disabled]="!registerForm.valid">Let's create that account</button></div>
     </form>
 </div>

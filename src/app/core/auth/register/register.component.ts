@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -11,30 +11,19 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  form: FormGroup;
-  constructor(public activeModal: NgbActiveModal) {
-    this.form = new FormGroup({
-      username: new FormControl('', Validators.required),
-      email: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required)
-    });
-  }
+  public activeModal = inject(NgbActiveModal);
+  
+  registerForm = new FormGroup({
+    username: new FormControl('', Validators.required),
+    email: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
+  });
 
-  @Input() name: string = "";
+  get username() { return this.registerForm.get("username") }
+  get email() { return this.registerForm.get("email") }
+  get password() { return this.registerForm.get("password") }
 
-  get username() {
-    return this.form.get("username");
-  }
-
-  get email() {
-    return this.form.get("email");
-  }
-
-  get password() {
-    return this.form.get("password");
-  }
-
-  onSubmit() {
+  onRegisterFormSubmit() {
     this.activeModal.close();
   }
 }

@@ -3,7 +3,7 @@
     <div id="title-section">
       <strong>{{anime.title}}</strong>
       <span id="anime-quick-info-section" class="ps-2">
-        <strong>{{anime.year}} | {{anime.details.mediaType}} | {{anime.details.episodeCount}} Episodes</strong>
+        <strong>{{anime.year}} | {{anime.mediaType}} | {{anime.episodeCount}} Episodes</strong>
       </span>
     </div>
     <div><strong id="anime-score">{{anime.score}}% Overall Rating</strong></div>
@@ -18,13 +18,13 @@
     <div class="p-3 px-4">
       <h6><strong>Anime Details</strong></h6>
       <ul>
-        <li *ngIf="anime.details.englishTitle"><strong>English</strong><span>{{anime.details.englishTitle}}</span></li>
-        <li *ngIf="anime.details.japaneseTitle"><strong>Japanese</strong><span>{{anime.details.japaneseTitle}}</span></li>
-        <li *ngIf="anime.details.japaneseTitleRomaji"><strong>Japanese (Romaji)</strong><span>{{anime.details.japaneseTitleRomaji}}</span></li>
-        <li *ngIf="anime.details.releaseStatus"><strong>Status</strong><span>{{anime.details.releaseStatus}}</span></li>
-        <li *ngIf="anime.details.season"><strong>Season</strong><span>{{anime.details.season}}</span></li>
-        <li *ngIf="anime.details.tvRating"><strong>Rating</strong><span>{{anime.details.tvRating}}</span></li>
-        <li *ngIf="anime.details.episodeLength"><strong>Episode Length</strong><span>{{anime.details.episodeLength}} min.</span></li>
+        <li *ngIf="anime.englishTitle"><strong>English</strong><span>{{anime.englishTitle}}</span></li>
+        <li *ngIf="anime.japaneseTitle"><strong>Japanese</strong><span>{{anime.japaneseTitle}}</span></li>
+        <li *ngIf="anime.japaneseTitleRomaji"><strong>Japanese (Romaji)</strong><span>{{anime.japaneseTitleRomaji}}</span></li>
+        <li *ngIf="anime.releaseStatus"><strong>Status</strong><span>{{anime.releaseStatus}}</span></li>
+        <li *ngIf="anime.season"><strong>Season</strong><span>{{anime.season}}</span></li>
+        <li *ngIf="anime.tvRating"><strong>Rating</strong><span>{{anime.tvRating}}</span></li>
+        <li *ngIf="anime.episodeLength"><strong>Episode Length</strong><span>{{anime.episodeLength}} min.</span></li>
       </ul>
     </div>
   </div>

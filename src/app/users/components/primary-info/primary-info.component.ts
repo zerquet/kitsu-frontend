@@ -22,9 +22,9 @@ export class PrimaryInfoComponent {
   //@Input() userProfile: UserProfile | undefined;
   environment = environment;
 
-  userProfile$ = this.usersService.getProfile();
+  userProfile$ = this.usersService.profile$;
 
-  canEdit = this.authService.currentUser$.getValue()?.id === this.usersService.profile$.getValue()?.id;
+  canEdit = this.authService.authenticatedUser$.getValue()?.id === this.usersService.profile$.getValue()?.id;
 
   onEditProfileClick() {
     const modal = this.modalService.open(EditProfileComponent);

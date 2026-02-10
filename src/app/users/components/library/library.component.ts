@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
-import { Component, ElementRef, inject, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -10,6 +10,7 @@ import { LibraryEntryComponent } from '../library-entry/library-entry.component'
 import { UsersService } from '../../../shared/services/users.service';
 import { environment } from '../../../../environments/environment';
 import { AddMediaReactionComponent } from '../add-media-reaction/add-media-reaction.component';
+import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
 
 @Component({
   selector: 'library',
@@ -36,12 +37,21 @@ export class LibraryComponent implements OnInit  {
       this.currAnimeIdForEditingProgress = -1;
       //Save when user clicks out.
       if(this.pendingProgressUpdate !== undefined) {
-        this.updateProgress(this.pendingProgressUpdate.id, this.pendingProgressUpdate.episodesWatched)
+        let req: UpdateLibraryEntryRequest = {
+          libraryEntryId: this.pendingProgressUpdate.id,
+          episodesWatched: this.pendingProgressUpdate.episodesWatched,
+          userRating: this.pendingProgressUpdate.userRating,
+          watchStatus: this.pendingProgressUpdate.watchStatus
+        };
+        this.usersService.updateEntry(req)
+          .subscribe({
+            next: () => this.pendingProgressUpdate = undefined
+          });
       }
     }
   })
 
-  form: FormGroup = new FormGroup({ search: new FormControl() }); 
+  searchLibraryForm: FormGroup = new FormGroup({ search: new FormControl() }); 
   ratingCellMode = "read";
   currAnimeIdForEditingRating = -1;
   progressCellMode = "read";
@@ -50,22 +60,18 @@ export class LibraryComponent implements OnInit  {
   environment = environment;
 
   ngOnInit(): void {
-    this.form.controls["search"].valueChanges.pipe(
+    this.searchLibraryForm.controls["search"].valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged()
-    ).subscribe((term) => 
-        this.searchTerm$.next(term.toLowerCase())
-    ); 
-    //use (input) instead to avoid
+    ).subscribe({
+      next: (keyword) => this.searchTerm$.next(keyword.toLowerCase())
+    }); 
     
     this.route.params.subscribe({
       next: (params) => {
-        //this needs to react to the route param for userid. 
-        console.log('library');
-        
-        this.usersService.setLibraryState(params['id']); 
+        this.usersService.setLibraryStateByUserId(params['id']); 
       }
-    })
+    });
   }
 
   library$ = this.usersService.library$;
@@ -74,9 +80,9 @@ export class LibraryComponent implements OnInit  {
   libraryType$ = new BehaviorSubject("all");
   searchTerm$ = new BehaviorSubject("");
 
-  userProfile$ = this.usersService.getProfile();
+  userProfile$ = this.usersService.profile$;
 
-  //When behavior subject values are updated, the filteted list is too.
+  //When behavior subject values are updated, the filtered list is too.
   //https://chatgpt.com/share/675410d9-9a68-8003-9599-c495ff36fb9e
   filteredAnimeList$ = combineLatest([
     this.library$,
@@ -94,16 +100,16 @@ export class LibraryComponent implements OnInit  {
   @ViewChild("progressEditField") progressEditField!: ElementRef;
 
   //COMPONENT METHODS
-  changeLibraryType = (type: string) => this.libraryType$.next(type);
+  selectLibraryType = (type: string) => this.libraryType$.next(type);
 
-  changeSortOption = (option: string) => this.sortOption$.next(option);
+  selectSortOption = (option: string) => this.sortOption$.next(option);
 
-  toggleDirection() {
+  toggleSortDirection() {
     const val = this.sortDirection$.value === "asc" ? "desc": "asc";
     this.sortDirection$.next(val);
   }
 
-  openEditModal(entry: LibraryEntry) { //can this be handled by service?    
+  onEditMoreBtnClick(entry: LibraryEntry) { //can this be handled by service?    
     const modal = this.modalService.open(LibraryEntryComponent);
     modal.componentInstance.initializeModalData({...entry});
   }
@@ -125,17 +131,28 @@ export class LibraryComponent implements OnInit  {
     this.pendingProgressUpdate = potential;
   }
 
-  onIncrementProgressClick(entryId: number, progress: number) { 
-    this.updateProgress(entryId, progress += 1);
+  onProgressAddClick(entry: LibraryEntry) { 
+    let req: UpdateLibraryEntryRequest = {
+      libraryEntryId: entry.id,
+      episodesWatched: entry.episodesWatched + 1,
+      userRating: entry.userRating,
+      watchStatus: entry.watchStatus
+    };
+    this.usersService.updateEntry(req)
+      .subscribe({
+        next: () => this.pendingProgressUpdate = undefined
+      });
   }
 
-  updateRating(entryId: number, newRating: string) { 
-    this.usersService.updateEntryRating(entryId, newRating);
-  }
-  
-  updateProgress(entryId: number, newProgress: number) {
-    this.usersService.updateEntryProgress(entryId, newProgress);
-    this.pendingProgressUpdate = undefined;
+  onRatingValueSelect(entry: LibraryEntry, newRating: string) { 
+    let req: UpdateLibraryEntryRequest = {
+      libraryEntryId: entry.id,
+      episodesWatched: entry.episodesWatched,
+      userRating: Number(newRating),
+      watchStatus: entry.watchStatus
+    };
+    this.usersService.updateEntry(req)
+      .subscribe();
   }
 
   getLibraryTypeCount(list: LibraryEntry[], type: string) {
@@ -152,21 +169,21 @@ export class LibraryComponent implements OnInit  {
       list = list.filter(i => i.watchStatus === library);
 
     if(searchTerm !== "")
-      list = list.filter(j => j.animeInfo!.title.toLocaleLowerCase().includes(searchTerm));
+      list = list.filter(j => j.anime.title.toLocaleLowerCase().includes(searchTerm));
 
     if(column === "Title")
     {
       if(direction === "asc")
-        list.sort((a, b) => a.animeInfo!.title < b.animeInfo!.title ? -1 : 1)
+        list.sort((a, b) => a.anime.title < b.anime.title ? -1 : 1)
       else
-        list.sort((a, b) => a.animeInfo!.title < b.animeInfo!.title ? 1 : -1)
+        list.sort((a, b) => a.anime.title < b.anime.title ? 1 : -1)
     }
     else if(column === "Length")
     {
       if(direction === "asc")
-        list.sort((a, b) => a.animeInfo!.episodeCount! < b.animeInfo!.episodeCount! ? -1 : 1)
+        list.sort((a, b) => a.anime.episodeCount! < b.anime.episodeCount! ? -1 : 1)
       else
-        list.sort((a, b) => a.animeInfo!.episodeCount! < b.animeInfo!.episodeCount! ? 1 : -1)
+        list.sort((a, b) => a.anime.episodeCount! < b.anime.episodeCount! ? 1 : -1)
     }
     else if(column === "Rating")
     {
@@ -180,5 +197,5 @@ export class LibraryComponent implements OnInit  {
   }
 
   //FORM GETTERS
-  get search() { return this.form.get('search'); }
+  get search() { return this.searchLibraryForm.get('search'); }
 }

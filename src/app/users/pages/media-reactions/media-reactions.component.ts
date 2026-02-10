@@ -25,6 +25,6 @@ export class MediaReactionsComponent {
     switchMap(params => this.usersService.getMediaReactionById(params['id']))
   )
 
-  userProfile$ = this.authService.currentUser$;
+  userProfile$ = this.authService.authenticatedUser$;
 //latest change: diff session user and public reaction reaction UI
 }

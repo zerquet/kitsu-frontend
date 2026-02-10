@@ -1,7 +1,7 @@
 <div class="modal-body">
     <h5><strong>Welcome back!</strong></h5>
     <p>Login to your account below. If you need an account, create one</p>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onLoginFormSubmit()">
         <div class="text-center mb-3">
             <input id="email" placeholder="Email" formControlName="email">
             <div *ngIf="email?.invalid && (email?.touched || email?.dirty)" class="required">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-center"><button id="login-btn" type="submit" [disabled]="!form.valid">Login</button></div>
+        <div class="text-center"><button id="login-btn" type="submit" [disabled]="!loginForm.valid">Login</button></div>
         @if(errMsg !== "") {
             <div class="text-center required">{{errMsg}}</div>
         }

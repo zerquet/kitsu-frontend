@@ -17,9 +17,9 @@ export class AnimeFranchiseComponent {
   private animeService = inject(AnimeService);
   animes$ = new BehaviorSubject<Anime[]>([]); //TODO make into observable?
   @Input() franchiseName: string = "";
-  @Input() set id(id: number | null) {
+  @Input() set id(id: number | undefined) {
     if(id != null) {
-      this.animeService.getAnimesByFranchise(id).subscribe(animes => {
+      this.animeService.getAnimesByFranchiseId(id).subscribe(animes => {
         this.animes$.next(animes);
       });
     }

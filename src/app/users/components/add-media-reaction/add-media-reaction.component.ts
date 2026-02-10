@@ -29,7 +29,7 @@ export class AddMediaReactionComponent {
 
   initializeModalData(anime: LibraryEntry, userId: string) {
     this.animeMetadata = anime;
-    this.addMediaReactionForm.patchValue({"animeId": anime.animeInfo?.animeId})
+    this.addMediaReactionForm.patchValue({"animeId": anime.animeId})
     this.addMediaReactionForm.patchValue({"libraryEntryId": anime.id})
     this.addMediaReactionForm.patchValue({"userId": userId})
   }
