@@ -10,7 +10,7 @@ export function mapGetMediaReactionByUserItemResponseToMediaReaction(res: GetMed
       title: res.animeTitle,
       imageUrl: res.animeImageUrl,
       categories: [],
-      coverImageUrl: ""
+      coverImageId: ""
     },
     animeId: res.animeId,
     reaction: res.reaction,

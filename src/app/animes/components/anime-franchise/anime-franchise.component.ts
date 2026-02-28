@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Anime } from '../../../shared/models/anime.model';
 import { AnimeService } from '../../../shared/services/anime.service';
 import { AnimeTooltipComponent } from '../anime-tooltip/anime-tooltip.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'anime-franchise',
@@ -18,7 +19,7 @@ export class AnimeFranchiseComponent {
   animes$ = new BehaviorSubject<Anime[]>([]); //TODO make into observable?
   @Input() franchiseName: string = "";
   @Input() set id(id: number | undefined) {
-    if(id != null) {
+    if (id != null) {
       this.animeService.getAnimesByFranchiseId(id).subscribe(animes => {
         this.animes$.next(animes);
       });
@@ -26,6 +27,7 @@ export class AnimeFranchiseComponent {
   }
   activeAnimeId = 0;
   showTooltipCallback: any;
+  environment = environment
 
   onAnimePosterHover(id: number): void {
     this.showTooltipCallback = setTimeout(() => {
@@ -34,7 +36,7 @@ export class AnimeFranchiseComponent {
   }
 
   onAnimePosterHoverOut(): void {
-    if(this.showTooltipCallback) {
+    if (this.showTooltipCallback) {
       clearTimeout(this.showTooltipCallback);
       this.activeAnimeId = 0;
     }

@@ -16,19 +16,20 @@
           <img src="{{environment.imageHostUrl}}/anime/poster/{{this.anime.getValue()?.imageUrl}}" />
         </div>
         @if(this.newAnimeImage !== undefined) {
-          <div class="image-thumb new-img">
-            <div>New</div>
-            <img [src]="newAnimeImage" />
-          </div>
-          <div class="clear-selection">
-            <button title="Clear selected image" (click)="onImageClear()" type="button"><i class="bi bi-trash3"></i></button>
-          </div>
+        <div class="image-thumb new-img">
+          <div>New</div>
+          <img [src]="newAnimeImage" />
+        </div>
+        <div class="clear-selection">
+          <button title="Clear selected image" (click)="onImageClear()" type="button"><i
+              class="bi bi-trash3"></i></button>
+        </div>
         }
       </div>
 
       <div class="field">
         <label for="image">Image</label>
-        <input formControlName="image" id="image"  type="file" (change)="onImagePicked($event)">
+        <input formControlName="image" id="image" type="file" (change)="onImagePicked($event)">
         <div *ngIf="image?.invalid && (image?.dirty || image?.touched)" class="required">
           <div *ngIf="image?.hasError('required')">
             Image is required.
@@ -58,12 +59,14 @@
 
       <div class="field">
         <label for="mediaType">Media Type</label>
-        <p-select formControlName="mediaType" id="mediaType" [options]="mediaTypes" [showClear]="true" size="small"></p-select>
+        <p-select formControlName="mediaType" id="mediaType" [options]="mediaTypes" [showClear]="true"
+          size="small"></p-select>
       </div>
 
       <div class="field">
         <label for="score">Score</label>
-        <p-inputnumber formControlName="score" id="score" mode="decimal" [useGrouping]="false" [min]="0" [max]="100" size="small" />
+        <p-inputnumber formControlName="score" id="score" mode="decimal" [useGrouping]="false" [min]="0" [max]="100"
+          size="small" />
       </div>
 
       <div class="field">
@@ -76,8 +79,9 @@
 
       <div class="field">
         @if(availableCategories$ | async; as categories) {
-          <label for="genres">Categories </label>
-          <p-multiselect formControlName="categories" id="genres" [options]="categories" optionLabel="name" optionValue="id" filter size="small"></p-multiselect>
+        <label for="genres">Categories </label>
+        <p-multiselect formControlName="categories" id="genres" [options]="categories" optionLabel="name"
+          optionValue="id" filter size="small"></p-multiselect>
         }
       </div>
 
@@ -85,21 +89,22 @@
         <label></label>
         <div class="c-image-thumb">
           <div>Current</div>
-          <img src="{{environment.imageHostUrl}}/anime/cover/{{this.anime.getValue()?.coverImageUrl}}" />
+          <img src="{{environment.imageHostUrl}}/anime/cover/{{this.anime.getValue()?.coverImageId}}" />
         </div>
       </div>
-        @if(this.newCoverImage !== undefined) {
-          <div class="field">
-            <label></label>
-            <div class="c-image-thumb new-img">
-              <div>New</div>
-              <img [src]="newCoverImage" />
-            </div>
-            <div class="clear-selection">
-              <button title="Clear selected cover image" (click)="onCoverImageClear()" type="button"><i class="bi bi-trash3"></i></button>
-            </div>
-          </div>
-        }
+      @if(this.newCoverImage !== undefined) {
+      <div class="field">
+        <label></label>
+        <div class="c-image-thumb new-img">
+          <div>New</div>
+          <img [src]="newCoverImage" />
+        </div>
+        <div class="clear-selection">
+          <button title="Clear selected cover image" (click)="onCoverImageClear()" type="button"><i
+              class="bi bi-trash3"></i></button>
+        </div>
+      </div>
+      }
 
       <div class="field">
         <label for="coverImage">Cover Image </label>
@@ -108,12 +113,14 @@
 
       <div class="field">
         <label for="rating">Maturity Rating</label>
-        <p-select formControlName="rating" id="rating" [options]="maturityRatings" [showClear]="true" size="small"></p-select>
+        <p-select formControlName="rating" id="rating" [options]="maturityRatings" [showClear]="true"
+          size="small"></p-select>
       </div>
 
       <div class="field">
         <label for="episodeLength">Episode Length</label>
-        <p-inputnumber formControlName="episodeLength" id="episodeLength" mode="decimal" [useGrouping]="false" [min]="1" suffix=" min." size="small" />
+        <p-inputnumber formControlName="episodeLength" id="episodeLength" mode="decimal" [useGrouping]="false" [min]="1"
+          suffix=" min." size="small" />
       </div>
 
       <div class="field date">
@@ -128,7 +135,8 @@
 
       <div class="field">
         <label for="releaseStatus">Release Status</label>
-        <p-select formControlName="releaseStatus" id="releaseStatus" [options]="airingStatuses" [showClear]="true" size="small"></p-select>
+        <p-select formControlName="releaseStatus" id="releaseStatus" [options]="airingStatuses" [showClear]="true"
+          size="small"></p-select>
       </div>
 
       <div class="field">
@@ -157,34 +165,35 @@
         <div>
           <input pInputText formControlName="franchiseSearch" id="franchise" type="text" pSize="small">
           @if(this.showFranchiseSearchResults === true) {
-            @if(franchiseList$ | async; as franchiseList) {
-              <div class="dropdown open">
-                <div class="scroller">
-                  @for (item of franchiseList; track item.id) {
-                    <div class="item">
-                      <div class="resultInfoContainer"><span (click)="selectFranchise(item)">{{item.name}}</span></div>
-                    </div>
-                  }
-                  @if(franchiseList.length === 0) {
-                    <div class="item">
-                      <div class="resultInfoContainer">No results found.</div>
-                    </div>
-                  }
-                </div>
+          @if(franchiseList$ | async; as franchiseList) {
+          <div class="dropdown open">
+            <div class="scroller">
+              @for (item of franchiseList; track item.id) {
+              <div class="item">
+                <div class="resultInfoContainer"><span (click)="selectFranchise(item)">{{item.name}}</span></div>
               </div>
-            }
+              }
+              @if(franchiseList.length === 0) {
+              <div class="item">
+                <div class="resultInfoContainer">No results found.</div>
+              </div>
+              }
+            </div>
+          </div>
+          }
           }
         </div>
       </div>
 
       @if (selectedFranchise !== null) {
-        <div class="field">
-          <label for="selectedFranchise">Selected Franchise</label>
-          <input pInputText [disabled]="true" [value]="selectedFranchise.name" pSize="small"/>
-          <div class="clear-selection">
-            <button title="Clear selected franchise" (click)="deselectAnime()" type="button"><i class="bi bi-trash3"></i></button>
-          </div>
+      <div class="field">
+        <label for="selectedFranchise">Selected Franchise</label>
+        <input pInputText [disabled]="true" [value]="selectedFranchise.name" pSize="small" />
+        <div class="clear-selection">
+          <button title="Clear selected franchise" (click)="deselectAnime()" type="button"><i
+              class="bi bi-trash3"></i></button>
         </div>
+      </div>
       }
     </div>
   </div>
