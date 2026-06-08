@@ -4,7 +4,7 @@
 
 #episode-table {
   border-collapse: collapse;
-  border: 1px solid #2c2c3c;
+  border: 1px solid #e5e5e5;
   border-radius: 3px;
   display: block;
 }
@@ -14,14 +14,15 @@
 }
 
 #episode-table tr {
-  border-bottom: 1px solid #2c2c3c;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 #episode-table tbody tr {
-  background-color: #4c4c5c;
+  background-color: #fff;
 }
 
-#episode-table th, td {
+#episode-table th,
+td {
   padding: 5px;
 }
 
@@ -31,11 +32,12 @@
 
 .title-cell {
   min-width: 305px;
-  border-right: 1px solid #2c2c3c;
-  border-left: 1px solid #2c2c3c;
+  border-right: 1px solid #e5e5e5;
+  border-left: 1px solid #e5e5e5;
 }
 
 #no-episodes {
   text-align: center;
   padding: 20px;
+  color: #818a91;
 }

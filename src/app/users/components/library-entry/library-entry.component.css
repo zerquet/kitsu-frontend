@@ -1,5 +1,4 @@
 :host {
-  background: #4c4c5c;
   border-radius: 5px;
 }
 
@@ -11,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 10px 5px 10px;
-  border-bottom: 1px solid #2c2c3c;
+  border-bottom: 1px solid #efeef1;
 }
 
 #closeModal {
@@ -23,12 +22,14 @@
   color: #fff;
 }
 
-form input, form select {
+form input,
+form select {
   border: none;
   border-radius: 3px;
 }
 
-form input:not(.save):hover, form select:hover {
+form input:not(.save):hover,
+form select:hover {
   background-color: #383848;
 }
 
@@ -37,7 +38,7 @@ form input:not(.save):hover, form select:hover {
   padding: 5px;
 }
 
-.flex >div {
+.flex>div {
   flex: 1;
 }
 
@@ -47,7 +48,7 @@ select#status {
 
 #removeFromLibraryBtn {
   text-decoration: none;
-  border: none;
+  border: 1px solid #efeef1;
   border-radius: 3px;
 }
 
