@@ -16,6 +16,7 @@ import { CoverPhotoComponent } from "../../../shared/components/cover-photo/cove
 import { environment } from '../../../../environments/environment';
 import { CreateLibraryEntryRequest } from '../../../shared/contracts/createLibraryEntryRequest.interface';
 import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
+import { GetLibraryEntryResponseDto } from '../../dtos/get-library-entry-response.dto';
 
 @Component({
   selector: 'anime',
@@ -77,7 +78,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
   }
 
   private destroy$ = new Subject<void>();
-  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
+  libraryEntry$ = new BehaviorSubject<GetLibraryEntryResponseDto | null>(null);
   isFavorite$ = new BehaviorSubject<boolean>(false);
 
   anime$ = this.route.params.pipe(
@@ -104,7 +105,6 @@ export class AnimeComponent implements OnInit, OnDestroy {
         watchStatus: libraryName,
         episodesWatched: episodesCompleted!
       }
-      console.log(anime);
 
       this.usersService.createEntry(req)
         .subscribe({
@@ -112,6 +112,12 @@ export class AnimeComponent implements OnInit, OnDestroy {
             this.updateLibraryEntryForm.patchValue({ "episodeProgress": episodesCompleted });
             this.updateLibraryEntryForm.patchValue({ "status": libraryName });
             this.libraryEntry$.next(res);
+            //above line is somehow both CreateLibraryEntryResponseDto and GetLibraryEntryResponseDto
+            //maybe because they have the same properties? Since this state tracks the status block on the page. 
+            //Merge the two dtos to one like UserAnimeStatusBlock? Or map the response Dtos to this new one and set
+            //libraryEntry$'s type to UserAnimeStatusBlock?
+            //same deal for the onUpdateLibraryEntryFormSubmit method below. 
+            //even more reason to move this "User Anime Status Block" to its own component. 
           }
         });
     }
@@ -125,21 +131,22 @@ export class AnimeComponent implements OnInit, OnDestroy {
   }
 
   onUpdateLibraryEntryFormSubmit() {
+    let cached = this.libraryEntry$.value;
+    if (!cached)
+      return;
+
     let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: 0,
-      episodesWatched: 0
+      libraryEntryId: cached.libraryEntryId,
+      episodesWatched: 0,
     }
 
-    if (this.libraryEntry$.value !== null) {
-      req.libraryEntryId = this.libraryEntry$.value.id
-    }
-    if (this.episodeProgress !== null) {
+    if (this.episodeProgress) {
       req.episodesWatched = this.episodeProgress.value
     }
-    if (this.status !== null) {
+    if (this.status) {
       req.watchStatus = this.status.value
     }
-    if (this.rating !== null) {
+    if (this.rating) {
       req.userRating = this.rating.value
     }
 
@@ -157,7 +164,10 @@ export class AnimeComponent implements OnInit, OnDestroy {
   onDeleteEntryBtnClick = (anime: Anime) => {
     this.usersService.deleteEntry(anime.id)
       .subscribe({
-        next: () => this.libraryEntry$.next(null)
+        next: () => this.libraryEntry$.next(null),
+        //if an error happens, we should handles this. If api returns null, user is shown the add to library btns
+        // and if they press them again, it could add the same anime twice to their library. add prevention of this
+        //in api and handle errors gracefully in frontend. 
       });
   }
 

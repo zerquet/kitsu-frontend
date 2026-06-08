@@ -1,11 +1,12 @@
 #categories-section-heading {
-  border-bottom: 1px solid rgba(220, 220, 220, .09);
+  border-bottom: 1px solid rgba(0, 0, 0, .09);
   font-size: 14px;
   font-weight: bold;
 }
 
 #categories-section {
-  background-color: #4c4c5c !important;
+  background-color: #fff;
+  border: 1px solid #e5e5e5
 }
 
 #categories-list {
@@ -22,10 +23,6 @@
 }
 
 #categories-list li a {
-  color: #dddddd;
+  color: #000;
   text-decoration: none;
-}
-
-#categories-list li a:hover {
-  color: #fff;
 }

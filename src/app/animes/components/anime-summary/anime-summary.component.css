@@ -8,13 +8,9 @@
   padding-top: 10px;
 }
 
-#title-section strong:first-of-type {
-  color: #fff;
-}
-
 #anime-quick-info-section {
   font-size: 0.9rem;
-  color: #dddddd;
+  color: #999;
 }
 
 #admin-link {
@@ -22,7 +18,7 @@
 }
 
 #anime-score {
-  color: #22b8b8;
+  color: #0d5d4d;
 }
 
 #anime-categories-list {
@@ -30,8 +26,8 @@
 }
 
 #anime-categories-list li {
-  background-color: #484858;
-  border: 1px solid #222232;
+  background-color: #fff;
+  border: 1px solid #eaeaea;
   font-size: 12px;
   padding: 3px 6px;
   margin-right: 5px;
@@ -39,19 +35,20 @@
 }
 
 #anime-categories-list li:hover {
-  background-color: #404050;
+  background-color: #f7f7f7;
 }
 
 #anime-categories-list li a {
   text-decoration: none;
-  color:#ddd;
+  color: #464646;
 }
 
 /*RIGHT SIDE SECTION*/
 #anime-more-details {
   margin-top: 20px;
   width: 27%;
-  background-color: #4c4c5c;
+  background-color: #fff;
+  border: 1px solid #eaeaea;
   border-radius: 3px;
 }
 

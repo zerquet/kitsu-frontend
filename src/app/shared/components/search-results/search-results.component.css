@@ -2,7 +2,7 @@
   position: absolute;
   width: 350px;
   padding: 0px 0px;
-  background: #2c2c3c;
+  background: #fff;
   margin-top: -1px;
   z-index: 9999;
   box-sizing: border-box;
@@ -18,7 +18,7 @@
 
 #search-results-heading {
   padding: 10px;
-  background-color: #343444;
+  background-color: #efeef1;
 }
 
 .search-results-scroller {
@@ -41,7 +41,7 @@
 }
 
 .search-result-item:hover {
-  background-color: #323242;
+  background-color: #e5e5e5;
 }
 
 .open {
@@ -66,11 +66,11 @@
 }
 
 .search-result-item-section a {
-  color: #22b8b8;
+  color: #f75239;
   top: 0;
   text-decoration: none;
 }
 
 .search-result-item-section a:hover {
-  color: #66b8b8;
+  color: #f3290a;
 }

@@ -9,20 +9,21 @@
 }
 
 .navbar {
-  background-color: #2c2c3c !important;
+  background-color: #402F3F !important;
 }
 
 .navbar-brand {
-  color: #dddddd;
+  color: #fff;
 }
 
 .nav-link {
-  color: #dddddd;
+  color: #999;
   font-size: 14px;
 }
 
 .nav-link:hover {
-  color: #fff;
+  color: RGBA(237, 240, 241, 1);
+  ;
 }
 
 #nav-search-form {
@@ -38,8 +39,8 @@
 }
 
 #navbar-search-field {
-  color: #dddddd;
-  background-color: #3c3c4c;
+  background-color: #332532;
+  color: #edf0f1;
   padding-left: 30px;
   border: none;
   border-radius: 3px;
@@ -52,8 +53,9 @@
   color: #fff;
 }
 
-#navbar-search-field:active, #navbar-search-field:focus {
-  background-color: #404050;
+#navbar-search-field:active,
+#navbar-search-field:focus {
+  background-color: #241a24;
   outline-color: transparent;
   outline-style: none;
 }

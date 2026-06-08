@@ -12,6 +12,9 @@ import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequ
 import { mapGetMediaReactionByUserItemResponseToMediaReaction } from '../mapper';
 import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
 import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryRequest.interface';
+import { GetLibraryEntryResponseDto } from '../../animes/dtos/get-library-entry-response.dto';
+import { CreateLibraryEntryResponseDto } from '../../animes/dtos/create-library-entry-response.dto';
+import { UpdateLibraryEntryResponseDto } from '../../animes/dtos/update-library-entry-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +22,12 @@ import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryReques
 export class UsersService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  
+
   private readonly baseUrl = `${environment.apiUrl}/users`;
   private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
   private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
   private readonly reactionsBaseUrl = `${environment.apiUrl}/mediaReactions`;
-  
+
   profile$ = new BehaviorSubject<UserProfile | null>(null);
   favoriteAnimes$ = new BehaviorSubject<FavoriteAnime[]>([]);
   library$ = new BehaviorSubject<LibraryEntry[]>([]);
@@ -42,7 +45,7 @@ export class UsersService {
     return this.http.get<UserProfile>(`${this.baseUrl}/${userDisplayId}`);
   }
 
-  updateProfile(req: FormData) : Observable<UserProfile> {
+  updateProfile(req: FormData): Observable<UserProfile> {
     return this.http.put<UserProfile>(`${this.baseUrl}`, req)
       .pipe(
         tap((res) => {
@@ -62,20 +65,20 @@ export class UsersService {
   }
 
   /*LIBRARY METHODS*/
-  
+
   //profile is only relevant in the context of library page. here, i get userId from auth service.
-  getLibraryEntry(userId: string | null, animeId: number): Observable<LibraryEntry | null> { 
-    if(userId === null)
+  getLibraryEntry(userId: string | null, animeId: number): Observable<GetLibraryEntryResponseDto | null> {
+    if (userId === null)
       return of(null);
     else {
-      return this.http.get<LibraryEntry>(`${this.libraryBaseUrl}Entry/${animeId}`)
+      return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
     }
   }
 
   setLibraryStateByUserId(userDisplayId: any) {
     //This does not handle users with empty library
     let userId = this.profile$.getValue()?.displayId;
-    if(userDisplayId !== null || userDisplayId !== undefined) {
+    if (userDisplayId !== null || userDisplayId !== undefined) {
       userId = userDisplayId;
     }
     this.getLibraryByDisplayId(userDisplayId)
@@ -89,27 +92,27 @@ export class UsersService {
     return this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userDisplayId}`);
   }
 
-  createEntry(req: CreateLibraryEntryRequest): Observable<LibraryEntry> {
-    return this.http.post<LibraryEntry>(`${this.libraryBaseUrl}`, req)
+  createEntry(req: CreateLibraryEntryRequest): Observable<CreateLibraryEntryResponseDto> {
+    return this.http.post<CreateLibraryEntryResponseDto>(`${this.libraryBaseUrl}`, req)
       .pipe(
         tap((res) => {
-          const library = this.library$.getValue();
-          library.push(res);
-          this.library$.next(library);
+          // const library = this.library$.getValue();
+          // library.push(res);
+          // this.library$.next(library);
         })
       );
   }
 
-  updateEntry(req: UpdateLibraryEntryRequest): Observable<LibraryEntry> {
+  updateEntry(req: UpdateLibraryEntryRequest): Observable<UpdateLibraryEntryResponseDto> {
     req.userRating = Number(req.userRating) === 0 ? undefined : Number(req.userRating);
-    return this.http.put<LibraryEntry>(`${this.libraryBaseUrl}`, req)
+    return this.http.put<UpdateLibraryEntryResponseDto>(`${this.libraryBaseUrl}`, req)
       .pipe(
-        tap((res) => {
-          const library = this.library$.getValue();
-          library[library.findIndex((e) => e.id == res.id)] = res;
-          this.library$.next(library);
-        })
-      );
+      // tap((res) => {
+      //   const library = this.library$.getValue();
+      //   library[library.findIndex((e) => e.id == res.id)] = res;
+      //   this.library$.next(library);
+      // })
+    );
   }
 
   deleteEntry(animeId: number) {
@@ -127,7 +130,7 @@ export class UsersService {
 
   setFavoriteAnimesState() {
     //By UserId in JWT token claim
-    if(this.favoriteAnimes$.getValue().length === 0) {
+    if (this.favoriteAnimes$.getValue().length === 0) {
       this.http.get<FavoriteAnime[]>(`${this.favoritesBaseUrl}`)
         .subscribe((favorites) => {
           this.favoriteAnimes$.next(favorites);
@@ -194,7 +197,7 @@ export class UsersService {
           mediaReactionToUpdate.reaction = req.reaction;
 
           mediaReactions[mediaReactionIndex] = mediaReactionToUpdate
-  
+
           this.mediaReactions$.next(mediaReactions);
         })
       );
@@ -211,7 +214,7 @@ export class UsersService {
   }
 
   setMediaReactionsStateByUserId(routeUserId: any) {
-    if(routeUserId !== null || routeUserId !== undefined) {
+    if (routeUserId !== null || routeUserId !== undefined) {
       this.getMediaReactionsByUserId()
         .subscribe((res) => {
           this.mediaReactions$.next(res);

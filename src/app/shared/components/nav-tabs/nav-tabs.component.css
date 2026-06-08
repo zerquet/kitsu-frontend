@@ -1,7 +1,7 @@
 :host {
   display: block;
   /*ng host components are inline, so setting this to block so container class applies*/
-  background-color: #2c2c3c;
+  background-color: #fff;
 }
 
 .tab-left-pad {
@@ -18,19 +18,19 @@
 }
 
 .anime-tabs ul li {
+  border: 1px solid #eaeaea;
   padding: 8px 16px;
   transition: all 80ms ease-in-out;
 }
 
 .anime-tabs ul li:hover {
-  background-color: #222232;
+  background-color: #f7f7f7;
 }
 
 .anime-tabs ul li.active {
-  color: #fff;
-  background-color: #222232;
+  background-color: #f7f7f7;
 }
 
 .anime-tabs ul li.active:hover {
-  background-color: #1d1d2d;
+  background-color: #f2f2f2;
 }

@@ -40,14 +40,15 @@
   font-optical-sizing: auto;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
   margin: 0;
-  background-color: #404050;
-  color: #dddddd;
+  background-color: #f7f7f7;
+  color: #464646;
 }
 
 /* * {
@@ -87,5 +88,13 @@ body {
 .p-datepicker:has(.p-datepicker-input-icon-container) .p-datepicker-input {
   height: 34px !important;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
