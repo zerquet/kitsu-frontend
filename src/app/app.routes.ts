@@ -1,29 +1,30 @@
 import { Routes } from '@angular/router';
-import { ExploreComponent } from './animes/pages/explore/explore.component';
-import { AnimeComponent } from './animes/pages/anime/anime.component';
-import { SearchComponent } from './animes/pages/search/search.component';
-import { UserComponent } from './users/pages/user/user.component';
-import { AdminComponent } from './admin/pages/admin/admin.component';
-import { AnimeListComponent } from './admin/components/anime-list/anime-list.component';
-import { AnimeEditComponent } from './admin/components/anime-edit/anime-edit.component';
-import { AnimeAddComponent } from './admin/components/anime-add/anime-add.component';
-import { EpisodeListComponent } from './admin/components/episode-list/episode-list.component';
-import { EpisodeAddComponent } from './admin/components/episode-add/episode-add.component';
-import { FranchiseListComponent } from './admin/components/franchise-list/franchise-list.component';
-import { FranchiseAddComponent } from './admin/components/franchise-add/franchise-add.component';
-import { AdminGuard } from './core/guards/admin.guard';
-import { MediaReactionsComponent } from './users/pages/media-reactions/media-reactions.component';
+import { ExploreComponent } from './features/anime/pages/explore/explore.component';
+import { AnimeComponent } from './features/anime/pages/anime/anime.component';
+import { SearchComponent } from './features/anime/pages/search/search.component';
+import { UsersComponent } from './features/user/pages/users/users.component';
+import { AdminComponent } from './features/admin/pages/admin/admin.component';
+import { AnimeListComponent } from './features/admin/components/anime-list/anime-list.component';
+import { AnimeEditComponent } from './features/admin/components/anime-edit/anime-edit.component';
+import { AnimeAddComponent } from './features/admin/components/anime-add/anime-add.component';
+import { EpisodeListComponent } from './features/admin/components/episode-list/episode-list.component';
+import { EpisodeAddComponent } from './features/admin/components/episode-add/episode-add.component';
+import { FranchiseListComponent } from './features/admin/components/franchise-list/franchise-list.component';
+import { FranchiseAddComponent } from './features/admin/components/franchise-add/franchise-add.component';
+import { AdminGuard } from './features/admin/guards/admin.guard';
+import { MediaReactionsComponent } from './features/user/pages/media-reactions/media-reactions.component';
 
 export const routes: Routes = [
-    {path: "explore", component: ExploreComponent},
-    {path: "explore/category/:category", component: ExploreComponent},
-    {path: "anime/:id", component: AnimeComponent},
-    {path: "anime/:id/:tab", component: AnimeComponent},
-    {path: "search", component: SearchComponent},
-    {path: "users/:id", component: UserComponent},
-    {path: "users/:id/:tab", component: UserComponent},
-    {path: "media-reactions/:id", component: MediaReactionsComponent},
-    {path: "admin", component: AdminComponent, children: [
+  { path: "explore", component: ExploreComponent },
+  { path: "explore/category/:category", component: ExploreComponent },
+  { path: "anime/:id", component: AnimeComponent },
+  { path: "anime/:id/:tab", component: AnimeComponent },
+  { path: "search", component: SearchComponent },
+  { path: "users/:id", component: UsersComponent },
+  { path: "users/:id/:tab", component: UsersComponent },
+  { path: "media-reactions/:id", component: MediaReactionsComponent },
+  {
+    path: "admin", component: AdminComponent, children: [
       {
         path: "anime",
         component: AnimeListComponent,
@@ -56,5 +57,5 @@ export const routes: Routes = [
     ],
     canActivate: [AdminGuard]
   },
-    {path: "", redirectTo: "/explore", pathMatch: "full"},
+  { path: "", redirectTo: "/explore", pathMatch: "full" },
 ];

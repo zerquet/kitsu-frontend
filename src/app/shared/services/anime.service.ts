@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Anime } from '../models/anime.model';
 import { environment } from '../../../environments/environment';
-import { GetAnimeByIdResponseDto } from '../../animes/dtos/get-anime-by-id-response.dto';
+import { GetAnimeByIdResponseDto } from '../../features/anime/dtos/get-anime-by-id-response.dto';
 
 @Injectable({
   providedIn: 'root'

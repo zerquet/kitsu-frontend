@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavMenuComponent } from './core/layout/nav-menu/nav-menu.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
-import { AuthService } from './core/auth/services/auth.service';
+import { AuthService } from './features/auth/services/auth.service';
 
 @Component({
   selector: 'app-root',

@@ -5,16 +5,16 @@ import { UserProfile } from '../models/userProfile.model';
 import { LibraryEntry } from '../models/libraryEntry.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
-import { AuthService } from '../../core/auth/services/auth.service';
+import { AuthService } from '../../features/auth/services/auth.service';
 import { MediaReaction } from '../models/mediaReaction.model';
 import { GetMediaReactionsByUserItemResponse } from '../contracts/getMediaReactionByUserItemResponse.interface';
 import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
 import { mapGetMediaReactionByUserItemResponseToMediaReaction } from '../mapper';
 import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
 import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryRequest.interface';
-import { GetLibraryEntryResponseDto } from '../../animes/dtos/get-library-entry-response.dto';
-import { CreateLibraryEntryResponseDto } from '../../animes/dtos/create-library-entry-response.dto';
-import { UpdateLibraryEntryResponseDto } from '../../animes/dtos/update-library-entry-response.dto';
+import { GetLibraryEntryResponseDto } from '../../features/anime/dtos/get-library-entry-response.dto';
+import { CreateLibraryEntryResponseDto } from '../../features/anime/dtos/create-library-entry-response.dto';
+import { UpdateLibraryEntryResponseDto } from '../../features/anime/dtos/update-library-entry-response.dto';
 
 @Injectable({
   providedIn: 'root'
