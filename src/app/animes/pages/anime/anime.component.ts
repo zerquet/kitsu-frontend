@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, BehaviorSubject, distinctUntilChanged, takeUntil, map, switchMap } from 'rxjs';
+import { Subject, BehaviorSubject, distinctUntilChanged, takeUntil, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { Anime } from '../../../shared/models/anime.model';
 import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
@@ -63,11 +63,11 @@ export class AnimeComponent implements OnInit, OnDestroy {
             this.updateLibraryEntryForm.patchValue({ "rating": entry.userRating });
           }
         });
-
-      this.usersService.getFavoriteAnime(animeId)
-        .subscribe({
-          next: (res) => this.isFavorite$.next(res !== null)
-        });
+      //commenting out because GetAnimeById already returns isFavorite data
+      // this.usersService.getFavoriteAnime(animeId)
+      //   .subscribe({
+      //     next: (res) => this.isFavorite$.next(res !== null)
+      //   });
     }
 
   }
@@ -81,9 +81,15 @@ export class AnimeComponent implements OnInit, OnDestroy {
   libraryEntry$ = new BehaviorSubject<GetLibraryEntryResponseDto | null>(null);
   isFavorite$ = new BehaviorSubject<boolean>(false);
 
-  anime$ = this.route.params.pipe(
+  animeResponse$ = this.route.params.pipe(
     distinctUntilChanged(),
     switchMap(params => this.animeService.getAnimeById(params['id'])),
+    tap(res => {
+      if (!res)
+        return;
+
+      this.isFavorite$.next(res?.isFavorite);
+    }),
     takeUntil(this.destroy$)
   );
 

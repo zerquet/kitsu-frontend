@@ -63,31 +63,31 @@ export class AnimeEditComponent implements OnInit {
   mediaTypes = ['TV', 'Movie', 'ONA'];
   maturityRatings = ['PG', 'R'];
   anime = new BehaviorSubject<Anime | null>(null);
-  newAnimeImage: string | undefined = undefined;     
-  newCoverImage: string | undefined = undefined;                                           
+  newAnimeImage: string | undefined = undefined;
+  newCoverImage: string | undefined = undefined;
   environment = environment;
-  
+
   ngOnInit(): void {
     this.route.params.pipe(
       distinctUntilChanged(),
       switchMap(params => this.animeService.getAnimeById(params['animeId'])),
       takeUntil(this.destroy$)
     ).subscribe(res => {
-        if(res !== undefined) {
-          this.anime.next(res);
-          this.prefillform(res);
-          //send dto from api and assign as Franchise 
-          this.selectedFranchise = res.franchiseId !== null && res.franchise?.name !== undefined ? {id: res.franchiseId, name: res.franchise?.name} : null;           
-        }
-      })
+      if (res !== undefined) {
+        this.anime.next(res.anime);
+        this.prefillform(res.anime);
+        //send dto from api and assign as Franchise 
+        this.selectedFranchise = res.anime.franchiseId !== null && res.anime.franchise?.name !== undefined ? { id: res.anime.franchiseId, name: res.anime.franchise?.name } : null;
+      }
+    })
 
     this.form.controls['franchiseSearch'].valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       tap(term => {
-        if(term && term.trim().length > 0)
+        if (term && term.trim().length > 0)
           this.showFranchiseSearchResults = true;
-        else 
+        else
           this.showFranchiseSearchResults = false;
       }),
       takeUntil(this.destroy$)
@@ -109,29 +109,29 @@ export class AnimeEditComponent implements OnInit {
     const data = new FormData();
     data.append('id', this.animeId!.value!.toString());
     data.append('title', this.title!.value!);
-    if(!Utils.IsNullOrUndefined(this.description!.value)) data.append('description', this.description?.value!); 
-    if(!Utils.IsNullOrUndefined(this.image!.value)) data.append('image', (this.image as AbstractControl).value as File);
-    if(!Utils.IsNullOrUndefined(this.coverImage!.value)) data.append('coverImage', (this.coverImage as AbstractControl).value as File);
-    if(!Utils.IsNullOrUndefined(this.year!.value)) data.append('year', this.year!.value!.toString()!);
-    if(!Utils.IsNullOrUndefined(this.episodes!.value)) data.append('episodeCount', this.episodes!.value!.toString()!);
-    if(!Utils.IsNullOrUndefined(this.mediaType!.value)) data.append('mediaType', this.mediaType!.value!);
-    if(!Utils.IsNullOrUndefined(this.score!.value)) data.append('score', this.score!.value!.toString()!);
-    if(!Utils.IsNullOrUndefined(this.releaseStatus!.value)) data.append('releaseStatus', this.releaseStatus!.value!);
+    if (!Utils.IsNullOrUndefined(this.description!.value)) data.append('description', this.description?.value!);
+    if (!Utils.IsNullOrUndefined(this.image!.value)) data.append('image', (this.image as AbstractControl).value as File);
+    if (!Utils.IsNullOrUndefined(this.coverImage!.value)) data.append('coverImage', (this.coverImage as AbstractControl).value as File);
+    if (!Utils.IsNullOrUndefined(this.year!.value)) data.append('year', this.year!.value!.toString()!);
+    if (!Utils.IsNullOrUndefined(this.episodes!.value)) data.append('episodeCount', this.episodes!.value!.toString()!);
+    if (!Utils.IsNullOrUndefined(this.mediaType!.value)) data.append('mediaType', this.mediaType!.value!);
+    if (!Utils.IsNullOrUndefined(this.score!.value)) data.append('score', this.score!.value!.toString()!);
+    if (!Utils.IsNullOrUndefined(this.releaseStatus!.value)) data.append('releaseStatus', this.releaseStatus!.value!);
     if (!Utils.IsNullOrUndefined(this.categories!.value)) {
-      for(let i = 0; i < this.categories!.value!.length; i++) {
+      for (let i = 0; i < this.categories!.value!.length; i++) {
         data.append('categories', this.categories!.value![i].toString())
       }
     }
-    if(!Utils.IsNullOrUndefined(this.englishTitle!.value)) data.append('englishTitle', this.englishTitle!.value!);
-    if(!Utils.IsNullOrUndefined(this.japaneseTitle!.value)) data.append('japaneseTitle', this.japaneseTitle!.value!);
-    if(!Utils.IsNullOrUndefined(this.japaneseRomaji!.value)) data.append('japaneseTitleRomaji', this.japaneseRomaji?.value!);
-    if(!Utils.IsNullOrUndefined(this.season!.value)) data.append('season', this.season!.value!);
-    if(!Utils.IsNullOrUndefined(this.startAirDate!.value)) data.append('startAirDate', this.startAirDate!.value!.toLocaleDateString());
-    if(!Utils.IsNullOrUndefined(this.endAirDate!.value)) data.append('endAirDate', this.endAirDate!.value!.toLocaleDateString());
-    if(!Utils.IsNullOrUndefined(this.rating!.value)) data.append('tvRating', this.rating!.value!);
-    if(!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value?.toString()!);
-    if(!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString());
-  
+    if (!Utils.IsNullOrUndefined(this.englishTitle!.value)) data.append('englishTitle', this.englishTitle!.value!);
+    if (!Utils.IsNullOrUndefined(this.japaneseTitle!.value)) data.append('japaneseTitle', this.japaneseTitle!.value!);
+    if (!Utils.IsNullOrUndefined(this.japaneseRomaji!.value)) data.append('japaneseTitleRomaji', this.japaneseRomaji?.value!);
+    if (!Utils.IsNullOrUndefined(this.season!.value)) data.append('season', this.season!.value!);
+    if (!Utils.IsNullOrUndefined(this.startAirDate!.value)) data.append('startAirDate', this.startAirDate!.value!.toLocaleDateString());
+    if (!Utils.IsNullOrUndefined(this.endAirDate!.value)) data.append('endAirDate', this.endAirDate!.value!.toLocaleDateString());
+    if (!Utils.IsNullOrUndefined(this.rating!.value)) data.append('tvRating', this.rating!.value!);
+    if (!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value?.toString()!);
+    if (!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString());
+
     this.animeService
       .updateAnime(data)
       .subscribe({
@@ -142,7 +142,7 @@ export class AnimeEditComponent implements OnInit {
         },
         error: (err) => {
           console.log(err);
-          
+
           this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
         }
       });
@@ -156,13 +156,13 @@ export class AnimeEditComponent implements OnInit {
       this.newAnimeImage = reader.result?.toString();
     }
     console.log('updatefn');
-    this.form.patchValue({image: file});
-    
+    this.form.patchValue({ image: file });
+
   }
 
   onImageClear() {
     this.newAnimeImage = undefined;
-    this.form.patchValue({image: undefined});
+    this.form.patchValue({ image: undefined });
     //why is the form submitted when this method runs?
     return;
   }
@@ -174,18 +174,18 @@ export class AnimeEditComponent implements OnInit {
     reader.onload = (_event) => {
       this.newCoverImage = reader.result?.toString();
     }
-    this.form.patchValue({coverImage: coverFile});
+    this.form.patchValue({ coverImage: coverFile });
   }
 
   onCoverImageClear() {
     this.newCoverImage = undefined;
-    this.form.patchValue({coverImage: undefined});
+    this.form.patchValue({ coverImage: undefined });
     return;
   }
 
   private searchFranchises(term: string): Observable<Franchise[]> {
     term = term.toLowerCase().trim();
-    if(term.length === 0)
+    if (term.length === 0)
       return of([]);
     return this.franchiseService.getFranchisesByKeyword(term);
   }
@@ -231,7 +231,7 @@ export class AnimeEditComponent implements OnInit {
 
   //FORM GETTERS
   get animeId() { return this.form.get('animeId'); }
-  
+
   get title() { return this.form.get('title'); }
 
   get description() { return this.form.get('description'); }
@@ -248,7 +248,7 @@ export class AnimeEditComponent implements OnInit {
   get mediaType() { return this.form.get('mediaType'); }
 
   get year() { return this.form.get('year'); }
-  
+
   get score() { return this.form.get('score'); }
 
   get englishTitle() { return this.form.get('englishTitle'); }
@@ -272,236 +272,236 @@ export class AnimeEditComponent implements OnInit {
   /**FORM VALIDATORS (move to separate class)*/
   titleIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.title) {          
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.title) {
           return null;
         }
       }
-      
-      return {titleIsDifferent:true};
+
+      return { titleIsDifferent: true };
     }
   }
 
   descriptionIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.description)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.description)
           return null;
       }
-      return {descriptionIsDifferent:true};
+      return { descriptionIsDifferent: true };
     }
   }
 
   imageIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      
+
       var file = control.value as File | null | undefined;
       console.log(file);
-      
-      if(file === null || file === undefined) {
+
+      if (file === null || file === undefined) {
         return null;
       }
-      
-      return {imageIsDifferent:true};
+
+      return { imageIsDifferent: true };
     }
   }
 
   coverImageIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      var file = control.value as File | null | undefined;      
-      if(file === null || file === undefined) {
+      var file = control.value as File | null | undefined;
+      if (file === null || file === undefined) {
         return null;
       }
-      
-      return {coverImageIsDifferent:true};
+
+      return { coverImageIsDifferent: true };
     }
   }
 
   releaseStatusIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.releaseStatus)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.releaseStatus)
           return null;
       }
-      return {releaseStatusIsDifferent:true};
+      return { releaseStatusIsDifferent: true };
     }
   }
 
   categoriesAreDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
+      if (this.anime !== undefined) {
         var categoryIds = this.anime.value?.categories.map(x => x.id).sort();
         var controlValue = control.value.sort();
 
-        if(JSON.stringify(controlValue)==JSON.stringify(categoryIds)) //what if order is different? not safe proof. do images and other too. fix franchise
+        if (JSON.stringify(controlValue) == JSON.stringify(categoryIds)) //what if order is different? not safe proof. do images and other too. fix franchise
           return null;
-      }      
-      return {categoriesAreDifferent:true};
+      }
+      return { categoriesAreDifferent: true };
     }
   }
 
   episodeCountIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.episodeCount)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.episodeCount)
           return null;
       }
-      return {episodeCountIsDifferent:true};
+      return { episodeCountIsDifferent: true };
     }
   }
 
   mediaTypeIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.mediaType)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.mediaType)
           return null;
       }
-      return {mediaTypeIsDifferent:true};
+      return { mediaTypeIsDifferent: true };
     }
   }
 
   yearIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.year)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.year)
           return null;
       }
-      return {yearIsDifferent:true};
+      return { yearIsDifferent: true };
     }
   }
 
   scoreIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.score)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.score)
           return null;
       }
-      return {scoreIsDifferent:true};
+      return { scoreIsDifferent: true };
     }
   }
 
   englishTitleIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.englishTitle)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.englishTitle)
           return null;
       }
-      return {englishTitleIsDifferent:true};
+      return { englishTitleIsDifferent: true };
     }
   }
 
   japaneseTitleIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.japaneseTitle)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.japaneseTitle)
           return null;
       }
-      return {japaneseTitleIsDifferent:true};
+      return { japaneseTitleIsDifferent: true };
     }
   }
 
   japaneseRomajiIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.japaneseTitleRomaji)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.japaneseTitleRomaji)
           return null;
       }
-      return {japaneseRomajiIsDifferent:true};
+      return { japaneseRomajiIsDifferent: true };
     }
   }
 
   seasonIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.season)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.season)
           return null;
       }
-      return {seasonIsDifferent:true};
+      return { seasonIsDifferent: true };
     }
   }
 
   startAirDateIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      
-      if(this.anime !== undefined) {
+
+      if (this.anime !== undefined) {
         var date;
-        if(this.anime.value === null) {
+        if (this.anime.value === null) {
           date = null;
         }
         else {
           date = this.anime.value?.startAirDate === undefined ? null : new Date(this.anime.value!.startAirDate);
         }
-                
-        if(date !== null) {
-          if(control.value.toDateString() === date.toDateString()) {
+
+        if (date !== null) {
+          if (control.value.toDateString() === date.toDateString()) {
             return null;
           }
         }
         else {
-          if(control.value === date) {
+          if (control.value === date) {
             return null;
           }
         }
       }
-      return {startAirDateIsDifferent:true};
+      return { startAirDateIsDifferent: true };
     }
   }
 
   endAirDateIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
+      if (this.anime !== undefined) {
         var date;
-        if(this.anime.value === null) {
+        if (this.anime.value === null) {
           date = null;
         }
         else {
           date = this.anime.value?.endAirDate === undefined ? null : new Date(this.anime.value!.endAirDate);
         }
-          
-        if(date !== null) {
-          if(control.value.toDateString() === date.toDateString()) {
+
+        if (date !== null) {
+          if (control.value.toDateString() === date.toDateString()) {
             return null;
           }
         }
         else {
-          if(date === control.value) {
+          if (date === control.value) {
             return null;
           }
-        }  
+        }
       }
-      return {endAirDateIsDifferent:true};
+      return { endAirDateIsDifferent: true };
     }
   }
 
   ratingIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.tvRating)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.tvRating)
           return null;
       }
-      return {ratingIsDifferent:true};
+      return { ratingIsDifferent: true };
     }
   }
 
   episodeLengthIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(this.anime !== undefined) {
-        if(control.value === this.anime.value?.episodeLength)
+      if (this.anime !== undefined) {
+        if (control.value === this.anime.value?.episodeLength)
           return null;
       }
-      return {episodeLengthIsDifferent:true};
+      return { episodeLengthIsDifferent: true };
     }
   }
 
   franchiseIdIsDifferentValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {      
-      if(this.anime !== undefined) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (this.anime !== undefined) {
         console.log(control.value);
         console.log(this.anime.value?.franchiseId);
-        if(control.value === this.anime.value?.franchiseId)
+        if (control.value === this.anime.value?.franchiseId)
           return null;
       }
-      return {franchiseIdIsDifferent:true};
+      return { franchiseIdIsDifferent: true };
     }
   }
 
@@ -510,7 +510,7 @@ export class AnimeEditComponent implements OnInit {
       const controlErrors: ValidationErrors = this.form.get(key)!.errors!;
       if (controlErrors != null) {
         Object.keys(controlErrors).forEach(keyError => {
-         console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+          console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
         });
       }
     });

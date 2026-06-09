@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject,map, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Anime } from '../models/anime.model';
 import { environment } from '../../../environments/environment';
+import { GetAnimeByIdResponseDto } from '../../animes/dtos/get-anime-by-id-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AnimeService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/animes`;
   private readonly franchiseBaseUrl = `${environment.apiUrl}/franchises`;
-  
+
   private _animes$ = new BehaviorSubject<Anime[]>([]); //STATE
 
   constructor() {
@@ -26,26 +27,26 @@ export class AnimeService {
   }
 
   //app store/state is not cache. don't get id from animes$ because state is not meant to be used as a cache, but rather to reduce API calls. query db instead for anime
-  getAnimeById(animeId: number): Observable<Anime | undefined> {
-    const anime = this._animes$.getValue().find((anime) => anime.id == animeId);
-    
-    if(anime !== undefined) {
-      return of(anime);
-    } 
-    else {      
-      return this.http.get<Anime>(`${this.baseUrl}/${animeId}`).pipe(
-        tap((res) => {
-          const updatedAnimes = this._animes$.getValue();
-          updatedAnimes.push(res);
-          this._animes$.next(updatedAnimes);
-        })
-      );
-    }
+  getAnimeById(animeId: number): Observable<GetAnimeByIdResponseDto | undefined> {
+    // const anime = this._animes$.getValue().find((anime) => anime.id == animeId);
+
+    // if(anime !== undefined) {
+    //   return of(anime);
+    // } 
+    // else {      
+    return this.http.get<GetAnimeByIdResponseDto>(`${this.baseUrl}/${animeId}`).pipe(
+      tap((res) => {
+        // const updatedAnimes = this._animes$.getValue();
+        // updatedAnimes.push(res);
+        // this._animes$.next(updatedAnimes);
+      })
+    );
+    //}
   }
 
   //if app gets bigger, we may need to call APi directly...
   //and maybe hold a store for animes of a certain category? not sure how it'll work but i have an idea
-  getAnimesByCategory(category: string): Observable<Anime[]> {    
+  getAnimesByCategory(category: string): Observable<Anime[]> {
     return this._animes$.pipe(
       map((animes) => {
         return animes.filter((anime) => {
@@ -67,7 +68,7 @@ export class AnimeService {
   addAnime(req: FormData): Observable<Anime> {
     return this.http.post<Anime>(this.baseUrl, req)
       .pipe(
-        tap((res) => {        
+        tap((res) => {
           const animes = this._animes$.getValue();
           animes.push(res);
           this._animes$.next(animes);
@@ -105,20 +106,20 @@ export class AnimeService {
   ): Observable<Anime[]> {
     let queryString = '/search?';
     queryString += `term=${term}`;
-    if(minYear != null) queryString += `&minYear=${minYear}`;
-    if(maxYear != null) queryString += `&maxYear=${maxYear}`;
-    if(minRating != null) queryString += `&minRating=${minRating}`;
-    if(maxRating != null) queryString += `&maxRating=${maxRating}`;
-    if(minEpisodes != null) queryString += `&minEpisodes=${minEpisodes}`;
-    if(maxEpisodes != null && maxEpisodes !== "100") queryString += `&maxEpisodes=${maxEpisodes}`;
-    if(showTv == true || showMovie == true) {
+    if (minYear != null) queryString += `&minYear=${minYear}`;
+    if (maxYear != null) queryString += `&maxYear=${maxYear}`;
+    if (minRating != null) queryString += `&minRating=${minRating}`;
+    if (maxRating != null) queryString += `&maxRating=${maxRating}`;
+    if (minEpisodes != null) queryString += `&minEpisodes=${minEpisodes}`;
+    if (maxEpisodes != null && maxEpisodes !== "100") queryString += `&maxEpisodes=${maxEpisodes}`;
+    if (showTv == true || showMovie == true) {
       let mediaTypeString = "&mediaType=";
       let types = [];
-      if(showTv == true) types.push("TV");
-      if(showMovie == true) types.push("Movie");
+      if (showTv == true) types.push("TV");
+      if (showMovie == true) types.push("Movie");
 
-      if(types.length > 1) mediaTypeString += types.join(',');
-      if(types.length == 1) mediaTypeString += types[0];
+      if (types.length > 1) mediaTypeString += types.join(',');
+      if (types.length == 1) mediaTypeString += types[0];
       queryString += mediaTypeString;
     }
 
