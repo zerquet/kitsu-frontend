@@ -16,75 +16,7 @@
       </div>
       <img src="{{environment.imageHostUrl}}/anime/poster/{{animeResponse.anime.imageUrl}}" />
     </div>
-    <div id="sidebar-form">
-      <!--Anime not in user's library-->
-      @if(this.libraryEntry$.getValue() === null || this.authService.authenticatedUser$.getValue() === null) {
-      <span id="sidebar-heading"><span>Add to Library</span></span>
-      <div id="sidebar-container">
-        <div><input class="sidebar-watch-status-btn mb-2" id="completed-status-btn" type="button" value="Completed"
-            (click)="onAddToLibraryClick('completed', animeResponse.anime)" /></div>
-        <div><input class="sidebar-watch-status-btn mb-2" id="planning-status-btn" type="button" value="Want to Watch"
-            (click)="onAddToLibraryClick('planning', animeResponse.anime)" /></div>
-        <div><input class="sidebar-watch-status-btn mb-2" id="watching-status-btn" type="button"
-            value="Started Watching" (click)="onAddToLibraryClick('watching', animeResponse.anime)" /></div>
-      </div>
-      }
-      <!--User completed anime-->
-      @else {
-      <span id="sidebar-heading"><span>Update Library</span></span>
-      <div id="sidebar-container">
-        <form method="post" [formGroup]="updateLibraryEntryForm" (submit)="onUpdateLibraryEntryFormSubmit()">
-
-          <div class="sidebar-field-container">
-            <label for="status-field">Status: </label>
-            <select formControlName="status" id="status-field">
-              <option value="completed">Completed</option>
-              <option value="watching">Watching</option>
-              <option value="planning">Plan to Watch</option>
-            </select>
-          </div>
-
-          <div class="sidebar-field-container">
-            <label for="sidebar-progress-field">Progress: </label>
-            <div class="mb-1">
-              <input formControlName="episodeProgress" type="text" id="sidebar-progress-field" min="0"
-                [max]="animeResponse.anime.episodeCount">
-              <span>/ {{animeResponse.anime.episodeCount}}
-                <span class="increment-episode-span"
-                  (click)="onIncrementProgressClick(animeResponse.anime.episodeCount!)"><i
-                    class="bi bi-plus-circle-fill"></i></span>
-              </span>
-            </div>
-          </div>
-
-          <div class="sidebar-field-container">
-            <label for="sidebar-user-rating-field">Score: </label>
-            <select formControlName="rating" id="sidebar-user-rating-field">
-              <option value="">-</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-
-          <div class="sidebar-field-container">
-            <input type="submit" value="Update" id="edit-btn" />
-            <div id="delete-btn-container"><button id="delete-btn" type="button"
-                (click)="onDeleteEntryBtnClick(animeResponse.anime)" title="Delete from library"><i
-                  class="bi bi-trash3"></i></button></div>
-          </div>
-
-        </form>
-      </div>
-      }
-    </div>
+    <library-entry-status [animeId]="animeId" [animeEpisodeCount]="animeEpisodeCount"></library-entry-status>
   </div>
   @if (currentTab$ | async; as currentTab) {
   <anime-container [anime]="animeResponse.anime" [tab]="currentTab"></anime-container>

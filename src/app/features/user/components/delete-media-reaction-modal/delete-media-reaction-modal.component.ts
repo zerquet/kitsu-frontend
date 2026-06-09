@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
-import { UsersService } from '../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 
 @Component({
   selector: 'delete-media-reaction',
@@ -39,7 +39,7 @@ import { UsersService } from '../../../../shared/services/users.service';
 export class DeleteMediaReactionModalComponent {
   public activeModal = inject(NgbActiveModal);
   public toastService = inject(AppToastService);
-  public usersService = inject(UsersService);
+  public usersService = inject(UserAnimeService);
 
   deleteMediaReactionForm = new FormGroup({
     reactionId: new FormControl()

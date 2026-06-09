@@ -1,18 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { ReactionCardComponent } from "../../../../components/reaction-card/reaction-card.component";
 
 @Component({
-  selector: 'reactions',
+  selector: 'users-reactions',
   standalone: true,
   imports: [AsyncPipe, ReactionCardComponent],
   templateUrl: './users-reactions.component.html',
   styleUrl: './users-reactions.component.css'
 })
 export class UsersReactionsComponent implements OnInit {
-  usersService = inject(UsersService);
+  usersService = inject(UserAnimeService);
   route = inject(ActivatedRoute);
 
   ngOnInit(): void {

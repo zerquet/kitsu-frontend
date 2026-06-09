@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 
 @Component({
   selector: 'add-media-reaction',
@@ -18,7 +18,7 @@ export class AddMediaReactionModalComponent {
   public animeMetadata: LibraryEntry | null = null;
   public environment = environment;
   public toastService = inject(AppToastService);
-  public usersService = inject(UsersService);
+  public usersService = inject(UserAnimeService);
 
   addMediaReactionForm = new FormGroup({
     reaction: new FormControl(''),

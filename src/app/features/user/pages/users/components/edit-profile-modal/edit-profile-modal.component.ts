@@ -1,13 +1,12 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { Component, inject, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { UsersService } from '../../../../../../shared/services/users.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserProfile } from '../../../../../../shared/models/userProfile.model';
 import { ManageFavoritesComponent } from '../manage-favorites/manage-favorites.component';
 import { Utils } from '../../../../../../core/services/utils';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
+import { UsersService } from '../../../../../../shared/services/users.service';
 
 @Component({
   selector: 'app-edit-profile',

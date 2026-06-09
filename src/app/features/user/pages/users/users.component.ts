@@ -2,7 +2,6 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, switchMap, takeUntil, distinctUntilChanged, map, tap } from 'rxjs';
-import { UsersService } from '../../../../shared/services/users.service';
 import { UsersLibraryComponent } from './components/users-library/users-library.component';
 import { NavTabsComponent } from '../../../../shared/components/nav-tabs/nav-tabs.component';
 import { PrimaryInfoComponent } from './components/primary-info/primary-info.component';
@@ -10,6 +9,7 @@ import { UsersAboutComponent } from './components/users-about/users-about.compon
 import { CoverPhotoComponent } from '../../../../shared/components/cover-photo/cover-photo.component';
 import { environment } from '../../../../../environments/environment';
 import { UsersReactionsComponent } from "./components/users-reactions/users-reactions.component";
+import { UsersService } from '../../../../shared/services/users.service';
 
 @Component({
   selector: 'app-user',
@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (params) => this.usersService.setProfileStateByUserId(params['id'])
+        next: (params) => this.usersService.loadProfile(params['id'])
       });
   }
 

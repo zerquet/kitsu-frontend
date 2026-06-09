@@ -3,7 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../../environments/environment';
 import { LibraryEntry } from '../../../../shared/models/libraryEntry.model';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
-import { UsersService } from '../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 import { FormControl, FormControlName, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UpdateMediaReactionRequest } from '../../../../shared/contracts/updateMediaReactionRequest.interface';
 
@@ -29,7 +29,7 @@ export class EditMediaReactionModalComponent {
   public model: EditMediaReactionModel | null = null;
   public environment = environment;
   public toastService = inject(AppToastService);
-  public usersService = inject(UsersService);
+  public usersService = inject(UserAnimeService);
 
   editMediaReactionForm = new FormGroup({
     reaction: new FormControl(''),

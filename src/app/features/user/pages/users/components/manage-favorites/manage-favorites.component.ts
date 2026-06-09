@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Anime } from '../../../../../../shared/models/anime.model';
@@ -19,7 +19,7 @@ import { AuthService } from '../../../../../auth/services/auth.service';
   styleUrl: './manage-favorites.component.css'
 })
 export class ManageFavoritesComponent implements OnInit {
-  private usersService = inject(UsersService);
+  private usersService = inject(UserAnimeService);
   private animeService = inject(AnimeService); //use setState fn to stop fetching all anime in ctor
   private authService = inject(AuthService);
   @Input() parentModelRef: NgbActiveModal | null = null;

@@ -3,7 +3,7 @@ import { Component, inject, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, BehaviorSubject, takeUntil } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AuthService } from '../../../../../auth/services/auth.service';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
@@ -18,7 +18,7 @@ import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/up
 export class ManageLibraryEntryModalComponent implements OnDestroy {
   public authService = inject(AuthService);
 
-  private usersService = inject(UsersService);
+  private usersService = inject(UserAnimeService);
   private activeModal = inject(NgbActiveModal);
 
   updateLibraryEntryForm = new FormGroup({

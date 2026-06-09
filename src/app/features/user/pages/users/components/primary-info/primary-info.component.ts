@@ -3,7 +3,7 @@ import { AuthService } from '../../../../../../features/auth/services/auth.servi
 import { UserProfile } from '../../../../../../shared/models/userProfile.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditProfileModalComponent } from '../edit-profile-modal/edit-profile-modal.component';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../../../environments/environment';
 
@@ -16,9 +16,9 @@ import { environment } from '../../../../../../../environments/environment';
 })
 export class PrimaryInfoComponent {
   authService = inject(AuthService);
-  userService = inject(UsersService);
+  userService = inject(UserAnimeService);
   modalService = inject(NgbModal);
-  private usersService = inject(UsersService);
+  private usersService = inject(UserAnimeService);
   //@Input() userProfile: UserProfile | undefined;
   environment = environment;
 

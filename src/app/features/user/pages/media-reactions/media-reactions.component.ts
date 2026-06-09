@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { GetMediaReactionsByUserItemResponse } from '../../../../shared/contracts/getMediaReactionByUserItemResponse.interface';
-import { UsersService } from '../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { ReactionCardComponent } from '../../components/reaction-card/reaction-card.component';
 import { AuthService } from '../../../../features/auth/services/auth.service';
@@ -17,7 +17,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class MediaReactionsComponent {
   route = inject(ActivatedRoute);
-  usersService = inject(UsersService);
+  usersService = inject(UserAnimeService);
   authService = inject(AuthService);
   environment = environment;
 

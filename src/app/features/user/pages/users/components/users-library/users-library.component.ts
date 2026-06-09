@@ -7,13 +7,13 @@ import { AuthService } from '../../../../../auth/services/auth.service';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ManageLibraryEntryModalComponent } from '../manage-library-entry-modal/manage-library-entry-modal.component';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { environment } from '../../../../../../../environments/environment';
 import { AddMediaReactionModalComponent } from '../add-media-reaction-modal/add-media-reaction-modal.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 
 @Component({
-  selector: 'library',
+  selector: 'users-library',
   standalone: true,
   imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink],
   templateUrl: './users-library.component.html',
@@ -21,7 +21,7 @@ import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/up
 })
 export class UsersLibraryComponent implements OnInit {
   public authService = inject(AuthService);
-  private usersService = inject(UsersService);
+  private usersService = inject(UserAnimeService);
   private modalService = inject(NgbModal);
   private route = inject(ActivatedRoute);
 
