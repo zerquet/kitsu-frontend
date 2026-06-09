@@ -7,12 +7,14 @@ import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../jwtPayload.model';
 import { environment } from '../../../../environments/environment';
 import { Utils } from '../../../core/services/utils';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private readonly baseUrl = `${environment.apiUrl}`;
   private _tokenIsDecoded = false;
 
@@ -38,6 +40,7 @@ export class AuthService {
   logout() {
     localStorage.setItem("access_token", "");
     this.authenticatedUser$.next(null);
+    this.router.navigate(['/explore'])
   }
 
   decodeToken() {

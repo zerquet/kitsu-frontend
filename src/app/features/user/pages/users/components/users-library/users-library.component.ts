@@ -11,6 +11,7 @@ import { UserAnimeService } from '../../../../../../shared/services/user-anime.s
 import { environment } from '../../../../../../../environments/environment';
 import { AddMediaReactionModalComponent } from '../add-media-reaction-modal/add-media-reaction-modal.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
+import { UsersService } from '../../../../../../shared/services/users.service';
 
 @Component({
   selector: 'users-library',
@@ -21,7 +22,8 @@ import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/up
 })
 export class UsersLibraryComponent implements OnInit {
   public authService = inject(AuthService);
-  private usersService = inject(UserAnimeService);
+  private userAnimeService = inject(UserAnimeService);
+  private usersService = inject(UsersService);
   private modalService = inject(NgbModal);
   private route = inject(ActivatedRoute);
 
@@ -43,7 +45,7 @@ export class UsersLibraryComponent implements OnInit {
           userRating: this.pendingProgressUpdate.userRating,
           watchStatus: this.pendingProgressUpdate.watchStatus
         };
-        this.usersService.updateEntry(req)
+        this.userAnimeService.updateEntry(req)
           .subscribe({
             next: () => this.pendingProgressUpdate = undefined
           });
@@ -69,18 +71,19 @@ export class UsersLibraryComponent implements OnInit {
 
     this.route.params.subscribe({
       next: (params) => {
-        this.usersService.setLibraryStateByUserId(params['id']);
+        this.userAnimeService.loadUserLibrary(params['id']);
       }
     });
   }
 
-  library$ = this.usersService.library$;
+  library$ = this.userAnimeService.library$;
   sortDirection$ = new BehaviorSubject("asc");
   sortOption$ = new BehaviorSubject("Title");
   libraryType$ = new BehaviorSubject("all");
   searchTerm$ = new BehaviorSubject("");
 
-  userProfile$ = this.usersService.profile$;
+  userProfile$ = this.userAnimeService.profile$;
+  canEdit$ = this.usersService.canEdit$;
 
   //When behavior subject values are updated, the filtered list is too.
   //https://chatgpt.com/share/675410d9-9a68-8003-9599-c495ff36fb9e
@@ -138,7 +141,7 @@ export class UsersLibraryComponent implements OnInit {
       userRating: entry.userRating,
       watchStatus: entry.watchStatus
     };
-    this.usersService.updateEntry(req)
+    this.userAnimeService.updateEntry(req)
       .subscribe({
         next: () => this.pendingProgressUpdate = undefined
       });
@@ -151,7 +154,7 @@ export class UsersLibraryComponent implements OnInit {
       userRating: Number(newRating),
       watchStatus: entry.watchStatus
     };
-    this.usersService.updateEntry(req)
+    this.userAnimeService.updateEntry(req)
       .subscribe();
   }
 

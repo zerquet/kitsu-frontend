@@ -6,6 +6,7 @@ import { EditProfileModalComponent } from '../edit-profile-modal/edit-profile-mo
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../../../environments/environment';
+import { UsersService } from '../../../../../../shared/services/users.service';
 
 @Component({
   selector: 'primary-info',
@@ -18,13 +19,13 @@ export class PrimaryInfoComponent {
   authService = inject(AuthService);
   userService = inject(UserAnimeService);
   modalService = inject(NgbModal);
-  private usersService = inject(UserAnimeService);
+  private usersService = inject(UsersService);
   //@Input() userProfile: UserProfile | undefined;
   environment = environment;
 
   userProfile$ = this.usersService.profile$;
 
-  canEdit = this.authService.authenticatedUser$.getValue()?.id === this.usersService.profile$.getValue()?.id;
+  canEdit$ = this.usersService.canEdit$;
 
   onEditProfileClick() {
     const modal = this.modalService.open(EditProfileModalComponent);

@@ -24,6 +24,7 @@ export class UserAnimeService {
   private http = inject(HttpClient);
   private usersService = inject(UsersService);
 
+  private readonly baseUrl = `${environment.apiUrl}`
   private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
   private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
   private readonly reactionsBaseUrl = `${environment.apiUrl}/mediaReactions`;
@@ -46,21 +47,12 @@ export class UserAnimeService {
     }
   }
 
-  setLibraryStateByUserId(userDisplayId: any) {
+  loadUserLibrary(userDisplayId: string) {
     //This does not handle users with empty library
-    let userId = this.profile$.getValue()?.displayId;
-    if (userDisplayId !== null || userDisplayId !== undefined) {
-      userId = userDisplayId;
-    }
-    this.getLibraryByDisplayId(userDisplayId)
+    this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userDisplayId}`)
       .subscribe((library) => {
         this.library$.next(library);
       });
-  }
-
-  //this can be made private
-  private getLibraryByDisplayId(userDisplayId: any) {
-    return this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userDisplayId}`);
   }
 
   createEntry(req: CreateLibraryEntryRequest): Observable<CreateLibraryEntryResponseDto> {
@@ -99,14 +91,11 @@ export class UserAnimeService {
 
   /* FAVORITES METHODS */
 
-  setFavoriteAnimesState() {
-    //By UserId in JWT token claim
-    if (this.favoriteAnimes$.getValue().length === 0) {
-      this.http.get<FavoriteAnime[]>(`${this.favoritesBaseUrl}`)
-        .subscribe((favorites) => {
-          this.favoriteAnimes$.next(favorites);
-        })
-    }
+  loadFavoriteAnime(userDisplayId: string) {
+    this.http.get<FavoriteAnime[]>(`${this.baseUrl}/${userDisplayId}/favorites`)
+      .subscribe((favorites) => {
+        this.favoriteAnimes$.next(favorites);
+      })
   }
 
   addFavoriteAnime(animeId: number) {
@@ -184,21 +173,15 @@ export class UserAnimeService {
       );
   }
 
-  setMediaReactionsStateByUserId(routeUserId: any) {
-    if (routeUserId !== null || routeUserId !== undefined) {
-      this.getMediaReactionsByUserId()
-        .subscribe((res) => {
-          this.mediaReactions$.next(res);
-        });
-    }
-  }
-
-  //this can be made private
-  private getMediaReactionsByUserId() {
-    return this.http.get<GetMediaReactionsByUserItemResponse[]>(this.reactionsBaseUrl)
+  loadUserMediaReactions(userDisplayId: string) {
+    this.http.get<GetMediaReactionsByUserItemResponse[]>(`${this.baseUrl}/${userDisplayId}/mediaReactions`)
       .pipe(
         map((reactions) => reactions.map(item => mapGetMediaReactionByUserItemResponseToMediaReaction(item)))
-      );
+      )
+      .subscribe((res) => {
+        this.mediaReactions$.next(res);
+      });
+
   }
 
   getMediaReactionById(id: number) {

@@ -7,6 +7,7 @@ import { Utils } from '../../../../../../core/services/utils';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
 import { UsersService } from '../../../../../../shared/services/users.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-edit-profile',
@@ -42,33 +43,38 @@ export class EditProfileModalComponent {
   @ViewChild(ManageFavoritesComponent) favoritesComponent!: ManageFavoritesComponent;
 
   initializeModalData(openToTab: string = 'about') {
-    if (this.profileInfo$.value !== null) {
-      let profile = this.profileInfo$.value;
-      this.updateProfileForm.patchValue({ "id": profile.id });
-      this.updateProfileForm.patchValue({ "displayId": profile.displayId });
-      this.updateProfileForm.patchValue({ "username": profile.username });
-      this.updateProfileForm.patchValue({ "location": profile.location });
-      this.updateProfileForm.patchValue({ "birthday": profile.birthday });
-      this.updateProfileForm.patchValue({ "gender": profile.gender });
-      this.updateProfileForm.patchValue({ "bio": profile.bio });
-      this.newProfilePhoto = profile.profilePhotoId;
-      if (profile.profilePhotoId === null) {
-        this.newProfilePhoto = "https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg"; //not the best name. also check logic and fix bug
-      }
-      else {
-        this.newProfilePhoto = `${this.environment.imageHostUrl}/users/profile/${profile.profilePhotoId}.jpg`
-      }
+    this.profileInfo$
+      .pipe(take(1))
+      .subscribe(profile => {
+        if (!profile)
+          return;
 
-      if (profile.coverPhotoId === null) {
-        this.newCoverPhoto = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
-      }
-      else {
-        this.newCoverPhoto = `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`;
-      }
+        this.updateProfileForm.patchValue({ "id": profile.id });
+        this.updateProfileForm.patchValue({ "displayId": profile.displayId });
+        this.updateProfileForm.patchValue({ "username": profile.username });
+        this.updateProfileForm.patchValue({ "location": profile.location });
+        this.updateProfileForm.patchValue({ "birthday": profile.birthday });
+        this.updateProfileForm.patchValue({ "gender": profile.gender });
+        this.updateProfileForm.patchValue({ "bio": profile.bio });
+        this.newProfilePhoto = profile.profilePhotoId;
+        if (profile.profilePhotoId === null) {
+          this.newProfilePhoto = "https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg"; //not the best name. also check logic and fix bug
+        }
+        else {
+          this.newProfilePhoto = `${this.environment.imageHostUrl}/users/profile/${profile.profilePhotoId}.jpg`
+        }
 
-      this.currentTab = openToTab;
-    }
+        if (profile.coverPhotoId === null) {
+          this.newCoverPhoto = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
+        }
+        else {
+          this.newCoverPhoto = `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`;
+        }
+
+        this.currentTab = openToTab;
+      })
   }
+
 
   onUpdateProfileClick() {
     const req = new FormData();

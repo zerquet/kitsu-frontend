@@ -18,7 +18,7 @@ export class UsersReactionsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe({
       next: (params) => {
-        this.usersService.setMediaReactionsStateByUserId(params['id'])
+        this.usersService.loadUserMediaReactions(params['id'])
       }
     })
   }

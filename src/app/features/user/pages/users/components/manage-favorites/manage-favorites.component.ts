@@ -31,7 +31,7 @@ export class ManageFavoritesComponent implements OnInit {
   environment = environment;
 
   ngOnInit(): void {
-    this.usersService.setFavoriteAnimesState();
+    //this.usersService.setFavoriteAnimesState(); commenting out since state is set in user-about?
 
     this.searchAnimesForm.controls['search'].valueChanges.pipe(
       debounceTime(200),
