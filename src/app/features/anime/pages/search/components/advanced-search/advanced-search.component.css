@@ -5,8 +5,8 @@
 }
 
 #search-field-container2 {
-  background-color: #3c3c4c;
-  border-bottom: 1px solid #474757;
+  background-color: #fff;
+  border-bottom: 1px solid #faf9fa;
   padding: 20px 0 20px 20px;
 }
 
@@ -16,7 +16,6 @@
 }
 
 #search-field {
-  background-color: #3c3c4c;
   width: 100%;
   border: none;
   outline-color: unset;

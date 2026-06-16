@@ -49,7 +49,7 @@
 }
 
 #sort-options-btn:hover {
-  background-color: #4f4f5f;
+  cursor: pointer;
 }
 
 #sort-symbol {
@@ -59,19 +59,18 @@
 
 #sort-symbol:hover {
   cursor: pointer;
-  color: #fff;
 }
 
 #library-sort-options-section .dropdown-menu {
-  background-color: #2c2c3c;
+  background-color: #fff;
 }
 
 #library-sort-options-section .dropdown-menu .dropdown-item {
-  color: #dddddd
+  color: #464646
 }
 
 #library-sort-options-section .dropdown-menu .dropdown-item:hover {
-  background-color: #323242
+  background-color: RGBA(237, 240, 241, 1)
 }
 
 /*TABLE SECTION*/
@@ -299,7 +298,6 @@ input.progress-cell-input {
   margin-bottom: 3px;
   font-weight: bold;
   cursor: pointer;
-  border-radius: 3px;
 }
 
 #library-sections a {
@@ -311,16 +309,21 @@ input.progress-cell-input {
 }
 
 #allAnime {
-  background-color: #2c2c3c;
+  background-color: #e7dee6;
   transition: all 80ms ease-in-out;
 }
 
-#allAnime:hover>a {
-  color: #bfbbbb;
+#allAnime a {
+  color: #8e8b8e;
 }
 
-#allAnime a {
-  color: #bbb;
+#allAnime:hover {
+  background-color: #d1c1d0;
+}
+
+.allAnime-active {
+  background-color: #402F3F !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .allAnime-active a {
@@ -328,65 +331,79 @@ input.progress-cell-input {
 }
 
 #watching {
-  background-color: #8e44ad;
+  background-color: #e2e9ef;
   transition: all 80ms ease-in-out;
 }
 
-.watching {
-  background-color: #8e44ad;
-}
-
-#watching:hover>a {
-  color: #c8bccf;
-}
-
 #watching a {
-  color: #a58fb1;
+  color: #8d9398;
+}
+
+#watching:hover {
+  background-color: #c2cfdd;
+}
+
+.watching-active {
+  background-color: #2c3e50 !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .watching-active a {
   color: #fff !important;
 }
 
+.watching {
+  background-color: #2c3e50;
+}
+
 #planning {
-  background-color: #2980b9;
+  background-color: #f0f7fc;
   transition: all 80ms ease-in-out;
 }
 
-.planning {
-  background-color: #2980b9;
-}
-
-#planning:hover>a {
-  color: #ccd5db;
-}
-
 #planning a {
-  color: #8093a1;
+  color: #8e959a;
+}
+
+#planning:hover {
+  background-color: #c6e1f2;
+}
+
+.planning-active {
+  background-color: #2980b9 !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
 }
 
 .planning-active a {
   color: #fff !important;
 }
 
+.planning {
+  background-color: #2980b9;
+}
+
 #completed {
-  background-color: #16a085;
+  background-color: #e5f9ee;
   transition: all 80ms ease-in-out;
 }
 
-.completed {
-  background-color: #16a085;
-}
-
-#completed:hover>a {
-  color: #cadbd8;
-}
-
 #completed a {
-  color: #92b5ae;
+  color: #798e7b;
 }
 
-.completed-active a,
+#completed:hover {
+  background-color: #bbf0d2;
+}
+
 .completed-active {
+  background-color: #27ae60 !important;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, .3)
+}
+
+.completed-active a {
   color: #fff !important;
+}
+
+.completed {
+  background-color: #27ae60;
 }

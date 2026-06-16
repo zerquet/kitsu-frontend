@@ -106,7 +106,7 @@
                   <input #progressEditField class="progress-cell-input" type="number" [max]="entry.anime.episodeCount"
                     [value]="entry.episodesWatched" (change)="onProgressChange(entry, $event)" />
                   }
-                  /{{entry.anime.episodeCount}}
+                  / {{entry.anime.episodeCount}}
                   @if(entry.episodesWatched! < entry.anime.episodeCount!) { <span class="increment-episode-span"
                     (click)="onProgressAddClick(entry)">
                     <i class="bi bi-plus-circle-fill"></i>
@@ -130,14 +130,19 @@
             }
             @if(library.length === 0) {
             <div id="empty-library-section">
+              @if(librarySearchNoResults) {
+              <h5><strong>Couldn't find any library entries with your search query.</strong></h5>
+              }
+              @else {
               @if(canEdit$ | async) {
-              <h5><strong>Looks like your library is empty. Ready to start something new?</strong></h5>
+              <h5><strong>Looks like your library here is empty! Ready to start something new?</strong></h5>
               <div id="browse-anime-btn-container">
                 <input id="browse-anime-btn" type="button" value="Browse Anime" routerLink="/search" />
               </div>
               }
               @else {
               <h5><strong>Looks like {{user.username}} doesn't have any library entries here.</strong></h5>
+              }
               }
             </div>
             }

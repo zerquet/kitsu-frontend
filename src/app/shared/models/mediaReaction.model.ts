@@ -1,5 +1,3 @@
-import { Anime } from "./anime.model";
-
 export interface MediaReaction {
   id: number;
   userId: string;

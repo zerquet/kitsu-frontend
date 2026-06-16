@@ -13,7 +13,7 @@
   <div id="mini-bio">
     <div id="cover-username">{{userProfile.username}}</div>
     <div id="cover-btn-container">
-      @if(canEdit$ | async; as canEdit) {
+      @if(canEdit$ | async;) {
       <input (click)="onEditProfileClick()" type="button" id="edit-btn" value="Edit" />
       }
       @else {

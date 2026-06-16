@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -9,6 +9,7 @@ import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { AnimeService } from '../../../../../../shared/services/anime.service';
 import { environment } from '../../../../../../../environments/environment';
 import { FavoriteAnime } from '../../../../../../shared/models/favoriteAnime.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'manage-favorites',
@@ -18,8 +19,9 @@ import { FavoriteAnime } from '../../../../../../shared/models/favoriteAnime.mod
   styleUrl: './manage-favorites.component.css'
 })
 export class ManageFavoritesComponent implements OnInit {
-  private usersService = inject(UserAnimeService);
+  private userAnimeService = inject(UserAnimeService);
   private animeService = inject(AnimeService); //use setState fn to stop fetching all anime in ctor
+  private destroyRef = inject(DestroyRef);
   @Input() parentModelRef: NgbActiveModal | null = null;
 
   showSearchResults = false;
@@ -42,16 +44,30 @@ export class ManageFavoritesComponent implements OnInit {
       }),
       takeUntil(this.destroy$)
     ).subscribe(keyword => this.term$.next(keyword));
+
+    this.userProfile$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (profile) => {
+          if (!profile?.displayId) {
+            return;
+          }
+
+          this.userAnimeService.loadFavoriteAnime(profile?.displayId);
+        }
+      })
   }
 
   private destroy$ = new Subject<void>();
   term$ = new BehaviorSubject<string>("");
-  pendingFavorites$ = this.usersService.favoriteAnimes$;
+  pendingFavorites$ = this.userAnimeService.favoriteAnimes$;
   //search logic is already duplicated 3 times throughout app. add to service?
   searchResults$ = combineLatest([this.term$]).pipe(
     map(([keyword]) => keyword),
     switchMap(keyword => this.search(keyword)),
     takeUntil(this.destroy$));
+
+  userProfile$ = this.userAnimeService.profile$;
 
   onUnfavoriteClick(animeId: number) {
     let pendingFavorites = this.pendingFavorites$.getValue();
@@ -60,7 +76,7 @@ export class ManageFavoritesComponent implements OnInit {
   }
 
   onUpdateProfileClick() {
-    this.usersService.updateFavoriteAnimes(this.pendingFavorites$.getValue())
+    this.userAnimeService.updateFavoriteAnimes(this.pendingFavorites$.getValue())
       .subscribe({
         next: () => this.parentModelRef?.close()
       });

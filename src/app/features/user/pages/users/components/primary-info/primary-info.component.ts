@@ -16,8 +16,6 @@ import { UsersService } from '../../../../../../shared/services/users.service';
   styleUrl: './primary-info.component.css'
 })
 export class PrimaryInfoComponent {
-  authService = inject(AuthService);
-  userService = inject(UserAnimeService);
   modalService = inject(NgbModal);
   private usersService = inject(UsersService);
   //@Input() userProfile: UserProfile | undefined;

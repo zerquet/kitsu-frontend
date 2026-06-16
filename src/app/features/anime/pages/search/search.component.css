@@ -1,5 +1,5 @@
 #search-container {
-  background: linear-gradient(90deg, #272737 50%, #404050 50%);
+  background: linear-gradient(90deg, #332532 50%, #f7f7f7 50%);
 }
 
 /*FILTERS SECTION*/
@@ -10,7 +10,7 @@
 /*MAIN SECTION*/
 #search-main-section {
   width: 80%;
-  background: #404050;
+  background: #f7f7f7;
 }
 
 #search-results-section {

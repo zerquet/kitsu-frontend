@@ -1,8 +1,8 @@
 :host {
   position: fixed;
   width: 259px;
-  background: #272737;
-  color: #dddddd;
+  background: #332532;
+  color: #a3a9b7;
   border-left: 1px solid var(--border-black);
   border-right: 1px solid var(--border-black);
   font-size: 13px;

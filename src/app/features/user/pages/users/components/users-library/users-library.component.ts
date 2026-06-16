@@ -59,6 +59,7 @@ export class UsersLibraryComponent implements OnInit {
   currAnimeIdForEditingProgress = -1;
   pendingProgressUpdate: LibraryEntry | undefined = undefined;
   environment = environment;
+  librarySearchNoResults = false;
 
   ngOnInit(): void {
     this.searchLibraryForm.controls["search"].valueChanges.pipe(
@@ -167,11 +168,16 @@ export class UsersLibraryComponent implements OnInit {
   }
 
   private sorter(list: LibraryEntry[], column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {
+    this.librarySearchNoResults = false;
+
     if (library !== "all")
       list = list.filter(i => i.watchStatus === library);
 
-    if (searchTerm !== "")
+    if (searchTerm !== "") {
       list = list.filter(j => j.anime.title.toLocaleLowerCase().includes(searchTerm));
+      this.librarySearchNoResults = list.length === 0;
+    }
+
 
     if (column === "Title") {
       if (direction === "asc")

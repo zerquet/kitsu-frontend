@@ -4,24 +4,24 @@
 }
 
 button {
-  color: #dddddd !important;
+  color: #464646 !important;
   font-size: 12px;
 }
 
 button:hover {
-  color: #22b8b8 !important;
+  color: #f75239 !important;
 }
 
 .dropdown-menu {
-  background-color: #2c2c3c;
+  background-color: #fff;
 }
 
 .dropdown-menu .dropdown-item {
-  color: #dddddd
+  color: #464646
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #323242
+  background-color: #faf9fa
 }
 
 .cursor {

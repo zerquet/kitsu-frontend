@@ -16,6 +16,7 @@ import { CreateLibraryEntryResponseDto } from '../../features/anime/dtos/create-
 import { UpdateLibraryEntryResponseDto } from '../../features/anime/dtos/update-library-entry-response.dto';
 import { UsersService } from './users.service';
 import { GetMediaReactionByUserResponseDto } from '../../features/user/dtos/get-media-reaction-by-user-response.dto';
+import { AddMediaReactionResponseDto } from '../../features/user/dtos/add-media-reaction-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -109,10 +110,6 @@ export class UserAnimeService {
       );
   }
 
-  getFavoriteAnime(animeId: number) {
-    return this.http.get<FavoriteAnime>(`${this.favoritesBaseUrl}/${animeId}`);
-  }
-
   updateFavoriteAnimes(favoriteAnimes: FavoriteAnime[]) {
     const animeIds = favoriteAnimes.map(a => a.animeId);
     return this.http.put<void>(`${this.favoritesBaseUrl}/updatebulk`, animeIds)
@@ -136,7 +133,7 @@ export class UserAnimeService {
 
   /** MEDIA REACTIONS METHODS */
   addMediaReaction(req: FormData): Observable<MediaReaction> {
-    return this.http.post<any>(this.mediaReactionsBaseUrl, req)
+    return this.http.post<AddMediaReactionResponseDto>(this.mediaReactionsBaseUrl, req)
       .pipe(
         tap((res) => {
           const mediaReactions = this.mediaReactions$.getValue();
