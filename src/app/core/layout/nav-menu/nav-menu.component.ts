@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, Observable, combineLatest, map, switchMap, takeUntil, debounceTime, distinctUntilChanged, tap, of } from 'rxjs';
+import { Subject, Observable, combineLatest, map, switchMap, takeUntil, debounceTime, distinctUntilChanged, tap, of, filter } from 'rxjs';
 import { Anime } from '../../../shared/models/anime.model';
 import { AnimeService } from '../../../shared/services/anime.service';
 import { NavMenuSearchDataService } from '../../../shared/services/nav-menu-search-data.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../../features/auth/services/auth.service';
 import { LoginComponent } from '../../../features/auth/login/login.component';
 import { RegisterComponent } from '../../../features/auth/register/register.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SearchResultsComponent } from '../../../shared/components/search-results/search-results.component';
 import { environment } from '../../../../environments/environment';
 
@@ -24,6 +24,7 @@ export class NavMenuComponent {
   private modalService = inject(NgbModal);
   private animeService = inject(AnimeService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   private destroy$ = new Subject<void>();
   private navMenuSearchDataService = inject(NavMenuSearchDataService);
@@ -32,6 +33,7 @@ export class NavMenuComponent {
   authenticatedUser$ = this.authService.authenticatedUser$;
   form = new FormGroup({ searchControl: new FormControl() });
   environment = environment;
+  activeMenuItem = "";
 
   searchResults$: Observable<Anime[]> = combineLatest([this.term$])
     .pipe(
@@ -40,6 +42,8 @@ export class NavMenuComponent {
       takeUntil(this.destroy$)); //TODO mini search logic is duplicate from home component. shared?
 
   ngOnInit(): void {
+    this.checkUrl(this.router.url);
+
     this.form.controls['searchControl'].valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -52,6 +56,12 @@ export class NavMenuComponent {
       takeUntil(this.destroy$)
     )
       .subscribe(term => this.term$.next(term));
+
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.checkUrl(event.urlAfterRedirects);
+    })
   }
 
   ngOnDestroy(): void {
@@ -78,5 +88,17 @@ export class NavMenuComponent {
 
   logout() {
     this.authService.logout();
+  }
+
+  private checkUrl(url: string) {
+    if (url.includes('anime')) {
+      this.activeMenuItem = 'anime';
+    }
+    else if (url.includes('users')) {
+      this.activeMenuItem = 'library'
+    }
+    else {
+      this.activeMenuItem = '';
+    }
   }
 }

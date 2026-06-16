@@ -19,14 +19,14 @@
   border-radius: 3px;
   border: 1px solid #686878;
   text-align: center;
-  padding: 8px; 
-  color: #ffffff;
+  padding: 8px;
   text-decoration: none;
+  color: #151015;
 }
 
 .users-reactions:hover {
-  border-color: #22b8b8;
-  color: #22b8b8;
+  border-color: #f3290a;
+  color: #f3290a;
 }
 
 .profile-card {
@@ -38,8 +38,8 @@
   background-color: white;
 }
 
-.profile-card > div {
- height: 50%;
+.profile-card>div {
+  height: 50%;
 }
 
 .user-background {
@@ -68,7 +68,8 @@
   right: -250px;
 }
 
-.reaction-button, .reaction-button-public {
+.reaction-button,
+.reaction-button-public {
   text-align: center;
   margin-top: 15px;
 }
@@ -78,7 +79,7 @@
   border: none;
   border-radius: 3px;
   padding: 8px 12px;
-  cursor:not-allowed;
+  cursor: not-allowed;
 }
 
 .reaction-button-public button {

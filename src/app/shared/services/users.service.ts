@@ -31,11 +31,23 @@ export class UsersService {
 
   constructor() { }
 
+  /**
+   * Loads profile by calling API using user's display ID
+   * @param userDisplayId the user's display ID
+   */
   loadProfile(userDisplayId: string) {
     this.http.get<UserProfile>(`${this.baseUrl}/${userDisplayId}`)
       .subscribe({
         next: (res) => this.profileSubject.next(res)
       });
+  }
+
+  /**
+   * Sets profile directly (no API call) if you already have the user profile data
+   * @param userProfile the profile object
+   */
+  setProfile(userProfile: UserProfile) {
+    this.profileSubject.next(userProfile);
   }
 
   updateProfile(req: FormData): Observable<UserProfile> {

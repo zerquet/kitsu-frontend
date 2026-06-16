@@ -7,15 +7,15 @@ import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../features/auth/services/auth.service';
 import { MediaReaction } from '../models/mediaReaction.model';
-import { GetMediaReactionsByUserItemResponse } from '../contracts/getMediaReactionByUserItemResponse.interface';
+import { GetMediaReactionByIdResponseDto } from '../../features/user/dtos/get-media-reaction-by-id-response.dto';
 import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
-import { mapGetMediaReactionByUserItemResponseToMediaReaction } from '../mapper';
 import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
 import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryRequest.interface';
 import { GetLibraryEntryResponseDto } from '../../features/anime/dtos/get-library-entry-response.dto';
 import { CreateLibraryEntryResponseDto } from '../../features/anime/dtos/create-library-entry-response.dto';
 import { UpdateLibraryEntryResponseDto } from '../../features/anime/dtos/update-library-entry-response.dto';
 import { UsersService } from './users.service';
+import { GetMediaReactionByUserResponseDto } from '../../features/user/dtos/get-media-reaction-by-user-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class UserAnimeService {
   private readonly baseUrl = `${environment.apiUrl}`
   private readonly libraryBaseUrl = `${environment.apiUrl}/library`;
   private readonly favoritesBaseUrl = `${environment.apiUrl}/favorites`;
-  private readonly reactionsBaseUrl = `${environment.apiUrl}/mediaReactions`;
+  private readonly mediaReactionsBaseUrl = `${environment.apiUrl}/mediaReactions`;
 
   profile$ = this.usersService.profile$;
   favoriteAnimes$ = new BehaviorSubject<FavoriteAnime[]>([]);
@@ -136,7 +136,7 @@ export class UserAnimeService {
 
   /** MEDIA REACTIONS METHODS */
   addMediaReaction(req: FormData): Observable<MediaReaction> {
-    return this.http.post<any>(this.reactionsBaseUrl, req)
+    return this.http.post<any>(this.mediaReactionsBaseUrl, req)
       .pipe(
         tap((res) => {
           const mediaReactions = this.mediaReactions$.getValue();
@@ -147,7 +147,7 @@ export class UserAnimeService {
   }
 
   updateMediaReaction(req: UpdateMediaReactionRequest): Observable<void> {
-    return this.http.put<void>(this.reactionsBaseUrl, req)
+    return this.http.put<void>(this.mediaReactionsBaseUrl, req)
       .pipe(
         tap(() => {
           const mediaReactions = this.mediaReactions$.getValue();
@@ -164,7 +164,7 @@ export class UserAnimeService {
   }
 
   deleteMediaReaction(reactionId: number): Observable<void> {
-    return this.http.delete<void>(`${this.reactionsBaseUrl}/${reactionId}`)
+    return this.http.delete<void>(`${this.mediaReactionsBaseUrl}/${reactionId}`)
       .pipe(
         tap(() => {
           const mediaReactions = this.mediaReactions$.value.filter((x) => x.id !== reactionId);
@@ -174,9 +174,9 @@ export class UserAnimeService {
   }
 
   loadUserMediaReactions(userDisplayId: string) {
-    this.http.get<GetMediaReactionsByUserItemResponse[]>(`${this.baseUrl}/${userDisplayId}/mediaReactions`)
+    this.http.get<GetMediaReactionByUserResponseDto[]>(`${this.baseUrl}/${userDisplayId}/mediaReactions`)
       .pipe(
-        map((reactions) => reactions.map(item => mapGetMediaReactionByUserItemResponseToMediaReaction(item)))
+        map((reactions) => reactions.map(item => this.mapMediaReactionDtoToModel(item)))
       )
       .subscribe((res) => {
         this.mediaReactions$.next(res);
@@ -185,9 +185,21 @@ export class UserAnimeService {
   }
 
   getMediaReactionById(id: number) {
-    return this.http.get<GetMediaReactionsByUserItemResponse>(`${this.reactionsBaseUrl}/${id}`)
-      .pipe(
-        map(reaction => mapGetMediaReactionByUserItemResponseToMediaReaction(reaction))
-      );
+    return this.http.get<GetMediaReactionByIdResponseDto>(`${this.mediaReactionsBaseUrl}/${id}`);
+  }
+
+  private mapMediaReactionDtoToModel(dto: GetMediaReactionByUserResponseDto): MediaReaction {
+    return {
+      id: dto.id,
+      userId: dto.userId,
+      animeId: dto.animeId,
+      animeTitle: dto.animeTitle,
+      animeImageUrl: dto.animeImageUrl,
+      animeMediaType: dto.animeMediaType,
+      animeYear: dto.animeYear,
+      reaction: dto.reaction,
+      libraryEntryId: dto.libraryEntryId,
+      upvoteCount: dto.upvoteCount
+    }
   }
 }

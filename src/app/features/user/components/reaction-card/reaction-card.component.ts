@@ -1,5 +1,4 @@
 import { Component, inject, Input } from '@angular/core';
-import { GetMediaReactionsByUserItemResponse } from '../../../../shared/contracts/getMediaReactionByUserItemResponse.interface';
 import { environment } from '../../../../../environments/environment';
 import { RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -37,8 +36,8 @@ export class ReactionCardComponent {
       libraryEntryId: this.reaction?.libraryEntryId,
       animeId: this.reaction?.animeId,
       reaction: this.reaction?.reaction,
-      animeTitle: this.reaction?.anime.title,
-      animeImageUrl: this.reaction?.anime.imageUrl
+      animeTitle: this.reaction?.animeTitle,
+      animeImageUrl: this.reaction?.animeImageUrl
     }
     const modal = this.modalService.open(EditMediaReactionModalComponent);
     modal.componentInstance.initializeModalData(model)

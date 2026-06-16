@@ -1,4 +1,4 @@
-export interface GetMediaReactionsByUserItemResponse {
+export interface GetMediaReactionByUserResponseDto {
   id: number;
   userId: string;
   libraryEntryId: number;

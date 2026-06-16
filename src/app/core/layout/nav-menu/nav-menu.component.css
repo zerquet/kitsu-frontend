@@ -21,9 +21,9 @@
   font-size: 14px;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
   color: RGBA(237, 240, 241, 1);
-  ;
 }
 
 #nav-search-form {

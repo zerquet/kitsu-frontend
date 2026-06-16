@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, switchMap } from 'rxjs';
-import { GetMediaReactionsByUserItemResponse } from '../../../../shared/contracts/getMediaReactionByUserItemResponse.interface';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, switchMap, tap } from 'rxjs';
+import { GetMediaReactionByIdResponseDto } from '../../dtos/get-media-reaction-by-id-response.dto';
 import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { ReactionCardComponent } from '../../components/reaction-card/reaction-card.component';
 import { AuthService } from '../../../../features/auth/services/auth.service';
 import { environment } from '../../../../../environments/environment';
+import { UsersService } from '../../../../shared/services/users.service';
 
 @Component({
   selector: 'app-media-reactions',
@@ -17,14 +18,20 @@ import { environment } from '../../../../../environments/environment';
 })
 export class MediaReactionsComponent {
   route = inject(ActivatedRoute);
-  usersService = inject(UserAnimeService);
+  userAnimeService = inject(UserAnimeService);
+  usersService = inject(UsersService);
   authService = inject(AuthService);
   environment = environment;
 
-  mediaReaction$ = this.route.params.pipe(
-    switchMap(params => this.usersService.getMediaReactionById(params['id']))
+  mediaReactionResponse$ = this.route.params.pipe(
+    switchMap(params => this.userAnimeService.getMediaReactionById(params['id'])),
+    tap(reaction => this.usersService.setProfile(reaction.userProfile))
   )
 
-  userProfile$ = this.authService.authenticatedUser$;
-  //latest change: diff session user and public reaction reaction UI
+  canEdit$ = this.usersService.canEdit$;
+  userProfile$ = this.usersService.profile$
+  vm$ = combineLatest([
+    this.mediaReactionResponse$,
+    this.userProfile$
+  ]).pipe(map(([mediaReaction, userProfile]) => ({ mediaReaction, userProfile })))
 }
