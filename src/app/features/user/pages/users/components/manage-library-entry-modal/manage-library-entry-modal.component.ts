@@ -1,12 +1,12 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Subject, BehaviorSubject, takeUntil } from 'rxjs';
+import { Subject, BehaviorSubject, takeUntil, take } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
-import { AuthService } from '../../../../../auth/services/auth.service';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
+import { UsersService } from '../../../../../../shared/services/users.service';
 
 @Component({
   selector: 'app-library-entry',
@@ -16,16 +16,12 @@ import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/up
   styleUrl: './manage-library-entry-modal.component.css'
 })
 export class ManageLibraryEntryModalComponent implements OnDestroy {
-  public authService = inject(AuthService);
-
-  private usersService = inject(UserAnimeService);
+  private userAnimeService = inject(UserAnimeService);
+  private usersService = inject(UsersService);
   private activeModal = inject(NgbActiveModal);
 
-  updateLibraryEntryForm = new FormGroup({
-    status: new FormControl<any>('', [this.statusIsDifferentValidator()]),
-    rating: new FormControl<any>(0, [this.ratingIsDifferentValidator()]),
-    progress: new FormControl<any>(0, [this.progressIsDifferentValidator()])
-  });
+  updateLibraryEntryForm!: FormGroup;
+  addNotAllowedClass = false;
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -34,14 +30,23 @@ export class ManageLibraryEntryModalComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
   libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
-  userProfile$ = this.usersService.profile$;
+  userProfile$ = this.userAnimeService.profile$;
+  canEdit$ = this.usersService.canEdit$;
 
   initializeModalData(entry: LibraryEntry) {
     this.libraryEntry$.next(entry);
 
-    this.updateLibraryEntryForm.patchValue({ "status": entry.watchStatus });
-    this.updateLibraryEntryForm.patchValue({ "rating": entry.userRating });
-    this.updateLibraryEntryForm.patchValue({ "progress": entry.episodesWatched });
+    this.canEdit$
+      .pipe(take(1))
+      .subscribe(canEdit => {
+        this.updateLibraryEntryForm = new FormGroup({
+          status: new FormControl<any>({ value: entry.watchStatus, disabled: !canEdit }, [this.statusIsDifferentValidator()]),
+          rating: new FormControl<any>({ value: entry.userRating, disabled: !canEdit }, [this.ratingIsDifferentValidator()]),
+          progress: new FormControl<any>({ value: entry.episodesWatched, disabled: !canEdit }, [this.progressIsDifferentValidator()])
+        });
+
+        this.addNotAllowedClass = !canEdit;
+      })
   }
 
   onCloseClick = () => this.activeModal.close();
@@ -65,14 +70,14 @@ export class ManageLibraryEntryModalComponent implements OnDestroy {
       req.userRating = this.rating.value
     }
 
-    this.usersService.updateEntry(req)
+    this.userAnimeService.updateEntry(req)
       .subscribe({
         next: () => this.activeModal.close()
       });
   }
 
   onDeleteEntryBtnClick() {
-    this.usersService.deleteEntry(this.libraryEntry$.value?.animeId!)
+    this.userAnimeService.deleteEntry(this.libraryEntry$.value?.animeId!)
       .subscribe({
         next: () => this.activeModal.close()
       });

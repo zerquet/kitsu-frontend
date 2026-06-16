@@ -30,7 +30,7 @@ import { LibraryEntryStatusComponent } from "./components/library-entry-status/l
   templateUrl: './anime.component.html',
   styleUrl: './anime.component.css'
 })
-export class AnimeComponent implements OnDestroy {
+export class AnimeComponent implements OnInit, OnDestroy {
   public authService = inject(AuthService);
 
   private route = inject(ActivatedRoute);
@@ -42,6 +42,17 @@ export class AnimeComponent implements OnDestroy {
   environment = environment;
   animeId = 0;
   animeEpisodeCount = 0;
+  isLoggedIn = false;
+
+  ngOnInit(): void {
+    this.authService.authenticatedUser$.subscribe({
+      next: (authenticatedUser) => {
+        if (authenticatedUser) {
+          this.isLoggedIn = true;
+        }
+      }
+    })
+  }
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -73,7 +84,7 @@ export class AnimeComponent implements OnDestroy {
   );
 
   onAddToFavoritesClick(anime: Anime) {
-    if (this.authService.authenticatedUser$.getValue() === null) {
+    if (!this.isLoggedIn) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }

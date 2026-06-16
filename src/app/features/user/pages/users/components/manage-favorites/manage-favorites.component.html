@@ -4,47 +4,44 @@
     <div id="search-section">
       <input formControlName="search" type="text" placeholder="Start typing to search">
       @if (showSearchResults === true) {
-        <div class="minimalistic-dropdown open">
-          <div class="results-scroller">
-            @if (searchResults$ | async; as searchResults) {
-              @for(anime of searchResults; track anime.id) {
-                <div (click)="onAnimeSelect(anime)" class="results-item"><strong>{{anime.title}}</strong></div>
-              }
-              @if (searchResults.length === 0) {
-                <div class="results-item"><strong>We couldn't find any results :&lpar;</strong></div>
-              }
-            }
-          </div>
+      <div class="minimalistic-dropdown open">
+        <div class="results-scroller">
+          @if (searchResults$ | async; as searchResults) {
+          @for(anime of searchResults; track anime.id) {
+          <div (click)="onAnimeSelect(anime)" class="results-item"><strong>{{anime.title}}</strong></div>
+          }
+          @if (searchResults.length === 0) {
+          <div class="results-item"><strong>We couldn't find any results :&lpar;</strong></div>
+          }
+          }
         </div>
+      </div>
       }
       <div></div>
     </div>
     <div>
       @if (pendingFavorites$ | async; as pendingFavorites) {
-        @for(favorite of pendingFavorites; track favorite.animeId) {
-          <div class="favorite-record-container">
-            <div class="favorite-info-section">
-              <div class="favorite-photo-section">
-                <a routerLink="/anime/{{favorite.animeId}}/summary" href="javascript:void(0);" (click)="onFavoriteImageClick()">
-                  <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.anime.imageUrl}}" />
-                </a>
-              </div>
-              <div class="favorite-title-section">
-                <span>{{favorite.anime.title}}</span>
-              </div>
-            </div>
-            <div class="favorite-remove-section">
-              <a 
-                (click)="onUnfavoriteClick(favorite.animeId)" 
-                ngbTooltip="Remove Favorite?" 
-                placement="start" 
-                href="javascript:void(0);"
-              >
-                <i class="bi bi-x-circle"></i>
-              </a>
-            </div>
+      @for(favorite of pendingFavorites; track favorite.animeId) {
+      <div class="favorite-record-container">
+        <div class="favorite-info-section">
+          <div class="favorite-photo-section">
+            <a routerLink="/anime/{{favorite.animeId}}/summary" href="javascript:void(0);"
+              (click)="onFavoriteImageClick()">
+              <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.anime.imageUrl}}" />
+            </a>
           </div>
-        }          
+          <div class="favorite-title-section">
+            <span>{{favorite.anime.title}}</span>
+          </div>
+        </div>
+        <div class="favorite-remove-section">
+          <a (click)="onUnfavoriteClick(favorite.animeId)" ngbTooltip="Remove Favorite?" placement="start"
+            href="javascript:void(0);">
+            <i class="bi bi-x-circle"></i>
+          </a>
+        </div>
+      </div>
+      }
       }
     </div>
   </form>

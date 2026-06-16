@@ -118,9 +118,13 @@
                 <span>{{entry.episodesWatched}}/{{entry.anime.episodeCount}}</span>
                 }
               </td>
-              <td class="edit-btn-cell"><input class="edit-entry-btn" type="button"
-                  [value]="authService.authenticatedUser$.getValue()!.id === user.id ? 'Edit' : 'More'"
-                  (click)="onEditMoreBtnClick(entry)">
+              <td class="edit-btn-cell">
+                @if (canEdit$ | async) {
+                <input class="edit-entry-btn" type="button" value="Edit" (click)="onEditMoreBtnClick(entry)">
+                }
+                @else {
+                <input class="edit-entry-btn" type="button" value="More" (click)="onEditMoreBtnClick(entry)">
+                }
               </td>
             </tr>
             }

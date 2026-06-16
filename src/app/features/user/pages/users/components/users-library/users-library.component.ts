@@ -21,7 +21,6 @@ import { UsersService } from '../../../../../../shared/services/users.service';
   styleUrl: './users-library.component.css'
 })
 export class UsersLibraryComponent implements OnInit {
-  public authService = inject(AuthService);
   private userAnimeService = inject(UserAnimeService);
   private usersService = inject(UsersService);
   private modalService = inject(NgbModal);

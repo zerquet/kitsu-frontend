@@ -8,6 +8,8 @@ import { JwtPayload } from '../jwtPayload.model';
 import { environment } from '../../../../environments/environment';
 import { Utils } from '../../../core/services/utils';
 import { Router } from '@angular/router';
+import { LoginResponseDto } from '../dtos/login-response.dto';
+import { UserProfile } from '../../../shared/models/userProfile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,7 @@ export class AuthService {
   private router = inject(Router);
   private readonly baseUrl = `${environment.apiUrl}`;
   private _tokenIsDecoded = false;
+  private currentUserSubject = new BehaviorSubject<AuthenticatedUser | null>(null);
 
   constructor() {
     if (this._tokenIsDecoded === false) {
@@ -24,22 +27,27 @@ export class AuthService {
     }
   }
 
-  authenticatedUser$ = new BehaviorSubject<AuthenticatedUser | null>(null);
+  authenticatedUser$ = this.currentUserSubject.asObservable();
   isAdminPage$ = new BehaviorSubject<boolean>(false); //variable to turn off nav menu in admin dashboard
 
   login(req: LoginRequest) {
-    return this.http.post<AuthenticatedUser>(`${this.baseUrl}/auth/login`, req)
+    return this.http.post<LoginResponseDto>(`${this.baseUrl}/auth/login`, req)
       .pipe(
         tap((res) => {
           localStorage.setItem("access_token", res.token);
-          this.authenticatedUser$.next(res);
+          if (!res.user) {
+            this.currentUserSubject.next(null);
+            return;
+          }
+          res.user.isAdmin = res.isAdmin
+          this.currentUserSubject.next(res.user);
         })
       );
   }
 
   logout() {
     localStorage.setItem("access_token", "");
-    this.authenticatedUser$.next(null);
+    this.currentUserSubject.next(null);
     this.router.navigate(['/explore'])
   }
 
@@ -52,9 +60,8 @@ export class AuthService {
         var authenticatedUser: AuthenticatedUser = {
           id: decoded.nameid,
           displayId: decoded.display_id,
-          username: decoded.given_name,
+          userName: decoded.given_name,
           email: decoded.email,
-          token: token,
           isAdmin: decoded.is_admin === "True" ? true : false,
           profilePhotoId: decoded.profile_photo_id,
           coverPhotoId: decoded.cover_photo_id,
@@ -63,12 +70,28 @@ export class AuthService {
           birthday: undefined,
           gender: ''
         };
-        this.authenticatedUser$.next(authenticatedUser);
+        this.currentUserSubject.next(authenticatedUser);
         this._tokenIsDecoded = true;
       }
       else {
         this.logout();
       }
     }
+  }
+
+  updateAuthenticatedUser(updatedUser: UserProfile) {
+    let currentUser = this.currentUserSubject.getValue();
+    if (currentUser === null) {
+      return;
+    }
+
+    currentUser.bio = updatedUser.bio;
+    currentUser.birthday = updatedUser.birthday;
+    currentUser.coverPhotoId = updatedUser.coverPhotoId;
+    currentUser.gender = updatedUser.gender;
+    currentUser.location = updatedUser.location;
+    currentUser.profilePhotoId = updatedUser.profilePhotoId;
+
+    this.currentUserSubject.next(currentUser);
   }
 }

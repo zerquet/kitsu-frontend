@@ -1,61 +1,61 @@
 @if (libraryEntry$.value !== null) {
-  <div id="editModalTitle">
-    <h4>{{libraryEntry$.value.anime.title}}</h4>
-    <span id="closeModal">
-      <i class="bi bi-x" (click)="onCloseClick()"></i>
-    </span>
-  </div>
-  <div id="editEntryModalContainer">
-    <form [formGroup]="updateLibraryEntryForm">
-      @if(userProfile$ | async; as user) {
-        <div class="flex">
-          <div><label for="status">Library Status</label></div>
-          <div>
-            <select formControlName="status" id="status" [disabled]="authService.authenticatedUser$.getValue()!.id !== user.id">
-              <option value="completed">Completed</option>
-              <option value="watching">Currently Watching</option>
-              <option value="planning">Want to Watch</option>
-            </select>
-          </div>
-        </div>
+<div id="editModalTitle">
+  <h4>{{libraryEntry$.value.anime.title}}</h4>
+  <span id="closeModal">
+    <i class="bi bi-x" (click)="onCloseClick()"></i>
+  </span>
+</div>
+<div id="editEntryModalContainer">
+  <form [formGroup]="updateLibraryEntryForm">
+    @if(userProfile$ | async; as user) {
+    <div class="flex">
+      <div><label for="status">Library Status</label></div>
+      <div>
+        <select formControlName="status" id="status" [class.notAllowedToEdit]="addNotAllowedClass">
+          <option value="completed">Completed</option>
+          <option value="watching">Currently Watching</option>
+          <option value="planning">Want to Watch</option>
+        </select>
+      </div>
+    </div>
 
-        <div class="flex">
-          <div><label for="progress">Progress</label></div>
-          <div>
-            <input formControlName="progress" type="number" id="progress" 
-              [max]="libraryEntry$.value.anime.episodeCount!" min="0" [value]="libraryEntry$.value.episodesWatched" 
-              [disabled]="authService.authenticatedUser$.getValue()!.id !== user.id"
-              [readonly]="authService.authenticatedUser$.getValue()!.id !== user.id">
-            <span> of {{libraryEntry$.value.anime.episodeCount}} episodes</span>
-          </div>
-        </div>
+    <div class="flex">
+      <div><label for="progress">Progress</label></div>
+      <div>
+        <input formControlName="progress" type="number" id="progress" [max]="libraryEntry$.value.anime.episodeCount!"
+          min="0" [value]="libraryEntry$.value.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass">
+        <span> of {{libraryEntry$.value.anime.episodeCount}} episodes</span>
+      </div>
+    </div>
 
-        <div class="flex">
-          <div><label for="rating">Rating</label></div>
-          <div>
-            <select formControlName="rating" id="rating" [disabled]="authService.authenticatedUser$.getValue()!.id !== user.id">
-              <option value="">-</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-        </div>
-        
-        @if(authService.authenticatedUser$.getValue()!.id === user.id) {   
-          <div class="flex">
-            <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteEntryBtnClick()"><i class="bi bi-trash3"></i></button></div>
-            <div><input type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid" (click)="onUpdateLibraryEntryFormSubmit()" class="save"></div>
-          </div>
-        }
-      }
-    </form>
-  </div>
+    <div class="flex">
+      <div><label for="rating">Rating</label></div>
+      <div>
+        <select formControlName="rating" id="rating" [class.notAllowedToEdit]="addNotAllowedClass">
+          <option value="">-</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+    </div>
+
+    @if(canEdit$ | async;) {
+    <div class="flex">
+      <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteEntryBtnClick()"><i
+            class="bi bi-trash3"></i></button></div>
+      <div><input type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
+          (click)="onUpdateLibraryEntryFormSubmit()" class="save"></div>
+    </div>
+    }
+    }
+  </form>
+</div>
 }

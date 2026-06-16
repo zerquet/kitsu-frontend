@@ -23,12 +23,13 @@ import { environment } from '../../../../environments/environment';
 export class NavMenuComponent {
   private modalService = inject(NgbModal);
   private animeService = inject(AnimeService);
-  public authService = inject(AuthService);
+  private authService = inject(AuthService);
 
   private destroy$ = new Subject<void>();
   private navMenuSearchDataService = inject(NavMenuSearchDataService);
   show$ = this.navMenuSearchDataService.show$;
   term$ = this.navMenuSearchDataService.term$;
+  authenticatedUser$ = this.authService.authenticatedUser$;
   form = new FormGroup({ searchControl: new FormControl() });
   environment = environment;
 

@@ -15,7 +15,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 @Component({
   selector: 'library-entry-status',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncPipe],
   templateUrl: './library-entry-status.component.html',
   styleUrl: './library-entry-status.component.css'
 })
@@ -27,6 +27,7 @@ export class LibraryEntryStatusComponent implements OnInit {
   animeId = input.required<number>();
   animeEpisodeCount = input.required<number>();
   libraryEntry$ = new BehaviorSubject<GetLibraryEntryResponseDto | null>(null);
+  isLoggedIn = false;
 
   updateLibraryEntryForm = new FormGroup({
     episodeProgress: new FormControl(),
@@ -37,25 +38,29 @@ export class LibraryEntryStatusComponent implements OnInit {
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
 
-    if (this.authService.authenticatedUser$.getValue() !== null) {
-      this.userAnimeService.getLibraryEntry(this.authService.authenticatedUser$.getValue()!.id, animeId)
-        .subscribe({
-          next: (entry) => {
-            this.libraryEntry$.next(entry);
-            if (entry === null) return;
+    this.authService.authenticatedUser$.subscribe({
+      next: (authenticatedUser) => {
+        if (authenticatedUser) {
+          this.isLoggedIn = true;
+          this.userAnimeService.getLibraryEntry(authenticatedUser.id, animeId)
+            .subscribe({
+              next: (entry) => {
+                this.libraryEntry$.next(entry);
+                if (entry === null) return;
 
-            this.updateLibraryEntryForm.patchValue({ "episodeProgress": entry.episodesWatched });
-            this.updateLibraryEntryForm.patchValue({ "status": entry.watchStatus });
-            this.updateLibraryEntryForm.patchValue({ "rating": entry.userRating });
-          }
-        });
-      //commenting out because GetAnimeById already returns isFavorite data
-      // this.usersService.getFavoriteAnime(animeId)
-      //   .subscribe({
-      //     next: (res) => this.isFavorite$.next(res !== null)
-      //   });
-    }
-
+                this.updateLibraryEntryForm.patchValue({ "episodeProgress": entry.episodesWatched });
+                this.updateLibraryEntryForm.patchValue({ "status": entry.watchStatus });
+                this.updateLibraryEntryForm.patchValue({ "rating": entry.userRating });
+              }
+            });
+          //commenting out because GetAnimeById already returns isFavorite data
+          // this.usersService.getFavoriteAnime(animeId)
+          //   .subscribe({
+          //     next: (res) => this.isFavorite$.next(res !== null)
+          //   });
+        }
+      }
+    })
   }
 
   onIncrementProgressClick(episodeCount: number) {
@@ -66,7 +71,7 @@ export class LibraryEntryStatusComponent implements OnInit {
   }
 
   onAddToLibraryClick(libraryName: string) {
-    if (this.authService.authenticatedUser$.getValue() === null) {
+    if (!this.isLoggedIn) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }

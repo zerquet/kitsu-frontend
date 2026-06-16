@@ -43,16 +43,7 @@ export class UsersService {
       .pipe(
         tap((res) => {
           this.profileSubject.next(res);
-          const currentAuthenticatedUser = this.authService.authenticatedUser$.getValue();
-          if (currentAuthenticatedUser !== null) {
-            currentAuthenticatedUser.bio = res.bio;
-            currentAuthenticatedUser.birthday = res.birthday;
-            currentAuthenticatedUser.coverPhotoId = res.coverPhotoId;
-            currentAuthenticatedUser.gender = res.gender;
-            currentAuthenticatedUser.location = res.location;
-            currentAuthenticatedUser.profilePhotoId = res.profilePhotoId;
-          }
-          this.authService.authenticatedUser$.next(currentAuthenticatedUser);
+          this.authService.updateAuthenticatedUser(res);
         })
       );
   }

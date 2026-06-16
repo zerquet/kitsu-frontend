@@ -1,7 +1,7 @@
 //User who is logged in
 export interface AuthenticatedUser {
   id: string;
-  username: string;
+  userName: string;
   displayId: string,
   location?: string;
   bio?: string;
@@ -10,6 +10,5 @@ export interface AuthenticatedUser {
   email: string;
   profilePhotoId?: string;
   coverPhotoId?: string;
-  isAdmin: boolean;
-  token: string;
+  isAdmin: boolean; //frontend-only property
 }

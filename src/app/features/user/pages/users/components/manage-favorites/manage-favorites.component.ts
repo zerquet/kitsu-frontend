@@ -9,7 +9,6 @@ import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { AnimeService } from '../../../../../../shared/services/anime.service';
 import { environment } from '../../../../../../../environments/environment';
 import { FavoriteAnime } from '../../../../../../shared/models/favoriteAnime.model';
-import { AuthService } from '../../../../../auth/services/auth.service';
 
 @Component({
   selector: 'manage-favorites',
@@ -21,7 +20,6 @@ import { AuthService } from '../../../../../auth/services/auth.service';
 export class ManageFavoritesComponent implements OnInit {
   private usersService = inject(UserAnimeService);
   private animeService = inject(AnimeService); //use setState fn to stop fetching all anime in ctor
-  private authService = inject(AuthService);
   @Input() parentModelRef: NgbActiveModal | null = null;
 
   showSearchResults = false;
@@ -76,18 +74,10 @@ export class ManageFavoritesComponent implements OnInit {
       //*Questionable: Creating instance of FavoriteAnime at this point which is later used in state after saving changes.
       //               Also, authenticated user's userId must always have a value.  */
       let favoriteToAdd: FavoriteAnime = {
-        userId: '',
-        animeId: 0,
-        anime: undefined!
+        animeId: anime.id,
+        anime: anime
       }
-      if (this.authService.authenticatedUser$.value !== null) {
-        favoriteToAdd.userId = this.authService.authenticatedUser$.value.id;
-        favoriteToAdd.animeId = anime.id;
-        favoriteToAdd.anime = anime;
-      }
-      else {
-        return;
-      }
+
       pendingFavorites.push(favoriteToAdd);
       //*Questionable */
       this.pendingFavorites$.next(pendingFavorites);

@@ -33,11 +33,14 @@ export class LoginComponent {
       email: this.email?.value,
       password: this.password?.value
     };
-    
+
     this.authService.login(req)
       .subscribe({
         next: (res) => {
-          this.toastService.show("Success", `Welcome back ${res.username}!`);
+          if (!res.user) {
+            return;
+          }
+          this.toastService.show("Success", `Welcome back ${res.user.userName}!`);
           this.activeModal.close();
         },
         error: (err) => this.errMsg = err.error
