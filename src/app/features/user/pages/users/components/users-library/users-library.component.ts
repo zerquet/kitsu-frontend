@@ -3,9 +3,8 @@ import { Component, ElementRef, inject, OnInit, Renderer2, ViewChild } from '@an
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, debounceTime, distinctUntilChanged } from 'rxjs';
-import { AuthService } from '../../../../../auth/services/auth.service';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ManageLibraryEntryModalComponent } from '../manage-library-entry-modal/manage-library-entry-modal.component';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { environment } from '../../../../../../../environments/environment';
@@ -16,7 +15,7 @@ import { UsersService } from '../../../../../../shared/services/users.service';
 @Component({
   selector: 'users-library',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink],
+  imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink, NgbTooltip],
   templateUrl: './users-library.component.html',
   styleUrl: './users-library.component.css'
 })
@@ -107,9 +106,27 @@ export class UsersLibraryComponent implements OnInit {
 
   selectSortOption = (option: string) => this.sortOption$.next(option);
 
-  toggleSortDirection() {
+  toggleSortDirection(tooltip: NgbTooltip) {
+    tooltip.close();
     const val = this.sortDirection$.value === "asc" ? "desc" : "asc";
     this.sortDirection$.next(val);
+  }
+
+  getTooltipInfo() {
+    let tooltipInfo = '';
+    let direction = this.sortDirection$.value;
+    let option = this.sortOption$.value;
+
+    if (option === 'Title')
+      tooltipInfo = direction === 'desc' ? 'Z-A' : 'A-Z';
+
+    if (option === 'Length')
+      tooltipInfo = direction === 'desc' ? 'Shortest First' : 'Longest First';
+
+    if (option === 'Rating')
+      tooltipInfo = direction === 'desc' ? 'Lowest First' : 'Highest First';
+
+    return tooltipInfo;
   }
 
   onEditMoreBtnClick(entry: LibraryEntry) { //can this be handled by service?    
@@ -187,15 +204,15 @@ export class UsersLibraryComponent implements OnInit {
     }
     else if (column === "Length") {
       if (direction === "asc")
-        list.sort((a, b) => a.anime.episodeCount! < b.anime.episodeCount! ? -1 : 1)
-      else
         list.sort((a, b) => a.anime.episodeCount! < b.anime.episodeCount! ? 1 : -1)
+      else
+        list.sort((a, b) => a.anime.episodeCount! < b.anime.episodeCount! ? -1 : 1)
     }
     else if (column === "Rating") {
       if (direction === "asc")
-        list.sort((a, b) => a.userRating! < b.userRating! ? -1 : 1)
-      else
         list.sort((a, b) => a.userRating! < b.userRating! ? 1 : -1)
+      else
+        list.sort((a, b) => a.userRating! < b.userRating! ? -1 : 1)
     }
 
     return list;

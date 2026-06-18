@@ -1,10 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { BehaviorSubject, distinctUntilChanged, switchMap, takeUntil, debounceTime, tap, Subject, Observable, combineLatest, map, of } from 'rxjs';
 import { Utils } from '../../../../core/services/utils';
-import { Anime } from '../../../../shared/models/anime.model';
 import { Category } from '../../../../shared/models/category.model';
 import { Franchise } from '../../../../shared/models/franchise.model';
 import { AnimeService } from '../../../../shared/services/anime.service';

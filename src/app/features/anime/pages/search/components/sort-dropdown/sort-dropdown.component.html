@@ -3,7 +3,15 @@
     {{dataService.sortOption$.getValue()}}
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item cursor" (click)="changeSortOption('Rating')">Average Rating</a></li>
-    <li><a class="dropdown-item cursor" (click)="changeSortOption('Title')">Anime Title</a></li>
+    <li>
+      <a class="dropdown-item cursor" (click)="changeSortOption('Rating')">
+        Average Rating <i *ngIf="selectedOption.getValue() === 'Rating'" class="bi bi-check"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item cursor" (click)="changeSortOption('Title')">
+        Anime Title <i *ngIf="selectedOption.getValue() === 'Title'" class="bi bi-check"></i>
+      </a>
+    </li>
   </ul>
 </div>

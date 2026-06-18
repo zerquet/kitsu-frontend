@@ -71,6 +71,7 @@ body {
 }
 
 .mdc-slider__thumb-knob {
+  border-radius: 50% !important;
   border-width: 4px !important;
   width: 15px !important;
   height: 15px !important;

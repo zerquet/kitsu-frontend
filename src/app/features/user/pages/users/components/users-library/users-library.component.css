@@ -178,7 +178,8 @@ tbody {
 }
 
 .title-cell-title:hover,
-.media-reaction-add i:hover {
+.media-reaction-add i:hover,
+.media-reaction-edit i:hover {
   color: #f75239;
   cursor: pointer;
 }
@@ -186,6 +187,8 @@ tbody {
 .media-reaction-add {
   display: none;
 }
+
+.media-reaction-edit {}
 
 .title-cell:hover .media-reaction-add {
   display: block;

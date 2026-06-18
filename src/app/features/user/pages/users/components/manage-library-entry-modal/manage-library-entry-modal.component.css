@@ -3,14 +3,35 @@
 }
 
 #editEntryModalContainer {
+  background-color: #f7f7f7;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#edit-form-fields {
   padding: 20px;
 }
 
 #editModalTitle {
   display: flex;
   justify-content: space-between;
-  padding: 10px 10px 5px 10px;
-  border-bottom: 1px solid #efeef1;
+  padding: 20px 20px 5px 20px;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #fafafa;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+#editModalTitle h4 {
+  font-weight: 600;
+}
+
+#editModalFooter {
+  background-color: #fafafa;
+  border-top: 1px solid #e5e5e5;
+  padding: 20px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 #closeModal {
@@ -19,13 +40,11 @@
 }
 
 #closeModal:hover {
-  color: #fff;
+  color: #000;
 }
 
 form input,
 form select {
-  border: none;
-  border-radius: 3px;
   cursor: pointer;
 }
 
@@ -42,22 +61,49 @@ form select:hover {
   flex: 1;
 }
 
-select#status {
-  height: 25px;
-}
-
 #removeFromLibraryBtn {
   text-decoration: none;
   border: 1px solid #efeef1;
   border-radius: 3px;
+  padding: 9px;
+  font-size: 14px;
 }
 
 #removeFromLibraryBtn i {
-  color: #ee5555;
   padding-left: 5px;
   padding-right: 5px;
 }
 
+#removeFromLibraryBtn:hover {
+  background-color: #ffbbb5;
+  color: #6b1e16;
+}
+
 .notAllowedToEdit {
   cursor: not-allowed !important;
+}
+
+#saveChangesBtn {
+  display: block;
+  background-color: #16a085;
+  margin-left: auto;
+  margin-right: 0;
+  border-style: none;
+  border-radius: 3px;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+#saveChangesBtn:hover {
+  background-color: #19b698;
+}
+
+#saveChangesBtn.disabled {
+  cursor: not-allowed;
+  background-color: #B4B4B4;
+}
+
+#saveChangesBtn.disabled:hover {
+  background-color: #B4B4B4;
 }

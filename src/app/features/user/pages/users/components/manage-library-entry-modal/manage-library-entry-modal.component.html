@@ -8,51 +8,55 @@
 <div id="editEntryModalContainer">
   <form [formGroup]="updateLibraryEntryForm">
     @if(userProfile$ | async; as user) {
-    <div class="flex">
-      <div><label for="status">Library Status</label></div>
-      <div>
-        <select formControlName="status" id="status" [class.notAllowedToEdit]="addNotAllowedClass">
-          <option value="completed">Completed</option>
-          <option value="watching">Currently Watching</option>
-          <option value="planning">Want to Watch</option>
-        </select>
+    <div id="edit-form-fields">
+      <div class="flex">
+        <div><label for="status">Library Status</label></div>
+        <div>
+          <select formControlName="status" id="status" [class.notAllowedToEdit]="addNotAllowedClass"
+            class="form-select form-select-sm shadow-none">
+            <option value="completed">Completed</option>
+            <option value="watching">Currently Watching</option>
+            <option value="planning">Want to Watch</option>
+          </select>
+        </div>
       </div>
-    </div>
-
-    <div class="flex">
-      <div><label for="progress">Progress</label></div>
-      <div>
-        <input formControlName="progress" type="number" id="progress" [max]="libraryEntry$.value.anime.episodeCount!"
-          min="0" [value]="libraryEntry$.value.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass">
-        <span> of {{libraryEntry$.value.anime.episodeCount}} episodes</span>
+      <div class="flex">
+        <div><label for="progress">Progress</label></div>
+        <div class="input-group">
+          <input formControlName="progress" type="number" id="progress" [max]="libraryEntry$.value.anime.episodeCount!"
+            min="0" [value]="libraryEntry$.value.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass"
+            class="form-control form-control-sm shadow-none">
+          <span class="input-group-text"> of {{libraryEntry$.value.anime.episodeCount}} episodes</span>
+        </div>
       </div>
-    </div>
-
-    <div class="flex">
-      <div><label for="rating">Rating</label></div>
-      <div>
-        <select formControlName="rating" id="rating" [class.notAllowedToEdit]="addNotAllowedClass">
-          <option value="">-</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
+      <div class="flex">
+        <div><label for="rating">Rating</label></div>
+        <div>
+          <select formControlName="rating" id="rating" [class.notAllowedToEdit]="addNotAllowedClass"
+            class="form-select form-select-sm shadow-none">
+            <option value="">-</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
       </div>
     </div>
 
     @if(canEdit$ | async;) {
-    <div class="flex">
-      <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteEntryBtnClick()"><i
-            class="bi bi-trash3"></i></button></div>
-      <div><input type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
-          (click)="onUpdateLibraryEntryFormSubmit()" class="save"></div>
+    <div id="editModalFooter" class="flex">
+      <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteEntryBtnClick()" placement="right"
+          ngbTooltip="Remove from Library" [openDelay]="150" [closeDelay]="100"><i class="bi bi-trash"></i></button>
+      </div>
+      <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
+          [class.disabled]="updateLibraryEntryForm.valid" (click)="onUpdateLibraryEntryFormSubmit()" class="save"></div>
     </div>
     }
     }

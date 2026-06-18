@@ -2,7 +2,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, BehaviorSubject, takeUntil, take } from 'rxjs';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
@@ -11,7 +11,7 @@ import { UsersService } from '../../../../../../shared/services/users.service';
 @Component({
   selector: 'app-library-entry',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe],
+  imports: [ReactiveFormsModule, AsyncPipe, NgbTooltip],
   templateUrl: './manage-library-entry-modal.component.html',
   styleUrl: './manage-library-entry-modal.component.css'
 })
