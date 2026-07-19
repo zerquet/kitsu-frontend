@@ -11,6 +11,9 @@ import { environment } from '../../../../../../../environments/environment';
 import { AddMediaReactionModalComponent } from '../add-media-reaction-modal/add-media-reaction-modal.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { UsersService } from '../../../../../../shared/services/users.service';
+import { MediaReaction } from '../../../../../../shared/models/mediaReaction.model';
+import { EditMediaReactionModalComponent } from '../../../../components/edit-media-reaction-modal/edit-media-reaction-modal.component';
+import { EditMediaReactionModel } from '../../../../models/edit-media-reaction.model';
 
 @Component({
   selector: 'users-library',
@@ -179,9 +182,23 @@ export class UsersLibraryComponent implements OnInit {
     return list.filter(a => a.watchStatus === type).length;
   }
 
-  onAddMediaReactionClick(anime: LibraryEntry, userId: string) {
+  onAddMediaReactionClick(anime: LibraryEntry) {
     const modal = this.modalService.open(AddMediaReactionModalComponent);
-    modal.componentInstance.initializeModalData(anime, userId);
+    modal.componentInstance.initializeModalData(anime);
+  }
+
+  onEditMediaReactionClick(reaction: MediaReaction) {
+    const model: EditMediaReactionModel = {
+      reactionId: reaction.id,
+      userId: reaction.userId,
+      libraryEntryId: reaction.libraryEntryId,
+      animeId: reaction.animeId,
+      reaction: reaction.reaction,
+      animeTitle: reaction.animeTitle,
+      animeImageUrl: reaction.animeImageUrl
+    }
+    const modal = this.modalService.open(EditMediaReactionModalComponent);
+    modal.componentInstance.initializeModalData(model)
   }
 
   private sorter(list: LibraryEntry[], column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {

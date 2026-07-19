@@ -1,21 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../../environments/environment';
-import { LibraryEntry } from '../../../../shared/models/libraryEntry.model';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 import { FormControl, FormControlName, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UpdateMediaReactionRequest } from '../../../../shared/contracts/updateMediaReactionRequest.interface';
-
-export interface EditMediaReactionModel {
-  reactionId: number,
-  userId: string | undefined,
-  libraryEntryId: number | undefined,
-  animeId: number | undefined,
-  reaction: string | undefined,
-  animeTitle: string | undefined,
-  animeImageUrl: string | undefined,
-}
+import { EditMediaReactionModel } from '../../models/edit-media-reaction.model';
 
 @Component({
   selector: 'edit-media-reaction',
@@ -24,7 +14,7 @@ export interface EditMediaReactionModel {
   templateUrl: './edit-media-reaction-modal.component.html',
   styleUrl: './edit-media-reaction-modal.component.css'
 })
-export class EditMediaReactionModalComponent {
+export class EditMediaReactionModalComponent implements OnInit {
   public activeModal = inject(NgbActiveModal);
   public model: EditMediaReactionModel | null = null;
   public environment = environment;
@@ -39,6 +29,24 @@ export class EditMediaReactionModalComponent {
     userId: new FormControl('')
   });
 
+  charsLeft = 140;
+
+  ngOnInit(): void {
+    this.editMediaReactionForm.controls['reaction'].valueChanges.pipe(
+
+    ).subscribe((term) => {
+      if (!term) {
+        this.charsLeft = 140;
+      }
+      else if (term.length === 0) {
+        this.charsLeft = 140;
+      }
+      else {
+        this.charsLeft = 140 - term?.length;
+      }
+    })
+  }
+
   initializeModalData(data: EditMediaReactionModel) {
     this.model = data;
     this.editMediaReactionForm.patchValue({ "animeId": data.animeId })
@@ -46,6 +54,7 @@ export class EditMediaReactionModalComponent {
     this.editMediaReactionForm.patchValue({ "userId": data.userId })
     this.editMediaReactionForm.patchValue({ "reactionId": data.reactionId })
     this.editMediaReactionForm.patchValue({ "reaction": data.reaction })
+    this.charsLeft = 140 - (data.reaction?.length ?? 0);
   }
 
   onMediaReactionEditSubmit() {

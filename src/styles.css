@@ -34,6 +34,7 @@
   --text-turquoise: #1abc9c;
   --disabled-turquoise: #79beb0;
   --hover-gray: #c1c1c1;
+  --invalid-orange: #e74c3c;
 }
 
 * {

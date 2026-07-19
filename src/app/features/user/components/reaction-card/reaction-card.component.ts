@@ -2,11 +2,12 @@ import { Component, inject, Input } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EditMediaReactionModalComponent, EditMediaReactionModel } from '../edit-media-reaction-modal/edit-media-reaction-modal.component';
+import { EditMediaReactionModalComponent } from '../edit-media-reaction-modal/edit-media-reaction-modal.component';
 import { DeleteMediaReactionModalComponent } from '../delete-media-reaction-modal/delete-media-reaction-modal.component';
 import { MediaReaction } from '../../../../shared/models/mediaReaction.model';
 import { UsersService } from '../../../../shared/services/users.service';
 import { AsyncPipe } from '@angular/common';
+import { EditMediaReactionModel } from '../../models/edit-media-reaction.model';
 
 @Component({
   selector: 'reaction-card',

@@ -52,13 +52,14 @@
                   </div>
                   @if (entry.mediaReaction) {
                   <div class="media-reaction-edit">
-                    <i class="bi bi-chat-left-dots" (click)="onAddMediaReactionClick(entry, user.id)" placement="bottom"
-                      [openDelay]="150" [closeDelay]="100" [ngbTooltip]="entry.mediaReaction.reaction"></i>
+                    <i class="bi bi-chat-left-dots" (click)="onEditMediaReactionClick(entry.mediaReaction)"
+                      placement="bottom" [openDelay]="150" [closeDelay]="100"
+                      [ngbTooltip]="entry.mediaReaction.reaction"></i>
                   </div>
                   }
                   @else {
                   <div class="media-reaction-add">
-                    <i class="bi bi-plus-circle" (click)="onAddMediaReactionClick(entry, user.id)" placement="bottom"
+                    <i class="bi bi-plus-circle" (click)="onAddMediaReactionClick(entry)" placement="bottom"
                       [openDelay]="150" [closeDelay]="100" ngbTooltip="Add Reaction"></i>
                   </div>
                   }

@@ -17,6 +17,7 @@ import { UpdateLibraryEntryResponseDto } from '../../features/anime/dtos/update-
 import { UsersService } from './users.service';
 import { GetMediaReactionByUserResponseDto } from '../../features/user/dtos/get-media-reaction-by-user-response.dto';
 import { AddMediaReactionResponseDto } from '../../features/user/dtos/add-media-reaction-response.dto';
+import { GetLibraryResponseDto } from '../../features/user/dtos/get-library-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class UserAnimeService {
 
   profile$ = this.usersService.profile$;
   favoriteAnimes$ = new BehaviorSubject<FavoriteAnime[]>([]);
-  library$ = new BehaviorSubject<LibraryEntry[]>([]);
+  library$ = new BehaviorSubject<GetLibraryResponseDto[]>([]);
   mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
   toastService: any;
 
@@ -50,7 +51,7 @@ export class UserAnimeService {
 
   loadUserLibrary(userDisplayId: string) {
     //This does not handle users with empty library
-    this.http.get<LibraryEntry[]>(`${this.libraryBaseUrl}/${userDisplayId}`)
+    this.http.get<GetLibraryResponseDto[]>(`${this.libraryBaseUrl}/${userDisplayId}`)
       .subscribe((library) => {
         this.library$.next(library);
       });
@@ -146,18 +147,18 @@ export class UserAnimeService {
   updateMediaReaction(req: UpdateMediaReactionRequest): Observable<void> {
     return this.http.put<void>(this.mediaReactionsBaseUrl, req)
       .pipe(
-        tap(() => {
-          const mediaReactions = this.mediaReactions$.getValue();
-          let mediaReactionIndex = mediaReactions.findIndex((e) => e.id == req.reactionId);
-          let mediaReactionToUpdate = mediaReactions[mediaReactionIndex];
+      // tap(() => {
+      //   const mediaReactions = this.mediaReactions$.getValue();
+      //   let mediaReactionIndex = mediaReactions.findIndex((e) => e.id == req.reactionId);
+      //   let mediaReactionToUpdate = mediaReactions[mediaReactionIndex];
 
-          mediaReactionToUpdate.reaction = req.reaction;
+      //   mediaReactionToUpdate.reaction = req.reaction;
 
-          mediaReactions[mediaReactionIndex] = mediaReactionToUpdate
+      //   mediaReactions[mediaReactionIndex] = mediaReactionToUpdate
 
-          this.mediaReactions$.next(mediaReactions);
-        })
-      );
+      //   this.mediaReactions$.next(mediaReactions);
+      // })
+    );
   }
 
   deleteMediaReaction(reactionId: number): Observable<void> {

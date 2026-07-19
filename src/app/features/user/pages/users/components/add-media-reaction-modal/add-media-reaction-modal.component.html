@@ -5,7 +5,7 @@
   <div class="add-reaction-form-container">
     <div class="reaction-anime-name">
       <div>{{animeMetadata.anime.title}}</div>
-      <div class="text-left">140</div>
+      <div class="text-left" [class.invalid]="charsLeft === 140">{{charsLeft}}</div>
     </div>
     <form [formGroup]="addMediaReactionForm" (submit)="onMediaReactionAddSubmit()">
       <div>

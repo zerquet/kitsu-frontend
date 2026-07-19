@@ -21,14 +21,17 @@
   border: 1px solid #eaeaea;
   padding: 8px 16px;
   transition: all 80ms ease-in-out;
+  color: #9f9f9f;
 }
 
 .anime-tabs ul li:hover {
   background-color: #f7f7f7;
+  color: #464646;
 }
 
 .anime-tabs ul li.active {
   background-color: #f7f7f7;
+  color: #464646;
 }
 
 .anime-tabs ul li.active:hover {
