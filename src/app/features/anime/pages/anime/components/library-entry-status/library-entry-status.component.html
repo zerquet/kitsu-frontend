@@ -1,67 +1,36 @@
 <div id="sidebar-form">
-  <!--Anime not in user's library-->
+  <!--New library entry or user logged out-->
   @if(this.libraryEntry$.getValue() === null || !(this.authService.authenticatedUser$ | async);) {
-  <span id="sidebar-heading"><span>Add to Library</span></span>
-  <div id="sidebar-container">
-    <div><input class="sidebar-watch-status-btn mb-2" id="completed-status-btn" type="button" value="Completed"
-        (click)="onAddToLibraryClick('completed')" /></div>
-    <div><input class="sidebar-watch-status-btn mb-2" id="planning-status-btn" type="button" value="Want to Watch"
-        (click)="onAddToLibraryClick('planning')" /></div>
-    <div><input class="sidebar-watch-status-btn mb-2" id="watching-status-btn" type="button" value="Started Watching"
-        (click)="onAddToLibraryClick('watching')" /></div>
-  </div>
+    <span id="sidebar-heading"><span>Add to Library</span></span>
+    <div id="sidebar-container">
+      <div>
+        <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
+          (click)="onAddToLibraryClick('completed')" />
+      </div>
+      <div>
+        <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Want to Watch"
+          (click)="onAddToLibraryClick('planning')" />
+      </div>
+      <div>
+        <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started Watching"
+          (click)="onAddToLibraryClick('watching')" />
+      </div>
+    </div>
   }
-  <!--User completed anime-->
-  @else {
-  <span id="sidebar-heading"><span>Update Library</span></span>
-  <div id="sidebar-container">
-    <form method="post" [formGroup]="updateLibraryEntryForm" (submit)="onUpdateLibraryEntryFormSubmit()">
-
-      <div class="sidebar-field-container">
-        <label for="status-field">Status: </label>
-        <select formControlName="status" id="status-field">
-          <option value="completed">Completed</option>
-          <option value="watching">Watching</option>
-          <option value="planning">Plan to Watch</option>
-        </select>
+  <!-- Anime is in library -->
+  @else if (this.libraryEntry$.getValue()?.watchStatus === 'completed') {
+    <span id="sidebar-heading"><span>Update Library</span></span>
+    <div id="sidebar-container">
+      <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
+      <div>
+        <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating"
+          (click)="onAddToLibraryClick('planning')" />
       </div>
-
-      <div class="sidebar-field-container">
-        <label for="sidebar-progress-field">Progress: </label>
-        <div class="mb-1">
-          <input formControlName="episodeProgress" type="text" id="sidebar-progress-field" min="0"
-            [max]="animeEpisodeCount()">
-          <span>/ {{animeEpisodeCount()}}
-            <span class="increment-episode-span" (click)="onIncrementProgressClick(animeEpisodeCount())"><i
-                class="bi bi-plus-circle-fill"></i></span>
-          </span>
-        </div>
+      <div>
+        <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Post Reaction" 
+          (click)="onAddToLibraryClick('watching')" />
       </div>
-
-      <div class="sidebar-field-container">
-        <label for="sidebar-user-rating-field">Score: </label>
-        <select formControlName="rating" id="sidebar-user-rating-field">
-          <option value="">-</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
-      </div>
-
-      <div class="sidebar-field-container">
-        <input type="submit" value="Update" id="edit-btn" />
-        <div id="delete-btn-container"><button id="delete-btn" type="button" (click)="onDeleteEntryBtnClick()"
-            title="Delete from library"><i class="bi bi-trash3"></i></button></div>
-      </div>
-
-    </form>
-  </div>
+      <div class="edit-library-entry"><span (click)="onEditLibraryEntryClick()">Edit Library Entry</span></div>
+    </div>
   }
 </div>

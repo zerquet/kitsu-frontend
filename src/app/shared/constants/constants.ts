@@ -1,0 +1,1 @@
+export const MAX_EPISODE_PROGRESS = 1500;

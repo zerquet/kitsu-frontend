@@ -3,10 +3,11 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, BehaviorSubject, takeUntil, take } from 'rxjs';
 import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
-import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
-import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
-import { UsersService } from '../../../../../../shared/services/users.service';
+import { UserAnimeService } from '../../../shared/services/user-anime.service';
+import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
+import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
+import { UsersService } from '../../../shared/services/users.service';
+import { progressIsValid } from '../../../shared/validators/validators';
 
 @Component({
   selector: 'app-library-entry',
@@ -30,12 +31,13 @@ export class ManageLibraryEntryModalComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
   libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
-  userProfile$ = this.userAnimeService.profile$;
   canEdit$ = this.usersService.canEdit$;
 
   initializeModalData(entry: LibraryEntry) {
+    
     this.libraryEntry$.next(entry);
-
+    console.log(this.libraryEntry$.getValue());
+    
     this.canEdit$
       .pipe(take(1))
       .subscribe(canEdit => {
@@ -61,6 +63,12 @@ export class ManageLibraryEntryModalComponent implements OnDestroy {
       req.libraryEntryId = this.libraryEntry$.value.id
     }
     if (this.progress !== null) {
+      const animeEpisodeCount = this.libraryEntry$.value?.episodesWatched;
+      if (!progressIsValid(this.progress.value, animeEpisodeCount)) {
+        //If progress is invalid, reset its value.
+        this.progress.patchValue(animeEpisodeCount);
+        return;
+      }
       req.episodesWatched = this.progress.value
     }
     if (this.status !== null) {

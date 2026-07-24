@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, input } from '@angular/core';
+import { Component, inject, OnInit, input, DestroyRef } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AuthService } from '../../../../../auth/services/auth.service';
@@ -11,6 +11,9 @@ import { Anime } from '../../../../../../shared/models/anime.model';
 import { RegisterComponent } from '../../../../../auth/register/register.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { ManageLibraryEntryModalComponent } from '../../../../../../shared/components/manage-library-entry-modal/manage-library-entry-modal.component';
+import { of, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'library-entry-status',
@@ -24,6 +27,7 @@ export class LibraryEntryStatusComponent implements OnInit {
   private userAnimeService = inject(UserAnimeService);
   private modalService = inject(NgbModal);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   animeId = input.required<number>();
   animeEpisodeCount = input.required<number>();
   libraryEntry$ = new BehaviorSubject<GetLibraryEntryResponseDto | null>(null);
@@ -38,29 +42,27 @@ export class LibraryEntryStatusComponent implements OnInit {
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
 
-    this.authService.authenticatedUser$.subscribe({
-      next: (authenticatedUser) => {
-        if (authenticatedUser) {
-          this.isLoggedIn = true;
-          this.userAnimeService.getLibraryEntry(authenticatedUser.id, animeId)
-            .subscribe({
-              next: (entry) => {
-                this.libraryEntry$.next(entry);
-                if (entry === null) return;
+    this.authService.authenticatedUser$.pipe(
+      switchMap(authenticatedUser => {
+        this.isLoggedIn = !!authenticatedUser;
 
-                this.updateLibraryEntryForm.patchValue({ "episodeProgress": entry.episodesWatched });
-                this.updateLibraryEntryForm.patchValue({ "status": entry.watchStatus });
-                this.updateLibraryEntryForm.patchValue({ "rating": entry.userRating });
-              }
-            });
-          //commenting out because GetAnimeById already returns isFavorite data
-          // this.usersService.getFavoriteAnime(animeId)
-          //   .subscribe({
-          //     next: (res) => this.isFavorite$.next(res !== null)
-          //   });
-        }
-      }
-    })
+        if (!authenticatedUser)
+          return of(null)
+
+        return this.userAnimeService.getLibraryEntry(authenticatedUser.id, animeId);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(libraryEntry => {
+      this.libraryEntry$.next(libraryEntry);
+
+      if (libraryEntry === null) return;
+
+      this.updateLibraryEntryForm.patchValue({ "episodeProgress": libraryEntry.episodesWatched });
+      this.updateLibraryEntryForm.patchValue({ "status": libraryEntry.watchStatus });
+      this.updateLibraryEntryForm.patchValue({ "rating": libraryEntry.userRating });
+      console.log('inside');
+      console.log(this.libraryEntry$.getValue());
+    });
   }
 
   onIncrementProgressClick(episodeCount: number) {
@@ -76,17 +78,17 @@ export class LibraryEntryStatusComponent implements OnInit {
       signUpModalRef.componentInstance.name = "Sign In";
     }
     else {
-      const episodesCompleted = libraryName === 'completed' ? this.animeEpisodeCount() : 0;
+      const episodesWatched = libraryName === 'completed' ? this.animeEpisodeCount() : 0;
       let req: CreateLibraryEntryRequest = {
         animeId: this.animeId(),
         watchStatus: libraryName,
-        episodesWatched: episodesCompleted!
+        episodesWatched: episodesWatched
       }
 
       this.userAnimeService.createEntry(req)
         .subscribe({
           next: (res) => {
-            this.updateLibraryEntryForm.patchValue({ "episodeProgress": episodesCompleted });
+            this.updateLibraryEntryForm.patchValue({ "episodeProgress": episodesWatched });
             this.updateLibraryEntryForm.patchValue({ "status": libraryName });
             this.libraryEntry$.next(res);
             //above line is somehow both CreateLibraryEntryResponseDto and GetLibraryEntryResponseDto
@@ -98,6 +100,11 @@ export class LibraryEntryStatusComponent implements OnInit {
           }
         });
     }
+  }
+
+  onEditLibraryEntryClick() {
+    const modal = this.modalService.open(ManageLibraryEntryModalComponent);
+    modal.componentInstance.initializeModalData({...this.libraryEntry$.getValue(), anime: {}})
   }
 
   onUpdateLibraryEntryFormSubmit() {

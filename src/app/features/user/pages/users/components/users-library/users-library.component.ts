@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, debounceTime, distinctUntilChanged } from 'rxjs';
 import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { ManageLibraryEntryModalComponent } from '../manage-library-entry-modal/manage-library-entry-modal.component';
+import { ManageLibraryEntryModalComponent } from '../../../../../../shared/components/manage-library-entry-modal/manage-library-entry-modal.component';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { environment } from '../../../../../../../environments/environment';
 import { AddMediaReactionModalComponent } from '../add-media-reaction-modal/add-media-reaction-modal.component';
@@ -14,6 +14,7 @@ import { UsersService } from '../../../../../../shared/services/users.service';
 import { MediaReaction } from '../../../../../../shared/models/mediaReaction.model';
 import { EditMediaReactionModalComponent } from '../../../../components/edit-media-reaction-modal/edit-media-reaction-modal.component';
 import { EditMediaReactionModel } from '../../../../models/edit-media-reaction.model';
+import { progressIsValid } from '../../../../../../shared/validators/validators';
 
 @Component({
   selector: 'users-library',
@@ -46,6 +47,7 @@ export class UsersLibraryComponent implements OnInit {
           userRating: this.pendingProgressUpdate.userRating,
           watchStatus: this.pendingProgressUpdate.watchStatus
         };
+
         this.userAnimeService.updateEntry(req)
           .subscribe({
             next: () => this.pendingProgressUpdate = undefined
@@ -149,15 +151,25 @@ export class UsersLibraryComponent implements OnInit {
 
   onProgressChange(entry: LibraryEntry, event: Event) {
     //Save changes when user updates progress by +/-'ing so the rendered event listener can have access to it. //TODO check if this comment is still accurate. belongs below?
-    let potential = { ...entry };
-    potential.episodesWatched = Number((event.target as HTMLInputElement).value);
-    this.pendingProgressUpdate = potential;
+    let newProgress = Number((event.target as HTMLInputElement).value);
+    if (!progressIsValid(newProgress, entry.anime.episodeCount)) {
+      return;
+    }
+
+    let pending = { ...entry };
+    pending.episodesWatched = newProgress;
+    this.pendingProgressUpdate = pending;
   }
 
   onProgressAddClick(entry: LibraryEntry) {
+    let newProgress = entry.episodesWatched + 1;
+    if (!progressIsValid(newProgress, entry.anime.episodeCount)) {
+      return;
+    }
+
     let req: UpdateLibraryEntryRequest = {
       libraryEntryId: entry.id,
-      episodesWatched: entry.episodesWatched + 1,
+      episodesWatched: newProgress,
       userRating: entry.userRating,
       watchStatus: entry.watchStatus
     };
