@@ -3,11 +3,11 @@ import { MediaReaction } from "../../../shared/models/mediaReaction.model";
 
 export interface GetLibraryResponseDto {
   id: number;
-  displayId: string; //needed??
+  displayId?: string; //needed??
   animeId: number;
   watchStatus?: string;
-  userRating?: number;
   episodesWatched: number;
+  userRating?: number;
   anime: Anime;
   mediaReaction?: MediaReaction;
 }

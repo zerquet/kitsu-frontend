@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { UserProfile } from '../models/userProfile.model';
-import { LibraryEntry } from '../models/libraryEntry.model';
+import { LibraryEntry, LibraryEntryDetail, LibraryEntryWithUser } from '../models/library-entry.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../features/auth/services/auth.service';
@@ -18,6 +18,7 @@ import { UsersService } from './users.service';
 import { GetMediaReactionByUserResponseDto } from '../../features/user/dtos/get-media-reaction-by-user-response.dto';
 import { AddMediaReactionResponseDto } from '../../features/user/dtos/add-media-reaction-response.dto';
 import { GetLibraryResponseDto } from '../../features/user/dtos/get-library-response.dto';
+import { mapCreateLibraryEntryToLibraryEntry, mapGetLibraryEntryToLibraryEntry, mapGetLibraryToLibraryEntry, mapUpdateLibraryEntryToLibraryEntry } from '../mappers/library-entry.mapper';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class UserAnimeService {
 
   profile$ = this.usersService.profile$;
   favoriteAnimes$ = new BehaviorSubject<FavoriteAnime[]>([]);
-  library$ = new BehaviorSubject<GetLibraryResponseDto[]>([]);
+  library$ = new BehaviorSubject<LibraryEntryDetail[]>([]);
   mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
   toastService: any;
 
@@ -41,25 +42,30 @@ export class UserAnimeService {
   /*LIBRARY METHODS*/
 
   //profile is only relevant in the context of library page. here, i get userId from auth service.
-  getLibraryEntry(userId: string | null, animeId: number): Observable<GetLibraryEntryResponseDto | null> {
+  getLibraryEntry(userId: string | null, animeId: number): Observable<LibraryEntryWithUser | null> {
     if (userId === null)
       return of(null);
     else {
       return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
+        .pipe(map(mapGetLibraryEntryToLibraryEntry))
     }
   }
 
   loadUserLibrary(userDisplayId: string) {
     //This does not handle users with empty library
     this.http.get<GetLibraryResponseDto[]>(`${this.libraryBaseUrl}/${userDisplayId}`)
+      .pipe(map(libraryEntries => {
+        return libraryEntries.map(mapGetLibraryToLibraryEntry)
+      }))
       .subscribe((library) => {
         this.library$.next(library);
       });
   }
 
-  createEntry(req: CreateLibraryEntryRequest): Observable<CreateLibraryEntryResponseDto> {
+  createEntry(req: CreateLibraryEntryRequest): Observable<LibraryEntry> {
     return this.http.post<CreateLibraryEntryResponseDto>(`${this.libraryBaseUrl}`, req)
       .pipe(
+        map(mapCreateLibraryEntryToLibraryEntry),
         tap((res) => {
           // const library = this.library$.getValue();
           // library.push(res);
@@ -68,10 +74,11 @@ export class UserAnimeService {
       );
   }
 
-  updateEntry(req: UpdateLibraryEntryRequest): Observable<UpdateLibraryEntryResponseDto> {
-    req.userRating = Number(req.userRating) === 0 ? undefined : Number(req.userRating);
+  updateEntry(req: UpdateLibraryEntryRequest): Observable<LibraryEntry> {
+    req.userRating = Number(req.userRating) === 0 ? undefined : Number(req.userRating); //what do 0 and NULL/undefined represent? 
     return this.http.put<UpdateLibraryEntryResponseDto>(`${this.libraryBaseUrl}`, req)
       .pipe(
+        map(mapUpdateLibraryEntryToLibraryEntry)
       // tap((res) => {
       //   const library = this.library$.getValue();
       //   library[library.findIndex((e) => e.id == res.id)] = res;
@@ -85,7 +92,7 @@ export class UserAnimeService {
       .pipe(
         tap(() => {
           let library = this.library$.getValue();
-          library = library.filter((e) => e.anime.id !== animeId);
+          library = library.filter((e) => e.animeId !== animeId);
           this.library$.next(library);
         })
       );

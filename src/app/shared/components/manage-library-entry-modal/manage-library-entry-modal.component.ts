@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractContr
 import { Subject, BehaviorSubject, takeUntil, take } from 'rxjs';
 import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserAnimeService } from '../../../shared/services/user-anime.service';
-import { LibraryEntry } from '../../../shared/models/libraryEntry.model';
+import { LibraryEntry, LibraryEntryDetail } from '../../models/library-entry.model';
 import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { UsersService } from '../../../shared/services/users.service';
 import { progressIsValid } from '../../../shared/validators/validators';
@@ -16,7 +16,7 @@ import { progressIsValid } from '../../../shared/validators/validators';
   templateUrl: './manage-library-entry-modal.component.html',
   styleUrl: './manage-library-entry-modal.component.css'
 })
-export class ManageLibraryEntryModalComponent implements OnDestroy {
+export class ManageLibraryEntryModalComponent {
   private userAnimeService = inject(UserAnimeService);
   private usersService = inject(UsersService);
   private activeModal = inject(NgbActiveModal);
@@ -24,27 +24,19 @@ export class ManageLibraryEntryModalComponent implements OnDestroy {
   updateLibraryEntryForm!: FormGroup;
   addNotAllowedClass = false;
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private destroy$ = new Subject<void>();
-  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
+  libraryEntry$ = new BehaviorSubject<LibraryEntryDetail | null>(null);
   canEdit$ = this.usersService.canEdit$;
 
-  initializeModalData(entry: LibraryEntry) {
-    
-    this.libraryEntry$.next(entry);
-    console.log(this.libraryEntry$.getValue());
+  initializeModalData(libraryEntry: LibraryEntryDetail) {
+    this.libraryEntry$.next(libraryEntry);
     
     this.canEdit$
       .pipe(take(1))
       .subscribe(canEdit => {
         this.updateLibraryEntryForm = new FormGroup({
-          status: new FormControl<any>({ value: entry.watchStatus, disabled: !canEdit }, [this.statusIsDifferentValidator()]),
-          rating: new FormControl<any>({ value: entry.userRating, disabled: !canEdit }, [this.ratingIsDifferentValidator()]),
-          progress: new FormControl<any>({ value: entry.episodesWatched, disabled: !canEdit }, [this.progressIsDifferentValidator()])
+          status: new FormControl<any>({ value: libraryEntry.watchStatus, disabled: !canEdit }, [this.statusIsDifferentValidator()]),
+          rating: new FormControl<any>({ value: libraryEntry.userRating, disabled: !canEdit }, [this.ratingIsDifferentValidator()]),
+          progress: new FormControl<any>({ value: libraryEntry.episodesWatched, disabled: !canEdit }, [this.progressIsDifferentValidator()])
         });
 
         this.addNotAllowedClass = !canEdit;

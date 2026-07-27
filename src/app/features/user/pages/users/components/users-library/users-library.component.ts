@@ -3,7 +3,7 @@ import { Component, ElementRef, inject, OnInit, Renderer2, ViewChild } from '@an
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, debounceTime, distinctUntilChanged } from 'rxjs';
-import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
+import { LibraryEntry, LibraryEntryDetail } from '../../../../../../shared/models/library-entry.model';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ManageLibraryEntryModalComponent } from '../../../../../../shared/components/manage-library-entry-modal/manage-library-entry-modal.component';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
@@ -15,6 +15,7 @@ import { MediaReaction } from '../../../../../../shared/models/mediaReaction.mod
 import { EditMediaReactionModalComponent } from '../../../../components/edit-media-reaction-modal/edit-media-reaction-modal.component';
 import { EditMediaReactionModel } from '../../../../models/edit-media-reaction.model';
 import { progressIsValid } from '../../../../../../shared/validators/validators';
+import { AddMediaReactionModel } from '../../../../models/add-media-reaction.model';
 
 @Component({
   selector: 'users-library',
@@ -134,9 +135,9 @@ export class UsersLibraryComponent implements OnInit {
     return tooltipInfo;
   }
 
-  onEditMoreBtnClick(entry: LibraryEntry) { //can this be handled by service?    
+  onEditMoreBtnClick(libraryEntry: LibraryEntry) { //can this be handled by service?    
     const modal = this.modalService.open(ManageLibraryEntryModalComponent);
-    modal.componentInstance.initializeModalData({ ...entry });
+    modal.componentInstance.initializeModalData({ ...libraryEntry });
   }
 
   onRatingClick(animeId: number) {
@@ -149,29 +150,29 @@ export class UsersLibraryComponent implements OnInit {
     this.currAnimeIdForEditingProgress = animeId;
   }
 
-  onProgressChange(entry: LibraryEntry, event: Event) {
+  onProgressChange(libraryEntry: LibraryEntryDetail, event: Event) {
     //Save changes when user updates progress by +/-'ing so the rendered event listener can have access to it. //TODO check if this comment is still accurate. belongs below?
     let newProgress = Number((event.target as HTMLInputElement).value);
-    if (!progressIsValid(newProgress, entry.anime.episodeCount)) {
+    if (!progressIsValid(newProgress, libraryEntry.anime.episodeCount)) {
       return;
     }
 
-    let pending = { ...entry };
+    let pending = { ...libraryEntry };
     pending.episodesWatched = newProgress;
     this.pendingProgressUpdate = pending;
   }
 
-  onProgressAddClick(entry: LibraryEntry) {
-    let newProgress = entry.episodesWatched + 1;
-    if (!progressIsValid(newProgress, entry.anime.episodeCount)) {
+  onProgressAddClick(libraryEntry: LibraryEntryDetail) {
+    let newProgress = libraryEntry.episodesWatched + 1;
+    if (!progressIsValid(newProgress, libraryEntry.anime.episodeCount)) {
       return;
     }
 
     let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: entry.id,
+      libraryEntryId: libraryEntry.id,
       episodesWatched: newProgress,
-      userRating: entry.userRating,
-      watchStatus: entry.watchStatus
+      userRating: libraryEntry.userRating,
+      watchStatus: libraryEntry.watchStatus
     };
     this.userAnimeService.updateEntry(req)
       .subscribe({
@@ -179,12 +180,12 @@ export class UsersLibraryComponent implements OnInit {
       });
   }
 
-  onRatingValueSelect(entry: LibraryEntry, newRating: string) {
+  onRatingValueSelect(libraryEntry: LibraryEntry, newRating: string) {
     let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: entry.id,
-      episodesWatched: entry.episodesWatched,
+      libraryEntryId: libraryEntry.id,
+      episodesWatched: libraryEntry.episodesWatched,
       userRating: Number(newRating),
-      watchStatus: entry.watchStatus
+      watchStatus: libraryEntry.watchStatus
     };
     this.userAnimeService.updateEntry(req)
       .subscribe();
@@ -194,13 +195,19 @@ export class UsersLibraryComponent implements OnInit {
     return list.filter(a => a.watchStatus === type).length;
   }
 
-  onAddMediaReactionClick(anime: LibraryEntry) {
+  onAddMediaReaction(libraryEntry: LibraryEntryDetail) {
+    const data: AddMediaReactionModel = {
+      libraryEntryId: libraryEntry.id,
+      animeId: libraryEntry.animeId,
+      animeImageUrl: libraryEntry.anime.imageUrl,
+      animeTitle: libraryEntry.anime.title
+    }
     const modal = this.modalService.open(AddMediaReactionModalComponent);
-    modal.componentInstance.initializeModalData(anime);
+    modal.componentInstance.initializeModalData(data);
   }
 
   onEditMediaReactionClick(reaction: MediaReaction) {
-    const model: EditMediaReactionModel = {
+    const data: EditMediaReactionModel = {
       reactionId: reaction.id,
       userId: reaction.userId,
       libraryEntryId: reaction.libraryEntryId,
@@ -210,10 +217,10 @@ export class UsersLibraryComponent implements OnInit {
       animeImageUrl: reaction.animeImageUrl
     }
     const modal = this.modalService.open(EditMediaReactionModalComponent);
-    modal.componentInstance.initializeModalData(model)
+    modal.componentInstance.initializeModalData(data)
   }
 
-  private sorter(list: LibraryEntry[], column: string, direction: string, library: string, searchTerm: string): LibraryEntry[] {
+  private sorter(list: LibraryEntryDetail[], column: string, direction: string, library: string, searchTerm: string): LibraryEntryDetail[] {
     this.librarySearchNoResults = false;
 
     if (library !== "all")

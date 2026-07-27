@@ -4,16 +4,16 @@ import { UserAnimeService } from '../../../../../../shared/services/user-anime.s
 import { AuthService } from '../../../../../auth/services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { GetLibraryEntryResponseDto } from '../../../../dtos/get-library-entry-response.dto';
 import { CreateLibraryEntryRequest } from '../../../../../../shared/contracts/createLibraryEntryRequest.interface';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Anime } from '../../../../../../shared/models/anime.model';
 import { RegisterComponent } from '../../../../../auth/register/register.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ManageLibraryEntryModalComponent } from '../../../../../../shared/components/manage-library-entry-modal/manage-library-entry-modal.component';
-import { of, switchMap } from 'rxjs';
+import { of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LibraryEntry } from '../../../../../../shared/models/library-entry.model';
+import { UsersService } from '../../../../../../shared/services/users.service';
 
 @Component({
   selector: 'library-entry-status',
@@ -26,11 +26,12 @@ export class LibraryEntryStatusComponent implements OnInit {
   public authService = inject(AuthService);
   private userAnimeService = inject(UserAnimeService);
   private modalService = inject(NgbModal);
+  private usersService = inject(UsersService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   animeId = input.required<number>();
   animeEpisodeCount = input.required<number>();
-  libraryEntry$ = new BehaviorSubject<GetLibraryEntryResponseDto | null>(null);
+  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
   isLoggedIn = false;
 
   updateLibraryEntryForm = new FormGroup({
@@ -46,10 +47,12 @@ export class LibraryEntryStatusComponent implements OnInit {
       switchMap(authenticatedUser => {
         this.isLoggedIn = !!authenticatedUser;
 
-        if (!authenticatedUser)
-          return of(null)
+        if (!authenticatedUser) return of(null)
 
         return this.userAnimeService.getLibraryEntry(authenticatedUser.id, animeId);
+      }),
+      tap(libraryEntry => {
+        if (libraryEntry) this.usersService.setProfile(libraryEntry.userProfile);
       }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(libraryEntry => {
@@ -57,31 +60,31 @@ export class LibraryEntryStatusComponent implements OnInit {
 
       if (libraryEntry === null) return;
 
-      this.updateLibraryEntryForm.patchValue({ "episodeProgress": libraryEntry.episodesWatched });
-      this.updateLibraryEntryForm.patchValue({ "status": libraryEntry.watchStatus });
-      this.updateLibraryEntryForm.patchValue({ "rating": libraryEntry.userRating });
-      console.log('inside');
-      console.log(this.libraryEntry$.getValue());
+      this.updateLibraryEntryForm.patchValue({
+        episodeProgress: libraryEntry.episodesWatched,
+        status: libraryEntry.watchStatus,
+        rating: libraryEntry.userRating
+      });
     });
   }
 
-  onIncrementProgressClick(episodeCount: number) {
+  onIncrementProgress(episodeCount: number) {
     const currentProgress = this.episodeProgress?.value;
     if (currentProgress + 1 <= episodeCount) {
       this.episodeProgress?.patchValue(currentProgress + 1);
     }
   }
 
-  onAddToLibraryClick(libraryName: string) {
+  onAddToLibrary(watchStatus: string) {
     if (!this.isLoggedIn) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
     }
     else {
-      const episodesWatched = libraryName === 'completed' ? this.animeEpisodeCount() : 0;
-      let req: CreateLibraryEntryRequest = {
+      const episodesWatched = this.getEpisodesWatched(watchStatus);
+      const req: CreateLibraryEntryRequest = {
         animeId: this.animeId(),
-        watchStatus: libraryName,
+        watchStatus: watchStatus,
         episodesWatched: episodesWatched
       }
 
@@ -89,31 +92,29 @@ export class LibraryEntryStatusComponent implements OnInit {
         .subscribe({
           next: (res) => {
             this.updateLibraryEntryForm.patchValue({ "episodeProgress": episodesWatched });
-            this.updateLibraryEntryForm.patchValue({ "status": libraryName });
+            this.updateLibraryEntryForm.patchValue({ "status": watchStatus });
             this.libraryEntry$.next(res);
-            //above line is somehow both CreateLibraryEntryResponseDto and GetLibraryEntryResponseDto
-            //maybe because they have the same properties? Since this state tracks the status block on the page. 
-            //Merge the two dtos to one like UserAnimeStatusBlock? Or map the response Dtos to this new one and set
-            //libraryEntry$'s type to UserAnimeStatusBlock?
-            //same deal for the onUpdateLibraryEntryFormSubmit method below. 
-            //even more reason to move this "User Anime Status Block" to its own component. 
           }
         });
     }
   }
 
-  onEditLibraryEntryClick() {
-    const modal = this.modalService.open(ManageLibraryEntryModalComponent);
-    modal.componentInstance.initializeModalData({...this.libraryEntry$.getValue(), anime: {}})
+  private getEpisodesWatched(watchStatus: string) {
+    return watchStatus === 'completed' ? this.animeEpisodeCount() : 0;
   }
 
-  onUpdateLibraryEntryFormSubmit() {
+  onEditLibraryEntry() {
+    const modal = this.modalService.open(ManageLibraryEntryModalComponent);
+    modal.componentInstance.initializeModalData(this.libraryEntry$.getValue())
+  }
+
+  onSubmit() {
     let cached = this.libraryEntry$.value;
     if (!cached)
       return;
 
     let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: cached.libraryEntryId,
+      libraryEntryId: cached.id,
       episodesWatched: 0,
     }
 
@@ -138,7 +139,7 @@ export class LibraryEntryStatusComponent implements OnInit {
       });
   }
 
-  onDeleteEntryBtnClick = () => {
+  onDeleteLibraryEntry = () => {
     this.userAnimeService.deleteEntry(this.animeId())
       .subscribe({
         next: () => this.libraryEntry$.next(null),

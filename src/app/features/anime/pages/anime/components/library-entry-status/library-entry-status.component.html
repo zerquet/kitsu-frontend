@@ -5,15 +5,15 @@
     <div id="sidebar-container">
       <div>
         <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
-          (click)="onAddToLibraryClick('completed')" />
+          (click)="onAddToLibrary('completed')" />
       </div>
       <div>
         <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Want to Watch"
-          (click)="onAddToLibraryClick('planning')" />
+          (click)="onAddToLibrary('planning')" />
       </div>
       <div>
         <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started Watching"
-          (click)="onAddToLibraryClick('watching')" />
+          (click)="onAddToLibrary('watching')" />
       </div>
     </div>
   }
@@ -24,13 +24,13 @@
       <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
       <div>
         <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating"
-          (click)="onAddToLibraryClick('planning')" />
+          (click)="onAddToLibrary('planning')" />
       </div>
       <div>
         <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Post Reaction" 
-          (click)="onAddToLibraryClick('watching')" />
+          (click)="onAddToLibrary('watching')" />
       </div>
-      <div class="edit-library-entry"><span (click)="onEditLibraryEntryClick()">Edit Library Entry</span></div>
+      <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
     </div>
   }
 </div>

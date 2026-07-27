@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { LibraryEntry } from '../../../../../../shared/models/libraryEntry.model';
+import { LibraryEntry, LibraryEntryDetail } from '../../../../../../shared/models/library-entry.model';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
+import { AddMediaReactionModel } from '../../../../models/add-media-reaction.model';
 
 @Component({
   selector: 'add-media-reaction',
@@ -15,7 +16,7 @@ import { UserAnimeService } from '../../../../../../shared/services/user-anime.s
 })
 export class AddMediaReactionModalComponent implements OnInit {
   public activeModal = inject(NgbActiveModal);
-  public animeMetadata: LibraryEntry | null = null;
+  public viewModel: AddMediaReactionModel | null = null;
   public environment = environment;
   public toastService = inject(AppToastService);
   public usersService = inject(UserAnimeService);
@@ -44,13 +45,15 @@ export class AddMediaReactionModalComponent implements OnInit {
     })
   }
 
-  initializeModalData(anime: LibraryEntry) {
-    this.animeMetadata = anime;
-    this.addMediaReactionForm.patchValue({ "animeId": anime.animeId })
-    this.addMediaReactionForm.patchValue({ "libraryEntryId": anime.id })
+  initializeModalData(data: AddMediaReactionModel) {
+    this.viewModel = data;
+    this.addMediaReactionForm.patchValue({
+      animeId: data.animeId,
+      libraryEntryId: data.libraryEntryId
+    });
   }
 
-  onMediaReactionAddSubmit() {
+  onSubmit() {
     var data = new FormData();
     if (this.animeId !== null) {
       data.append('animeId', this.animeId.value);
