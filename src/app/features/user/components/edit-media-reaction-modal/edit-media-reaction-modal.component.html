@@ -1,12 +1,12 @@
 <div class="edit-reaction-modal"
-  style="background: url({{environment.imageHostUrl}}/anime/poster/{{model?.animeImageUrl}})">
+  style="background: url({{environment.imageHostUrl}}/anime/poster/{{viewModel?.animeImageUrl}})">
   <div class="edit-reaction-background-overlay"></div>
   <div class="edit-reaction-form-container">
     <div class="reaction-anime-name">
-      <div>{{model?.animeTitle}}</div>
+      <div>{{viewModel?.animeTitle}}</div>
       <div class="text-left" [class.invalid]="charsLeft === 140">{{charsLeft}}</div>
     </div>
-    <form [formGroup]="editMediaReactionForm" (submit)="onMediaReactionEditSubmit()">
+    <form [formGroup]="editMediaReactionForm" (submit)="onSubmit()">
       <div>
         <textarea class="reaction-text-field" formControlName="reaction" maxlength="140"
           placeholder="Overrated, don't waste your time on this one." required></textarea>

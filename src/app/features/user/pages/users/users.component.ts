@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, switchMap, takeUntil, distinctUntilChanged, map, tap } from 'rxjs';
 import { UsersLibraryComponent } from './components/users-library/users-library.component';
@@ -10,6 +10,7 @@ import { CoverPhotoComponent } from '../../../../shared/components/cover-photo/c
 import { environment } from '../../../../../environments/environment';
 import { UsersReactionsComponent } from "./components/users-reactions/users-reactions.component";
 import { UsersService } from '../../../../shared/services/users.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user',
@@ -29,14 +30,13 @@ import { UsersService } from '../../../../shared/services/users.service';
 export class UsersComponent implements OnInit {
   private usersService = inject(UsersService);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   tabs = ['about', 'library', 'reactions'];
   environment = environment;
 
-  private destroy$ = new Subject<void>();
-
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$))
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (params) => this.usersService.loadProfile(params['id'])
       });
@@ -49,6 +49,6 @@ export class UsersComponent implements OnInit {
   currentTab$ = this.route.params.pipe(
     distinctUntilChanged(),
     map(params => params['tab'] || "about"),
-    takeUntil(this.destroy$)
+    takeUntilDestroyed(this.destroyRef)
   );
 }

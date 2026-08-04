@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, BehaviorSubject, distinctUntilChanged, takeUntil, map, switchMap, tap } from 'rxjs';
@@ -14,6 +14,7 @@ import { AnimeContainerComponent } from './components/anime-container/anime-cont
 import { CoverPhotoComponent } from "../../../../shared/components/cover-photo/cover-photo.component";
 import { environment } from '../../../../../environments/environment';
 import { LibraryEntryStatusComponent } from "./components/library-entry-status/library-entry-status.component";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'anime',
@@ -30,13 +31,13 @@ import { LibraryEntryStatusComponent } from "./components/library-entry-status/l
   templateUrl: './anime.component.html',
   styleUrl: './anime.component.css'
 })
-export class AnimeComponent implements OnInit, OnDestroy {
-  public authService = inject(AuthService);
-
+export class AnimeComponent implements OnInit {
+  private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private animeService = inject(AnimeService); //in this component, should not get all animes. create setState methods and call them according to the component
   private userAnimeService = inject(UserAnimeService);
   private modalService = inject(NgbModal);
+  private destroyRef = inject(DestroyRef);
 
   tabs = ['summary', 'episodes', 'characters', 'franchise'];
   environment = environment;
@@ -45,45 +46,38 @@ export class AnimeComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
 
   ngOnInit(): void {
-    this.authService.authenticatedUser$.subscribe({
+    this.authService.authenticatedUser$
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
       next: (authenticatedUser) => {
-        if (authenticatedUser) {
-          this.isLoggedIn = true;
-        }
+        if (authenticatedUser) this.isLoggedIn = true;
       }
     })
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private destroy$ = new Subject<void>();
   isFavorite$ = new BehaviorSubject<boolean>(false);
 
   animeResponse$ = this.route.params.pipe(
     distinctUntilChanged(),
     switchMap(params => this.animeService.getAnimeById(params['id'])),
     tap(res => {
-      if (!res)
-        return;
+      if (!res) return;
 
       this.animeId = res.anime.id;
       this.animeEpisodeCount = res.anime.episodeCount ?? 0;
 
       this.isFavorite$.next(res?.isFavorite);
     }),
-    takeUntil(this.destroy$)
+    takeUntilDestroyed(this.destroyRef)
   );
 
   currentTab$ = this.route.params.pipe(
     distinctUntilChanged(),
     map(params => params['tab'] || "summary"),
-    takeUntil(this.destroy$)
+    takeUntilDestroyed(this.destroyRef)
   );
 
-  onAddToFavoritesClick(anime: Anime) {
+  onAddToFavorites(anime: Anime) {
     if (!this.isLoggedIn) {
       const signUpModalRef = this.modalService.open(RegisterComponent)
       signUpModalRef.componentInstance.name = "Sign In";
@@ -96,7 +90,7 @@ export class AnimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUnfavoriteClick(animeId: number) {
+  onUnfavorite(animeId: number) {
     this.userAnimeService.deleteFavoriteAnime(animeId)
       .subscribe({
         next: () => this.isFavorite$.next(false)

@@ -1,14 +1,11 @@
+import { Anime } from "../../../shared/models/anime.model";
+
 export interface GetMediaReactionByUserResponseDto {
-  id: number;
+  mediaReactionId: number;
   userId: string;
   libraryEntryId: number;
   animeId: number;
   reaction: string;
   upvoteCount: number;
-  animeTitle: string;
-  animeYear: number;
-  animeMediaType: string;
-  animeImageUrl: string;
-  dateCreated: Date;
-  dateUpdated: Date;
+  anime: Anime;
 }

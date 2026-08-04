@@ -1,8 +1,8 @@
-@if (libraryEntry$.value !== null) {
+@if (libraryEntry$ | async; as libraryEntry) {
 <div id="editModalTitle">
-  <h4>{{libraryEntry$.value.anime.title}}</h4>
+  <h4>{{libraryEntry.anime.title}}</h4>
   <span id="closeModal">
-    <i class="bi bi-x" (click)="onCloseClick()"></i>
+    <i class="bi bi-x" (click)="onClose()"></i>
   </span>
 </div>
 <div id="editEntryModalContainer">
@@ -22,10 +22,10 @@
       <div class="flex">
         <div><label for="progress">Progress</label></div>
         <div class="input-group">
-          <input formControlName="progress" type="number" id="progress" [max]="libraryEntry$.value.anime.episodeCount!"
-            min="0" [value]="libraryEntry$.value.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass"
+          <input formControlName="progress" type="number" id="progress" [max]="libraryEntry.anime.episodeCount!"
+            min="0" [value]="libraryEntry.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass"
             class="form-control form-control-sm shadow-none">
-          <span class="input-group-text"> {{libraryEntry$.value.anime.episodeCount ? "of " + libraryEntry$.value.anime.episodeCount + " episodes": '—'}}</span>
+          <span class="input-group-text"> {{libraryEntry.anime.episodeCount ? "of " + libraryEntry.anime.episodeCount + " episodes": '—'}}</span>
         </div>
       </div>
       <div class="flex">
@@ -50,13 +50,13 @@
     </div>
 
     @if(canEdit$ | async;) {
-    <div id="editModalFooter" class="flex">
-      <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteEntryBtnClick()" placement="right"
-          ngbTooltip="Remove from Library" [openDelay]="150" [closeDelay]="100"><i class="bi bi-trash"></i></button>
+      <div id="editModalFooter" class="flex">
+        <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteLibraryEntry(libraryEntry.animeId)" placement="right"
+            ngbTooltip="Remove from Library" [openDelay]="150" [closeDelay]="100"><i class="bi bi-trash"></i></button>
+        </div>
+        <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
+            [class.disabled]="updateLibraryEntryForm.valid" (click)="onSubmit()" class="save"></div>
       </div>
-      <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
-          [class.disabled]="updateLibraryEntryForm.valid" (click)="onUpdateLibraryEntryFormSubmit()" class="save"></div>
-    </div>
     }
   </form>
 </div>

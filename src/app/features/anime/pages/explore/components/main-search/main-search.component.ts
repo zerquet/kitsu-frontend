@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, tap, takeUntil, BehaviorSubject, combineLatest, map, switchMap, Observable, of, Subject } from 'rxjs';
 import { Anime } from '../../../../../../shared/models/anime.model';
 import { AnimeService } from '../../../../../../shared/services/anime.service';
 import { SearchResultsComponent } from '../../../../../../shared/components/search-results/search-results.component';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'main-search',
@@ -15,6 +16,7 @@ import { RouterLink } from '@angular/router';
 })
 export class MainSearchComponent {
   private animeService = inject(AnimeService);
+  private destroyRef = inject(DestroyRef);
   showResults = false;
   form = new FormGroup({ searchControl: new FormControl() });
 
@@ -28,18 +30,17 @@ export class MainSearchComponent {
         else
           this.showResults = false;
       }),
-      takeUntil(this.destroy$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.term$.next(term));
   }
 
   term$ = new BehaviorSubject<string>("");
-  private destroy$ = new Subject<void>();
 
   //why cant i just use this.term$ here? why do i need to use combineLatest? this.term$ just returns the first char
   searchResults$ = combineLatest([this.term$]).pipe(
     map(([term]) => term),
     switchMap(term => this.search(term)),
-    takeUntil(this.destroy$));
+    takeUntilDestroyed(this.destroyRef));
 
   private search(term: string): Observable<Anime[]> {
     term = term.toLowerCase().trim();

@@ -1,19 +1,15 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subject, Observable, BehaviorSubject, distinctUntilChanged, switchMap, of, takeUntil, combineLatest, map, debounceTime, tap, withLatestFrom, startWith } from 'rxjs';
-import { Anime } from '../../../../shared/models/anime.model';
-import { Category } from '../../../../shared/models/category.model';
+import { AfterContentChecked, ChangeDetectorRef, Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Subject, distinctUntilChanged, switchMap, of, takeUntil, combineLatest, map, debounceTime, tap, withLatestFrom, startWith } from 'rxjs';
 import { AnimeService } from '../../../../shared/services/anime.service';
 import { CategoryService } from '../../../../shared/services/category.service';
 import { CommonModule } from '@angular/common';
-import { SearchResultsComponent } from '../../../../shared/components/search-results/search-results.component';
-import { AnimeTooltipComponent } from '../../components/anime-tooltip/anime-tooltip.component';
-import { AnimeCardComponent } from '../../components/anime-card/anime-card.component';
 import { AnimeGridComponent } from '../../components/anime-grid/anime-grid.component';
 import { CategoryListComponent } from './components/categories/category-list.component';
 import { CategorySummaryComponent } from './components/category-summary/category-summary.component';
 import { MainSearchComponent } from "./components/main-search/main-search.component";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'anime-explore',
@@ -30,22 +26,17 @@ import { MainSearchComponent } from "./components/main-search/main-search.compon
   templateUrl: './explore.component.html',
   styleUrl: './explore.component.css'
 })
-export class ExploreComponent implements OnDestroy, AfterContentChecked {
+export class ExploreComponent implements AfterContentChecked {
   private animeService = inject(AnimeService);
   private categoryService = inject(CategoryService);
   private route = inject(ActivatedRoute);
   private cdref = inject(ChangeDetectorRef);
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  private destroyRef = inject(DestroyRef);
 
   ngAfterContentChecked(): void {
     this.cdref.detectChanges();
   }
 
-  private destroy$ = new Subject<void>();
   categories$ = this.categoryService.getCategories();
   category$ = this.categoryService.getCategory('');
 
@@ -61,7 +52,7 @@ export class ExploreComponent implements OnDestroy, AfterContentChecked {
       else
         return this.animeService.getAnimes();
     }),
-    takeUntil(this.destroy$)
+    takeUntilDestroyed(this.destroyRef)
   );
 
 }

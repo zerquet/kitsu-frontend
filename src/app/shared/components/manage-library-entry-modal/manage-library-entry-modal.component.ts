@@ -1,10 +1,9 @@
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnInit} from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Subject, BehaviorSubject, takeUntil, take } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserAnimeService } from '../../../shared/services/user-anime.service';
-import { LibraryEntry, LibraryEntryDetail } from '../../models/library-entry.model';
 import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { UsersService } from '../../../shared/services/users.service';
 import { progressIsValid } from '../../../shared/validators/validators';
@@ -16,49 +15,50 @@ import { progressIsValid } from '../../../shared/validators/validators';
   templateUrl: './manage-library-entry-modal.component.html',
   styleUrl: './manage-library-entry-modal.component.css'
 })
-export class ManageLibraryEntryModalComponent {
+export class ManageLibraryEntryModalComponent implements OnInit {
   private userAnimeService = inject(UserAnimeService);
   private usersService = inject(UsersService);
   private activeModal = inject(NgbActiveModal);
 
   updateLibraryEntryForm!: FormGroup;
   addNotAllowedClass = false;
+  animeEpisodeCount = 0;
 
-  libraryEntry$ = new BehaviorSubject<LibraryEntryDetail | null>(null);
+  libraryEntry$ = this.userAnimeService.currentEntry$;
   canEdit$ = this.usersService.canEdit$;
 
-  initializeModalData(libraryEntry: LibraryEntryDetail) {
-    this.libraryEntry$.next(libraryEntry);
-    
-    this.canEdit$
+  ngOnInit() {
+    combineLatest([this.canEdit$, this.libraryEntry$])
       .pipe(take(1))
-      .subscribe(canEdit => {
+      .subscribe(([canEdit, libraryEntry]) => {
+        if (!libraryEntry) return;
+        
         this.updateLibraryEntryForm = new FormGroup({
-          status: new FormControl<any>({ value: libraryEntry.watchStatus, disabled: !canEdit }, [this.statusIsDifferentValidator()]),
-          rating: new FormControl<any>({ value: libraryEntry.userRating, disabled: !canEdit }, [this.ratingIsDifferentValidator()]),
-          progress: new FormControl<any>({ value: libraryEntry.episodesWatched, disabled: !canEdit }, [this.progressIsDifferentValidator()])
+          libraryEntryId: new FormControl<any>({value: libraryEntry.id}),
+          status: new FormControl<any>({ value: libraryEntry.watchStatus, disabled: !canEdit }, [this.statusIsDifferentValidator(libraryEntry.watchStatus)]),
+          rating: new FormControl<any>({ value: libraryEntry.userRating, disabled: !canEdit }, [this.ratingIsDifferentValidator(libraryEntry.userRating)]),
+          progress: new FormControl<any>({ value: libraryEntry.episodesWatched, disabled: !canEdit }, [this.progressIsDifferentValidator(libraryEntry.episodesWatched)])
         });
 
         this.addNotAllowedClass = !canEdit;
+        this.animeEpisodeCount = libraryEntry.anime.episodeCount ?? 0;
       })
   }
 
-  onCloseClick = () => this.activeModal.close();
+  onClose = () => this.activeModal.close();
 
-  onUpdateLibraryEntryFormSubmit() {
+  onSubmit() {
+    const formData = this.updateLibraryEntryForm.value;
+
     let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: 0,
+      libraryEntryId: formData.libraryEntryId.value,
       episodesWatched: 0
     }
-
-    if (this.libraryEntry$.value !== null) {
-      req.libraryEntryId = this.libraryEntry$.value.id
-    }
+    
     if (this.progress !== null) {
-      const animeEpisodeCount = this.libraryEntry$.value?.episodesWatched;
-      if (!progressIsValid(this.progress.value, animeEpisodeCount)) {
+      if (!progressIsValid(this.progress.value, this.animeEpisodeCount)) {
         //If progress is invalid, reset its value.
-        this.progress.patchValue(animeEpisodeCount);
+        this.progress.patchValue(this.animeEpisodeCount);
         return;
       }
       req.episodesWatched = this.progress.value
@@ -76,20 +76,20 @@ export class ManageLibraryEntryModalComponent {
       });
   }
 
-  onDeleteEntryBtnClick() {
-    this.userAnimeService.deleteEntry(this.libraryEntry$.value?.animeId!)
+  onDeleteLibraryEntry(animeId: number) {
+    this.userAnimeService.deleteEntry(animeId)
       .subscribe({
         next: () => this.activeModal.close()
       });
   }
 
   //FORM "VALIDATORS"
-  statusIsDifferentValidator(): ValidatorFn {
+  statusIsDifferentValidator(status: string | undefined): ValidatorFn {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
       if (this.libraryEntry$ !== undefined) {
-        console.log(control.value + " and " + this.libraryEntry$.value?.watchStatus);
-        if (control.value === this.libraryEntry$.value?.watchStatus) {
+        console.log(control.value + " and " + status);
+        if (control.value === status) {
           return null;
         }
       }
@@ -97,13 +97,13 @@ export class ManageLibraryEntryModalComponent {
     }
   }
 
-  ratingIsDifferentValidator(): ValidatorFn {
+  ratingIsDifferentValidator(rating: number | undefined): ValidatorFn {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
       //control values are strings. needs to be converted to number
       let controlVal = control.value === "" || control.value === null ? null : Number(control.value);
       if (this.libraryEntry$ !== undefined) {
-        if (controlVal === this.libraryEntry$.value?.userRating) {
+        if (controlVal === rating) {
           return null;
         }
       }
@@ -111,11 +111,11 @@ export class ManageLibraryEntryModalComponent {
     }
   }
 
-  progressIsDifferentValidator(): ValidatorFn {
+  progressIsDifferentValidator(progress: number): ValidatorFn {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
       if (this.libraryEntry$ !== undefined) {
-        if (control.value === this.libraryEntry$.value?.episodesWatched) {
+        if (control.value === progress) {
           return null;
         }
       }

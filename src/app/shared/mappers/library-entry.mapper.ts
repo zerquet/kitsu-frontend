@@ -3,20 +3,21 @@ import { GetLibraryEntryResponseDto } from "../../features/anime/dtos/get-librar
 import { UpdateLibraryEntryResponseDto } from "../../features/anime/dtos/update-library-entry-response.dto";
 import { GetLibraryResponseDto } from "../../features/user/dtos/get-library-response.dto";
 import { LibraryEntry, LibraryEntryDetail, LibraryEntryWithUser } from "../models/library-entry.model";
+import { mapGetMediaReactionByUserToMediaReaction } from "./media-reaction.mapper";
 
 export function mapGetLibraryToLibraryEntry(dto: GetLibraryResponseDto): LibraryEntryDetail {
   return {
-    id: dto.id,
+    id: dto.libraryEntryId,
     animeId: dto.animeId,
     watchStatus: dto.watchStatus,
     episodesWatched: dto.episodesWatched,
     userRating: dto.userRating,
     anime: dto.anime,
-    mediaReaction: dto.mediaReaction
+    mediaReaction: dto.mediaReaction ? mapGetMediaReactionByUserToMediaReaction(dto.mediaReaction) : undefined
   }
 }
 
-export function mapGetLibraryEntryToLibraryEntry(dto: GetLibraryEntryResponseDto): LibraryEntryWithUser {
+export function mapGetLibraryEntryToLibraryEntry(dto: GetLibraryEntryResponseDto): LibraryEntryDetail {
   return {
     id: dto.libraryEntryId,
     animeId: dto.animeId,
@@ -24,27 +25,30 @@ export function mapGetLibraryEntryToLibraryEntry(dto: GetLibraryEntryResponseDto
     watchStatus: dto.watchStatus,
     userRating: dto.userRating,
     anime: dto.anime,
-    mediaReaction: dto.mediaReaction,
-    userProfile: dto.userProfile
+    mediaReaction: dto.mediaReaction ? mapGetMediaReactionByUserToMediaReaction(dto.mediaReaction) : undefined,
   }
 }
 
-export function mapCreateLibraryEntryToLibraryEntry(dto: CreateLibraryEntryResponseDto): LibraryEntry {
+export function mapCreateLibraryEntryToLibraryEntry(dto: CreateLibraryEntryResponseDto): LibraryEntryDetail {
   return {
     id: dto.libraryEntryId,
     animeId: dto.animeId,
     episodesWatched: dto.episodesWatched,
     watchStatus: dto.watchStatus,
-    userRating: dto.userRating
+    userRating: dto.userRating,
+    anime: dto.anime,
+    mediaReaction: dto.mediaReaction ? mapGetMediaReactionByUserToMediaReaction(dto.mediaReaction) : undefined
   }
 }
 
-export function mapUpdateLibraryEntryToLibraryEntry(dto: UpdateLibraryEntryResponseDto): LibraryEntry {
+export function mapUpdateLibraryEntryToLibraryEntry(dto: UpdateLibraryEntryResponseDto): LibraryEntryDetail {
   return {
     id: dto.libraryEntryId,
     animeId: dto.animeId,
     episodesWatched: dto.episodesWatched,
     watchStatus: dto.watchStatus,
-    userRating: dto.userRating
+    userRating: dto.userRating,
+    anime: dto.anime,
+    mediaReaction: dto.mediaReaction ? mapGetMediaReactionByUserToMediaReaction(dto.mediaReaction) : undefined
   }
 }

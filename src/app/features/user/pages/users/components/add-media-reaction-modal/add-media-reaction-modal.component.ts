@@ -15,11 +15,12 @@ import { AddMediaReactionModel } from '../../../../models/add-media-reaction.mod
   styleUrl: './add-media-reaction-modal.component.css'
 })
 export class AddMediaReactionModalComponent implements OnInit {
-  public activeModal = inject(NgbActiveModal);
+  private activeModal = inject(NgbActiveModal);
+  private toastService = inject(AppToastService);
+  private usersService = inject(UserAnimeService);
+  
   public viewModel: AddMediaReactionModel | null = null;
   public environment = environment;
-  public toastService = inject(AppToastService);
-  public usersService = inject(UserAnimeService);
 
   addMediaReactionForm = new FormGroup({
     reaction: new FormControl(''),
@@ -54,18 +55,18 @@ export class AddMediaReactionModalComponent implements OnInit {
   }
 
   onSubmit() {
-    var data = new FormData();
+    var req = new FormData();
     if (this.animeId !== null) {
-      data.append('animeId', this.animeId.value);
+      req.append('animeId', this.animeId.value);
     }
     if (this.libraryEntryId !== null) {
-      data.append('libraryEntryId', this.libraryEntryId.value);
+      req.append('libraryEntryId', this.libraryEntryId.value);
     }
     if (this.reaction !== null && this.reaction.value !== null) {
-      data.append('reaction', this.reaction.value)
+      req.append('reaction', this.reaction.value)
     }
 
-    this.usersService.addMediaReaction(data)
+    this.usersService.addMediaReaction(req)
       .subscribe({
         next: () => {
           this.activeModal.close();

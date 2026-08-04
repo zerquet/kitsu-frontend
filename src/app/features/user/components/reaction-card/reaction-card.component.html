@@ -1,6 +1,6 @@
 @if (reaction !== undefined) {
 <div class="reaction-card"
-  style="background: url({{environment.imageHostUrl}}/anime/poster/{{reaction.animeImageUrl}})">
+  style="background: url({{environment.imageHostUrl}}/anime/poster/{{reaction.anime.imageUrl}})">
   <div class="reaction-top">
     <a href="javascript:void(0);" class="reaction-upvote">
       <i class="bi bi-caret-up-fill"></i> 0
@@ -12,18 +12,18 @@
       </a>
       <ul class="dropdown-menu">
         <li>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="onCopyLinkClick()">
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onCopyLink()">
             Copy Link to Reaction
           </a>
         </li>
         @if (canEdit$ | async) {
         <li>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="onEditReactionClick(reaction.id)">
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onEdit(reaction.id)">
             Edit Reaction
           </a>
         </li>
         <li>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="onDeleteReactionClick(reaction.id)">
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onDelete(reaction.id)">
             Delete Reaction
           </a>
         </li>
@@ -35,11 +35,11 @@
     <div class="reaction-main">
       <small>
         <a routerLink="/anime/{{reaction.animeId}}/summary">
-          {{reaction.animeTitle}}
+          {{reaction.anime.title}}
         </a>
-        {{reaction.animeMediaType}}
+        {{reaction.anime.mediaType}}
         <i class="bi bi-dot"></i>
-        {{reaction.animeYear}}
+        {{reaction.anime.year}}
       </small>
     </div>
     <div>

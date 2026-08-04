@@ -1,5 +1,5 @@
 export interface EditMediaReactionModel {
-  reactionId: number,
+  mediaReactionId: number,
   userId: string | undefined,
   libraryEntryId: number | undefined,
   animeId: number | undefined,

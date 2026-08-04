@@ -23,7 +23,7 @@ export class RegisterComponent {
   get email() { return this.registerForm.get("email") }
   get password() { return this.registerForm.get("password") }
 
-  onRegisterFormSubmit() {
+  onSubmit() {
     this.activeModal.close();
   }
 }

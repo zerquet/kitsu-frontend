@@ -1,12 +1,16 @@
+import { Anime } from "./anime.model";
+import { UserProfile } from "./userProfile.model";
+
 export interface MediaReaction {
   id: number;
   userId: string;
   animeId: number;
-  animeImageUrl: string;
-  animeTitle: string;
-  animeMediaType: string;
-  animeYear: number;
   libraryEntryId: number;
+  anime: Anime;
   reaction: string;
   upvoteCount: number;
+}
+
+export interface MediaReactionWithUser extends MediaReaction {
+  userProfile: UserProfile;
 }

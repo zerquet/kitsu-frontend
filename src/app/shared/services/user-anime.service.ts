@@ -1,12 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
-import { UserProfile } from '../models/userProfile.model';
 import { LibraryEntry, LibraryEntryDetail, LibraryEntryWithUser } from '../models/library-entry.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
-import { AuthService } from '../../features/auth/services/auth.service';
-import { MediaReaction } from '../models/mediaReaction.model';
+import { MediaReaction, MediaReactionWithUser } from '../models/mediaReaction.model';
 import { GetMediaReactionByIdResponseDto } from '../../features/user/dtos/get-media-reaction-by-id-response.dto';
 import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
 import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
@@ -19,6 +17,7 @@ import { GetMediaReactionByUserResponseDto } from '../../features/user/dtos/get-
 import { AddMediaReactionResponseDto } from '../../features/user/dtos/add-media-reaction-response.dto';
 import { GetLibraryResponseDto } from '../../features/user/dtos/get-library-response.dto';
 import { mapCreateLibraryEntryToLibraryEntry, mapGetLibraryEntryToLibraryEntry, mapGetLibraryToLibraryEntry, mapUpdateLibraryEntryToLibraryEntry } from '../mappers/library-entry.mapper';
+import { mapGetMediaReactionByUserToMediaReaction, mapGetMediaReactionByIdToMediaReaction, mapAddMediaReactionToMediaReaction } from '../mappers/media-reaction.mapper';
 
 @Injectable({
   providedIn: 'root'
@@ -37,18 +36,27 @@ export class UserAnimeService {
   library$ = new BehaviorSubject<LibraryEntryDetail[]>([]);
   mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
   toastService: any;
-
-
+  private _currentEntrySubject = new BehaviorSubject<LibraryEntryDetail | null>(null);
+  currentEntry$ = this._currentEntrySubject.asObservable();
   /*LIBRARY METHODS*/
 
   //profile is only relevant in the context of library page. here, i get userId from auth service.
-  getLibraryEntry(userId: string | null, animeId: number): Observable<LibraryEntryWithUser | null> {
-    if (userId === null)
+  loadCurrentEntry(userId: string | null, animeId: number): Observable<LibraryEntryDetail | null> {
+    if (userId === null) {
+      this._currentEntrySubject.next(null);
       return of(null);
-    else {
-      return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
-        .pipe(map(mapGetLibraryEntryToLibraryEntry))
     }
+    
+    return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
+      .pipe(
+        tap(dto => this.usersService.setProfile(dto.userProfile)),
+        map(mapGetLibraryEntryToLibraryEntry),
+        tap(libraryEntry => this._currentEntrySubject.next(libraryEntry))
+      );
+  }
+
+  changeCurrentEntry(libraryEntry: LibraryEntryDetail) {
+    this._currentEntrySubject.next(libraryEntry);
   }
 
   loadUserLibrary(userDisplayId: string) {
@@ -66,10 +74,9 @@ export class UserAnimeService {
     return this.http.post<CreateLibraryEntryResponseDto>(`${this.libraryBaseUrl}`, req)
       .pipe(
         map(mapCreateLibraryEntryToLibraryEntry),
-        tap((res) => {
-          // const library = this.library$.getValue();
-          // library.push(res);
-          // this.library$.next(library);
+        tap((libraryEntry) => {
+          this.library$.next([...this.library$.getValue(), libraryEntry]);
+          this._currentEntrySubject.next(libraryEntry)
         })
       );
   }
@@ -78,24 +85,42 @@ export class UserAnimeService {
     req.userRating = Number(req.userRating) === 0 ? undefined : Number(req.userRating); //what do 0 and NULL/undefined represent? 
     return this.http.put<UpdateLibraryEntryResponseDto>(`${this.libraryBaseUrl}`, req)
       .pipe(
-        map(mapUpdateLibraryEntryToLibraryEntry)
-      // tap((res) => {
-      //   const library = this.library$.getValue();
-      //   library[library.findIndex((e) => e.id == res.id)] = res;
-      //   this.library$.next(library);
-      // })
+        map(mapUpdateLibraryEntryToLibraryEntry),
+        tap(libraryEntry => this.applyUpdate(libraryEntry))
     );
+  }
+
+  private applyUpdate(libraryEntry: LibraryEntryDetail) {
+    const library = this.library$.getValue();
+    const idx = library.findIndex((e) => e.id === libraryEntry.id)
+
+    if (idx !== -1) {
+      library[idx] = libraryEntry;
+      this.library$.next([...library]);
+    }
+
+    const currentEntry = this._currentEntrySubject.getValue();
+    if (currentEntry?.id === libraryEntry.id) {
+      this._currentEntrySubject.next(libraryEntry);
+    }
   }
 
   deleteEntry(animeId: number) {
     return this.http.delete<void>(`${this.libraryBaseUrl}/${animeId}`)
       .pipe(
-        tap(() => {
-          let library = this.library$.getValue();
-          library = library.filter((e) => e.animeId !== animeId);
-          this.library$.next(library);
-        })
+        tap(() => this.applyDeletion(animeId))
       );
+  }
+
+  private applyDeletion(animeId: number) {
+    this.library$.next(
+      this.library$.getValue().filter((e) => e.animeId !== animeId)
+    );
+
+    const currentEntry = this._currentEntrySubject.getValue();
+    if (currentEntry?.animeId === animeId) {
+      this._currentEntrySubject.next(null);
+    }
   }
 
   /* FAVORITES METHODS */
@@ -143,11 +168,12 @@ export class UserAnimeService {
   addMediaReaction(req: FormData): Observable<MediaReaction> {
     return this.http.post<AddMediaReactionResponseDto>(this.mediaReactionsBaseUrl, req)
       .pipe(
-        tap((res) => {
-          const mediaReactions = this.mediaReactions$.getValue();
-          mediaReactions.push(res);
-          this.mediaReactions$.next(mediaReactions);
-        })
+        map(mapAddMediaReactionToMediaReaction)
+        // tap((res) => {
+        //   const mediaReactions = this.mediaReactions$.getValue();
+        //   mediaReactions.push(res);
+        //   this.mediaReactions$.next(mediaReactions);
+        // })
       );
   }
 
@@ -168,11 +194,11 @@ export class UserAnimeService {
     );
   }
 
-  deleteMediaReaction(reactionId: number): Observable<void> {
-    return this.http.delete<void>(`${this.mediaReactionsBaseUrl}/${reactionId}`)
+  deleteMediaReaction(mediaReactionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.mediaReactionsBaseUrl}/${mediaReactionId}`)
       .pipe(
         tap(() => {
-          const mediaReactions = this.mediaReactions$.value.filter((x) => x.id !== reactionId);
+          const mediaReactions = this.mediaReactions$.value.filter((x) => x.id !== mediaReactionId);
           this.mediaReactions$.next(mediaReactions);
         })
       );
@@ -181,30 +207,16 @@ export class UserAnimeService {
   loadUserMediaReactions(userDisplayId: string) {
     this.http.get<GetMediaReactionByUserResponseDto[]>(`${this.baseUrl}/${userDisplayId}/mediaReactions`)
       .pipe(
-        map((reactions) => reactions.map(item => this.mapMediaReactionDtoToModel(item)))
+        map((dtos) => dtos.map(dto => mapGetMediaReactionByUserToMediaReaction(dto)))
       )
-      .subscribe((res) => {
-        this.mediaReactions$.next(res);
+      .subscribe((mediaReactions) => {
+        this.mediaReactions$.next(mediaReactions);
       });
 
   }
 
-  getMediaReactionById(id: number) {
-    return this.http.get<GetMediaReactionByIdResponseDto>(`${this.mediaReactionsBaseUrl}/${id}`);
-  }
-
-  private mapMediaReactionDtoToModel(dto: GetMediaReactionByUserResponseDto): MediaReaction {
-    return {
-      id: dto.id,
-      userId: dto.userId,
-      animeId: dto.animeId,
-      animeTitle: dto.animeTitle,
-      animeImageUrl: dto.animeImageUrl,
-      animeMediaType: dto.animeMediaType,
-      animeYear: dto.animeYear,
-      reaction: dto.reaction,
-      libraryEntryId: dto.libraryEntryId,
-      upvoteCount: dto.upvoteCount
-    }
+  getMediaReactionById(mediaReactionId: number): Observable<MediaReactionWithUser> {
+    return this.http.get<GetMediaReactionByIdResponseDto>(`${this.mediaReactionsBaseUrl}/${mediaReactionId}`)
+      .pipe(map(mapGetMediaReactionByIdToMediaReaction));
   }
 }

@@ -3,7 +3,6 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AuthService } from '../../../../../auth/services/auth.service';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { CreateLibraryEntryRequest } from '../../../../../../shared/contracts/createLibraryEntryRequest.interface';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterComponent } from '../../../../../auth/register/register.component';
@@ -12,8 +11,6 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { ManageLibraryEntryModalComponent } from '../../../../../../shared/components/manage-library-entry-modal/manage-library-entry-modal.component';
 import { of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { LibraryEntry } from '../../../../../../shared/models/library-entry.model';
-import { UsersService } from '../../../../../../shared/services/users.service';
 
 @Component({
   selector: 'library-entry-status',
@@ -26,15 +23,15 @@ export class LibraryEntryStatusComponent implements OnInit {
   public authService = inject(AuthService);
   private userAnimeService = inject(UserAnimeService);
   private modalService = inject(NgbModal);
-  private usersService = inject(UsersService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   animeId = input.required<number>();
   animeEpisodeCount = input.required<number>();
-  libraryEntry$ = new BehaviorSubject<LibraryEntry | null>(null);
+  libraryEntry$ = this.userAnimeService.currentEntry$;
   isLoggedIn = false;
 
   updateLibraryEntryForm = new FormGroup({
+    libraryEntryId: new FormControl(),
     episodeProgress: new FormControl(),
     rating: new FormControl(),
     status: new FormControl(),
@@ -47,32 +44,26 @@ export class LibraryEntryStatusComponent implements OnInit {
       switchMap(authenticatedUser => {
         this.isLoggedIn = !!authenticatedUser;
 
-        if (!authenticatedUser) return of(null)
+        if (!authenticatedUser) return of(null);
 
-        return this.userAnimeService.getLibraryEntry(authenticatedUser.id, animeId);
-      }),
-      tap(libraryEntry => {
-        if (libraryEntry) this.usersService.setProfile(libraryEntry.userProfile);
+        return this.userAnimeService.loadCurrentEntry(authenticatedUser.id, animeId);
       }),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(libraryEntry => {
-      this.libraryEntry$.next(libraryEntry);
+    ).subscribe();
 
+    this.userAnimeService.currentEntry$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(libraryEntry => {
       if (libraryEntry === null) return;
 
       this.updateLibraryEntryForm.patchValue({
+        libraryEntryId: libraryEntry.id,
         episodeProgress: libraryEntry.episodesWatched,
         status: libraryEntry.watchStatus,
         rating: libraryEntry.userRating
       });
     });
-  }
 
-  onIncrementProgress(episodeCount: number) {
-    const currentProgress = this.episodeProgress?.value;
-    if (currentProgress + 1 <= episodeCount) {
-      this.episodeProgress?.patchValue(currentProgress + 1);
-    }
   }
 
   onAddToLibrary(watchStatus: string) {
@@ -82,6 +73,7 @@ export class LibraryEntryStatusComponent implements OnInit {
     }
     else {
       const episodesWatched = this.getEpisodesWatched(watchStatus);
+      
       const req: CreateLibraryEntryRequest = {
         animeId: this.animeId(),
         watchStatus: watchStatus,
@@ -89,11 +81,14 @@ export class LibraryEntryStatusComponent implements OnInit {
       }
 
       this.userAnimeService.createEntry(req)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: (res) => {
-            this.updateLibraryEntryForm.patchValue({ "episodeProgress": episodesWatched });
-            this.updateLibraryEntryForm.patchValue({ "status": watchStatus });
-            this.libraryEntry$.next(res);
+          next: (libraryEntry) => {
+            this.updateLibraryEntryForm.patchValue({ 
+              libraryEntryId: libraryEntry.id,
+              episodeProgress: libraryEntry.episodesWatched,
+              status: libraryEntry.watchStatus 
+            });
           }
         });
     }
@@ -103,53 +98,50 @@ export class LibraryEntryStatusComponent implements OnInit {
     return watchStatus === 'completed' ? this.animeEpisodeCount() : 0;
   }
 
+  onChangeWatchStatus(watchStatus: string) {
+    const formData = this.updateLibraryEntryForm.value;
+
+    const req: UpdateLibraryEntryRequest = {
+      libraryEntryId: formData.libraryEntryId,
+      episodesWatched: watchStatus === 'completed' ? this.animeEpisodeCount() : formData.episodeProgress,
+      userRating: formData.rating,
+      watchStatus: watchStatus
+    };
+
+    this.userAnimeService.updateEntry(req)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
+  }
+
   onEditLibraryEntry() {
-    const modal = this.modalService.open(ManageLibraryEntryModalComponent);
-    modal.componentInstance.initializeModalData(this.libraryEntry$.getValue())
+    this.modalService.open(ManageLibraryEntryModalComponent);
   }
 
   onSubmit() {
-    let cached = this.libraryEntry$.value;
-    if (!cached)
-      return;
+    const formData = this.updateLibraryEntryForm.value;
 
     let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: cached.id,
-      episodesWatched: 0,
-    }
-
-    if (this.episodeProgress) {
-      req.episodesWatched = this.episodeProgress.value
-    }
-    if (this.status) {
-      req.watchStatus = this.status.value
-    }
-    if (this.rating) {
-      req.userRating = this.rating.value
+      libraryEntryId: formData.libraryEntryId,
+      episodesWatched: formData.episodeProgress,
+      watchStatus: formData.status,
+      userRating: formData.rating
     }
 
     this.userAnimeService.updateEntry(req)
       .subscribe({
-        next: (res) => {
-          this.updateLibraryEntryForm.patchValue({ "episodeProgress": req.episodesWatched });
-          this.updateLibraryEntryForm.patchValue({ "status": req.watchStatus });
-          this.updateLibraryEntryForm.patchValue({ "rating": req.userRating });
-          this.libraryEntry$.next(res)
+        next: (libraryEntry) => {
+          this.updateLibraryEntryForm.patchValue({
+            episodeProgress: libraryEntry.episodesWatched,
+            status: libraryEntry.watchStatus,
+            rating: libraryEntry.userRating 
+          });
         }
       });
   }
 
-  onDeleteLibraryEntry = () => {
-    this.userAnimeService.deleteEntry(this.animeId())
-      .subscribe({
-        next: () => this.libraryEntry$.next(null),
-        //if an error happens, we should handles this. If api returns null, user is shown the add to library btns
-        // and if they press them again, it could add the same anime twice to their library. add prevention of this
-        //in api and handle errors gracefully in frontend. 
-      });
-  }
-
   /**FORM GETTERS */
+  get libraryEntryId() { return this.updateLibraryEntryForm.get("libraryEntryId")}
+
   get episodeProgress() { return this.updateLibraryEntryForm.get("episodeProgress"); }
 
   get rating() { return this.updateLibraryEntryForm.get("rating"); }

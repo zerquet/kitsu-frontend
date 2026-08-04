@@ -135,9 +135,9 @@ export class UsersLibraryComponent implements OnInit {
     return tooltipInfo;
   }
 
-  onEditMoreBtnClick(libraryEntry: LibraryEntry) { //can this be handled by service?    
-    const modal = this.modalService.open(ManageLibraryEntryModalComponent);
-    modal.componentInstance.initializeModalData({ ...libraryEntry });
+  onEditMoreBtnClick(libraryEntry: LibraryEntryDetail) { //can this be handled by service?    
+    this.userAnimeService.changeCurrentEntry(libraryEntry);
+    this.modalService.open(ManageLibraryEntryModalComponent);
   }
 
   onRatingClick(animeId: number) {
@@ -208,13 +208,13 @@ export class UsersLibraryComponent implements OnInit {
 
   onEditMediaReactionClick(reaction: MediaReaction) {
     const data: EditMediaReactionModel = {
-      reactionId: reaction.id,
+      mediaReactionId: reaction.id,
       userId: reaction.userId,
       libraryEntryId: reaction.libraryEntryId,
       animeId: reaction.animeId,
       reaction: reaction.reaction,
-      animeTitle: reaction.animeTitle,
-      animeImageUrl: reaction.animeImageUrl
+      animeTitle: reaction.anime.title,
+      animeImageUrl: reaction.anime.imageUrl
     }
     const modal = this.modalService.open(EditMediaReactionModalComponent);
     modal.componentInstance.initializeModalData(data)

@@ -25,26 +25,28 @@ export class ReactionCardComponent {
 
   canEdit$ = this.usersService.canEdit$;
 
-  onCopyLinkClick() {
+  onCopyLink() {
     //only works if page only shows a single reaction, otherwise, copies wrong URL
     navigator.clipboard.writeText(this.reactionUrl);
   }
 
-  onEditReactionClick(reactionId: number) {
+  onEdit(mediaReactionId: number) {
+    if (!this.reaction) return;
+
     const model: EditMediaReactionModel = {
-      reactionId: reactionId,
-      userId: this.reaction?.userId,
-      libraryEntryId: this.reaction?.libraryEntryId,
-      animeId: this.reaction?.animeId,
-      reaction: this.reaction?.reaction,
-      animeTitle: this.reaction?.animeTitle,
-      animeImageUrl: this.reaction?.animeImageUrl
+      mediaReactionId: mediaReactionId,
+      userId: this.reaction.userId,
+      libraryEntryId: this.reaction.libraryEntryId,
+      animeId: this.reaction.animeId,
+      reaction: this.reaction.reaction,
+      animeTitle: this.reaction.anime.title,
+      animeImageUrl: this.reaction.anime.imageUrl
     }
     const modal = this.modalService.open(EditMediaReactionModalComponent);
     modal.componentInstance.initializeModalData(model)
   }
 
-  onDeleteReactionClick(reactionId: number) {
+  onDelete(reactionId: number) {
     const modal = this.modalService.open(DeleteMediaReactionModalComponent)
     modal.componentInstance.initializeModalData(reactionId)
   }

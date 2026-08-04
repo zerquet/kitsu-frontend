@@ -1,13 +1,12 @@
 import { Anime } from "../../../shared/models/anime.model";
-import { MediaReaction } from "../../../shared/models/mediaReaction.model";
+import { GetMediaReactionByUserResponseDto } from "./get-media-reaction-by-user-response.dto";
 
 export interface GetLibraryResponseDto {
-  id: number;
-  displayId?: string; //needed??
+  libraryEntryId: number;
   animeId: number;
-  watchStatus?: string;
   episodesWatched: number;
+  watchStatus?: string;
   userRating?: number;
   anime: Anime;
-  mediaReaction?: MediaReaction;
+  mediaReaction?: GetMediaReactionByUserResponseDto;
 }

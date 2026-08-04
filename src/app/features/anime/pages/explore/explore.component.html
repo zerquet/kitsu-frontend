@@ -5,18 +5,18 @@
     <div class="col-sm-9">
       <div class="row">
         @if(category$ | async; as category) {
-        <category-summary [category]="category" class="col-sm-12"></category-summary>
+          <category-summary [category]="category" class="col-sm-12"></category-summary>
         }
         <main-search class="col-sm-12"></main-search>
       </div>
       @if(animes$ | async; as animes) {
-      <anime-grid [animes]="animes" [showGreeting]="true" class="row"></anime-grid>
+        <anime-grid [animes]="animes" [showGreeting]="true" class="row"></anime-grid>
       }
     </div>
 
     <!--25%-->
     @if(categories$ | async; as categories) {
-    <category-list [categories]="categories" class="col-sm-3"></category-list>
+      <category-list [categories]="categories" class="col-sm-3"></category-list>
     }
     
   </div>

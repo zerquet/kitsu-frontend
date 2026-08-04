@@ -15,11 +15,12 @@ import { EditMediaReactionModel } from '../../models/edit-media-reaction.model';
   styleUrl: './edit-media-reaction-modal.component.css'
 })
 export class EditMediaReactionModalComponent implements OnInit {
-  public activeModal = inject(NgbActiveModal);
-  public model: EditMediaReactionModel | null = null;
+  private activeModal = inject(NgbActiveModal);
+  private toastService = inject(AppToastService);
+  private usersService = inject(UserAnimeService);
+  
+  public viewModel: EditMediaReactionModel | null = null;
   public environment = environment;
-  public toastService = inject(AppToastService);
-  public usersService = inject(UserAnimeService);
 
   editMediaReactionForm = new FormGroup({
     reaction: new FormControl(''),
@@ -47,17 +48,20 @@ export class EditMediaReactionModalComponent implements OnInit {
     })
   }
 
-  initializeModalData(data: EditMediaReactionModel) {
-    this.model = data;
-    this.editMediaReactionForm.patchValue({ "animeId": data.animeId })
-    this.editMediaReactionForm.patchValue({ "libraryEntryId": data.libraryEntryId })
-    this.editMediaReactionForm.patchValue({ "userId": data.userId })
-    this.editMediaReactionForm.patchValue({ "reactionId": data.reactionId })
-    this.editMediaReactionForm.patchValue({ "reaction": data.reaction })
+  initializeModalData(data: EditMediaReactionModel) {    
+    this.viewModel = data;
+    this.editMediaReactionForm.patchValue({ 
+      animeId: data.animeId,
+      libraryEntryId : data.libraryEntryId,
+      userId : data.userId,
+      reactionId : data.mediaReactionId,
+      reaction : data.reaction
+    });
+
     this.charsLeft = 140 - (data.reaction?.length ?? 0);
   }
 
-  onMediaReactionEditSubmit() {
+  onSubmit() {
     let req: UpdateMediaReactionRequest = {
       reactionId: 0,
       reaction: ""
@@ -73,6 +77,8 @@ export class EditMediaReactionModalComponent implements OnInit {
       //Reaction was not updated.
       return;
     }
+    console.log(req);
+    
 
     this.usersService.updateMediaReaction(req)
       .subscribe({
