@@ -8,6 +8,10 @@
   margin-left: 16%;
 }
 
+.no-bottom-border {
+  border-bottom: none !important;
+}
+
 .anime-tabs ul {
   display: flex;
   list-style: none;
@@ -15,6 +19,7 @@
   margin-bottom: 0px;
   cursor: pointer;
   margin-left: 1%;
+  font-size: .90rem;
 }
 
 .anime-tabs ul li {

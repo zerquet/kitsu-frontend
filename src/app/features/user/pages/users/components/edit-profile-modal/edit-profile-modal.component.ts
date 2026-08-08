@@ -8,11 +8,14 @@ import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
 import { UsersService } from '../../../../../../shared/services/users.service';
 import { take } from 'rxjs';
+import { ModalTitleComponent } from "../../../../../../shared/components/modal-title/modal-title.component";
+import { TabItem } from '../../../../../../shared/models/tab-item.model';
+import { NavTabsComponent } from "../../../../../../shared/components/nav-tabs/nav-tabs.component";
 
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, ManageFavoritesComponent, NgClass, AsyncPipe],
+  imports: [ReactiveFormsModule, ManageFavoritesComponent, AsyncPipe, ModalTitleComponent, NavTabsComponent],
   templateUrl: './edit-profile-modal.component.html',
   styleUrl: './edit-profile-modal.component.css'
 })
@@ -21,7 +24,11 @@ export class EditProfileModalComponent {
   private usersService = inject(UsersService);
   private toastService = inject(AppToastService);
 
-  currentTab = 'about';
+  currentTabId = 'profile.aboutme';
+  tabs: TabItem[] = [
+    {id: 'profile.aboutme', label: 'About Me'},
+    {id: 'profile.favorites', label: 'Favorites'}
+  ];
   updateProfileForm = new FormGroup({
     id: new FormControl(''),
     displayId: new FormControl(''),
@@ -42,7 +49,7 @@ export class EditProfileModalComponent {
 
   @ViewChild(ManageFavoritesComponent) favoritesComponent!: ManageFavoritesComponent;
 
-  initializeModalData(openToTab: string = 'about') {
+  initializeModalData(openToTab: string = 'profile.aboutme') {
     this.profileInfo$
       .pipe(take(1))
       .subscribe(profile => {
@@ -71,7 +78,7 @@ export class EditProfileModalComponent {
           this.newCoverPhoto = `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`;
         }
 
-        this.currentTab = openToTab;
+        this.currentTabId = openToTab;
       })
   }
 
@@ -94,7 +101,7 @@ export class EditProfileModalComponent {
         error: () => this.toastService.show("Error", "Updates could not be saved.")
       });
 
-    if (this.currentTab === 'favorites') {
+    if (this.currentTabId === 'profile.favorites') {
       this.favoritesComponent.onUpdateProfileClick();
     }
   }
@@ -128,6 +135,10 @@ export class EditProfileModalComponent {
       }
     }
     this.updateProfileForm.patchValue({ coverPhoto: file });
+  }
+
+  onTabClicked(tabId: string) {
+    this.currentTabId = tabId;
   }
 
   // FORM GETTERS

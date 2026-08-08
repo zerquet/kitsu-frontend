@@ -11,6 +11,7 @@ import { environment } from '../../../../../environments/environment';
 import { UsersReactionsComponent } from "./components/users-reactions/users-reactions.component";
 import { UsersService } from '../../../../shared/services/users.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TabItem } from '../../../../shared/models/tab-item.model';
 
 @Component({
   selector: 'app-user',
@@ -32,7 +33,11 @@ export class UsersComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  tabs = ['about', 'library', 'reactions'];
+  tabs: TabItem[] = [
+    {id: 'user.about', label: 'about', routeUrl: '../about'},
+    {id: 'user.library', label: 'library', routeUrl: '../library'},
+    {id: 'user.reactions', label: 'reactions', routeUrl: '../reactions'}
+  ]
   environment = environment;
 
   ngOnInit(): void {

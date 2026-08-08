@@ -10,11 +10,12 @@ import { AnimeService } from '../../../../../../shared/services/anime.service';
 import { environment } from '../../../../../../../environments/environment';
 import { FavoriteAnime } from '../../../../../../shared/models/favoriteAnime.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ModalTitleComponent } from "../../../../../../shared/components/modal-title/modal-title.component";
 
 @Component({
   selector: 'manage-favorites',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, RouterLink, NgbTooltip],
+  imports: [ReactiveFormsModule, AsyncPipe, RouterLink, NgbTooltip, ModalTitleComponent],
   templateUrl: './manage-favorites.component.html',
   styleUrl: './manage-favorites.component.css'
 })

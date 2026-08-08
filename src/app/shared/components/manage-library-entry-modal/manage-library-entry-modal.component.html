@@ -1,63 +1,63 @@
 @if (libraryEntry$ | async; as libraryEntry) {
-<div id="editModalTitle">
-  <h4>{{libraryEntry.anime.title}}</h4>
-  <span id="closeModal">
-    <i class="bi bi-x" (click)="onClose()"></i>
-  </span>
-</div>
-<div id="editEntryModalContainer">
-  <form [formGroup]="updateLibraryEntryForm">
-    <div id="edit-form-fields">
-      <div class="flex">
-        <div><label for="status">Library Status</label></div>
-        <div>
-          <select formControlName="status" id="status" [class.notAllowedToEdit]="addNotAllowedClass"
-            class="form-select form-select-sm shadow-none">
-            <option value="completed">Completed</option>
-            <option value="watching">Currently Watching</option>
-            <option value="planning">Want to Watch</option>
-          </select>
+  <div id="editModalTitle">
+    <modal-title title="{{libraryEntry.anime.title}}"></modal-title>
+    <span id="closeModal">
+      <i class="bi bi-x" (click)="onClose()"></i>
+    </span>
+  </div>
+  <div id="editEntryModalContainer">
+    <form [formGroup]="updateLibraryEntryForm">
+      <div id="edit-form-fields">
+        <div class="flex">
+          <div><label for="status">Library Status</label></div>
+          <div>
+            <select formControlName="status" id="status" [class.notAllowedToEdit]="addNotAllowedClass"
+              class="form-select form-select-sm shadow-none">
+              <option value="completed">Completed</option>
+              <option value="watching">Currently Watching</option>
+              <option value="planning">Want to Watch</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex">
+          <div><label for="progress">Progress</label></div>
+          <div class="input-group">
+            <input formControlName="progress" type="number" id="progress" [max]="libraryEntry.anime.episodeCount!"
+              min="0" [value]="libraryEntry.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass"
+              class="form-control form-control-sm shadow-none">
+            <span class="input-group-text"> {{libraryEntry.anime.episodeCount ? "of " + libraryEntry.anime.episodeCount + " episodes": '—'}}</span>
+          </div>
+        </div>
+        <div class="flex">
+          <div><label for="rating">Rating</label></div>
+          <div>
+            <select formControlName="rating" id="rating" [class.notAllowedToEdit]="addNotAllowedClass"
+              class="form-select form-select-sm shadow-none">
+              <option value="">-</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="flex">
-        <div><label for="progress">Progress</label></div>
-        <div class="input-group">
-          <input formControlName="progress" type="number" id="progress" [max]="libraryEntry.anime.episodeCount!"
-            min="0" [value]="libraryEntry.episodesWatched" [class.notAllowedToEdit]="addNotAllowedClass"
-            class="form-control form-control-sm shadow-none">
-          <span class="input-group-text"> {{libraryEntry.anime.episodeCount ? "of " + libraryEntry.anime.episodeCount + " episodes": '—'}}</span>
-        </div>
-      </div>
-      <div class="flex">
-        <div><label for="rating">Rating</label></div>
-        <div>
-          <select formControlName="rating" id="rating" [class.notAllowedToEdit]="addNotAllowedClass"
-            class="form-select form-select-sm shadow-none">
-            <option value="">-</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-          </select>
-        </div>
-      </div>
-    </div>
 
-    @if(canEdit$ | async;) {
-      <div id="editModalFooter" class="flex">
-        <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteLibraryEntry(libraryEntry.animeId)" placement="right"
-            ngbTooltip="Remove from Library" [openDelay]="150" [closeDelay]="100"><i class="bi bi-trash"></i></button>
+      @if(canEdit$ | async;) {
+        <div id="editModalFooter" class="flex">
+          <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteLibraryEntry(libraryEntry.animeId)" placement="right"
+              ngbTooltip="Remove from Library" [openDelay]="150" [closeDelay]="100"><i class="bi bi-trash"></i></button>
+          </div>
+          <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
+              [class.disabled]="updateLibraryEntryForm.valid" (click)="onSubmit()" class="save"></div>
         </div>
-        <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
-            [class.disabled]="updateLibraryEntryForm.valid" (click)="onSubmit()" class="save"></div>
-      </div>
-    }
-  </form>
-</div>
+      }
+    </form>
+  </div>
 }

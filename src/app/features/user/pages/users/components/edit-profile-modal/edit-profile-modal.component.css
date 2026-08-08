@@ -19,6 +19,9 @@
   text-align: center;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #cover-photo-overlay:hover {
@@ -41,6 +44,8 @@
   margin-left: 13px;
   width: 70px;
   height: 70px;
+  border-radius: 50%;
+  border: 2px solid #fff;
 }
 
 #profile-photo-overlay {
@@ -78,64 +83,27 @@
   top: 32%;
   transform: translateY(-50%);
   font-size: 20px;
+  color: #fff;
 }
 
-/*Again, copied from anime component styles*/
-#anime-tabs-container {
-  background-color: #fff;
-}
-
-#anime-tabs {
-  margin-left: 16%;
-}
-
-#anime-tabs ul {
+.change-photo-span.cover {
   display: flex;
-  list-style: none;
-  padding-left: 0px;
-  margin-bottom: 0px;
-  cursor: pointer;
-  margin-left: 1%;
+  flex-direction: column;
 }
 
-#anime-tabs ul li {
-  border: 1px solid #eaeaea;
-  padding: 8px;
-  transition: all 80ms ease-in-out;
-  color: #9f9f9f;
-}
-
-#anime-tabs ul li:hover {
-  background-color: #f7f7f7;
-  color: #464646;
-
-}
-
-#anime-tabs ul li.active {
-  background-color: #f7f7f7;
-  color: #464646;
-
-}
-
-#anime-tabs ul li.active:hover {
-  background-color: #f2f2f2;
+.cover-photo-text {
+  font-weight: 800;
+  font-size: .8rem;
 }
 
 /*FORM SECTION*/
 form {
   padding: 15px 20px;
-}
-
-#location,
-#birthday,
-#gender,
-#bio {
-  border: none;
-  border-radius: 3px;
+  background-color: #f7f7f7;
 }
 
 .field-section {
-  margin-bottom: 6px;
+  padding: 5px;
   display: flex;
 }
 
@@ -147,11 +115,17 @@ form {
   width: 80%;
 }
 
-#btn-section {
+#edit-profile-footer {
   padding: 15px;
+  border-top: 1px solid #e5e5e5;
+  padding: 20px;
 }
 
-#btn-section input {
+#edit-profile-footer .settings-verbiage {
+  font-size: .85rem;
+}
+
+#edit-profile-footer input {
   display: block;
   background-color: #16a085;
   margin-left: auto;
@@ -159,10 +133,10 @@ form {
   border-style: none;
   border-radius: 3px;
   color: #fff;
-  padding: 5px 10px;
-  font-size: 12px;
+  padding: 10px 15px;
+  font-size: 14px;
 }
 
-#btn-section input:hover {
+#edit-profile-footer input:hover {
   background-color: #19b698;
 }

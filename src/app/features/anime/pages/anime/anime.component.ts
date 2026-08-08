@@ -15,6 +15,7 @@ import { CoverPhotoComponent } from "../../../../shared/components/cover-photo/c
 import { environment } from '../../../../../environments/environment';
 import { LibraryEntryStatusComponent } from "./components/library-entry-status/library-entry-status.component";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TabItem } from '../../../../shared/models/tab-item.model';
 
 @Component({
   selector: 'anime',
@@ -39,7 +40,12 @@ export class AnimeComponent implements OnInit {
   private modalService = inject(NgbModal);
   private destroyRef = inject(DestroyRef);
 
-  tabs = ['summary', 'episodes', 'characters', 'franchise'];
+  tabs: TabItem[] = [
+    {id: 'anime.summary', label: 'summary', routeUrl: '../summary'},
+    {id: 'anime.episodes', label: 'episodes', routeUrl: '../episodes'},
+    {id: 'anime.characters', label: 'characters', routeUrl: '../characters'},
+    {id: 'anime.franchise', label: 'franchise', routeUrl: '../franchise'}
+  ];
   environment = environment;
   animeId = 0;
   animeEpisodeCount = 0;

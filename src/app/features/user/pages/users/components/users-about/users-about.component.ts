@@ -39,7 +39,7 @@ export class UsersAboutComponent implements OnInit {
 
   onEditProfile() {
     const modal = this.modalService.open(EditProfileModalComponent);
-    modal.componentInstance.initializeModalData('favorites');
+    modal.componentInstance.initializeModalData('profile.favorites');
     //set input() to open to a tab
   }
 }

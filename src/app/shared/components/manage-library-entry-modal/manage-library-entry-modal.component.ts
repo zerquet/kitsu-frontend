@@ -7,11 +7,12 @@ import { UserAnimeService } from '../../../shared/services/user-anime.service';
 import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { UsersService } from '../../../shared/services/users.service';
 import { progressIsValid } from '../../../shared/validators/validators';
+import { ModalTitleComponent } from "../modal-title/modal-title.component";
 
 @Component({
   selector: 'app-library-entry',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, NgbTooltip],
+  imports: [ReactiveFormsModule, AsyncPipe, NgbTooltip, ModalTitleComponent],
   templateUrl: './manage-library-entry-modal.component.html',
   styleUrl: './manage-library-entry-modal.component.css'
 })
