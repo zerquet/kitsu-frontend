@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { Utils } from '../../../core/services/utils';
 import { Router } from '@angular/router';
 import { LoginResponseDto } from '../dtos/login-response.dto';
-import { UserProfile } from '../../../shared/models/userProfile.model';
+import { UserProfile } from '../../../shared/models/user-profile.model';
 
 @Injectable({
   providedIn: 'root'

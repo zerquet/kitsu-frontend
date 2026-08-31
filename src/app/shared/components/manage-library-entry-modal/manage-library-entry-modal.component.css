@@ -48,10 +48,6 @@ form select {
   cursor: pointer;
 }
 
-/* form input:not(.save):hover,
-form select:hover {
-} */
-
 .flex {
   display: flex;
   padding: 5px;

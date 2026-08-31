@@ -89,7 +89,6 @@ export class ManageLibraryEntryModalComponent implements OnInit {
     //validator creation function
     return (control: AbstractControl): ValidationErrors | null => {
       if (this.libraryEntry$ !== undefined) {
-        console.log(control.value + " and " + status);
         if (control.value === status) {
           return null;
         }

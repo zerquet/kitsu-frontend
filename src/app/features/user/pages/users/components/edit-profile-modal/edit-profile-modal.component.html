@@ -1,5 +1,5 @@
 @if (profileInfo$ | async; as profileInfo) {
-  <div style="background: url({{newCoverPhoto}})" id="modal-cover-photo">
+  <div style="background: url({{currentCoverPhotoUrl}})" id="modal-cover-photo">
     <a id="cover-photo-overlay" (click)="onCoverPhotoClick()">
       <span class="change-photo-span cover">
         <i class="bi bi-camera"></i>
@@ -12,7 +12,7 @@
     <a id="profile-photo-overlay" (click)="onProfilePhotoClick()">
       <span class="change-photo-span"><i class="bi bi-camera"></i></span>
     </a>
-    <img [src]="newProfilePhoto">
+    <img [src]="currentProfilePhotoUrl">
     <input id="profile-photo-input" type="file" (change)="onProfilePhotoChange($event)">
   </div>
   <nav-tabs [tabs]="tabs" [scootRight]="true" (tabClicked)="onTabClicked($event)" [activeTabId]="currentTabId" [hasBottomBorder]="false"></nav-tabs>
@@ -44,11 +44,11 @@
       </form>
     }
     @else if (currentTabId === 'profile.favorites') {
-      <manage-favorites [parentModelRef]="activeModal"></manage-favorites> 
+      <manage-favorites [parentModalRef]="activeModal" [saveTrigger$]="saveTrigger$"></manage-favorites> 
     }
     <div class="d-flex" id="edit-profile-footer">
       <div class="settings-verbiage"><small> Visit your settings page to change your username, email, notification settings, and more. </small></div>
-      <div><input type="button" value="Update Profile" (click)="onUpdateProfileClick()"></div>
+      <div><input id="updateProfileBtn" type="button" value="Update Profile" (click)="onSubmit()" [class.disabled]="updateProfileForm.valid" [disabled]="updateProfileForm.valid"></div>
     </div>
   </div>
 }

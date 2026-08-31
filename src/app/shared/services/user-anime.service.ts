@@ -38,6 +38,7 @@ export class UserAnimeService {
   toastService: any;
   private _currentEntrySubject = new BehaviorSubject<LibraryEntryDetail | null>(null);
   currentEntry$ = this._currentEntrySubject.asObservable();
+  private loadedFavorites = false;
   /*LIBRARY METHODS*/
 
   //profile is only relevant in the context of library page. here, i get userId from auth service.
@@ -125,10 +126,13 @@ export class UserAnimeService {
 
   /* FAVORITES METHODS */
 
-  loadFavoriteAnime(userDisplayId: string) {
+  loadFavoriteAnime(userDisplayId: string) {    
+    if (this.loadedFavorites) return;
+        
     this.http.get<FavoriteAnime[]>(`${this.baseUrl}/${userDisplayId}/favorites`)
       .subscribe((favorites) => {
         this.favoriteAnimes$.next(favorites);
+        this.loadedFavorites = true;
       })
   }
 

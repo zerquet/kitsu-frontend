@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../features/auth/services/auth.service';
-import { UserProfile } from '../models/userProfile.model';
+import { UserProfile } from '../models/user-profile.model';
 
 @Injectable({
   providedIn: 'root'

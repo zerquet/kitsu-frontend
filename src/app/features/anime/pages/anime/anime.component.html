@@ -7,11 +7,11 @@
     <div>
       <div id="favorite-section">
         @if (isFavorite$.getValue() === true) {
-        <i (click)="onUnfavorite(animeResponse.anime.id)" class="bi bi-heart-fill"
-          style="color: palevioletred"></i>
+          <i (click)="onUnfavorite(animeResponse.anime.id)" class="bi bi-heart-fill"
+            style="color: palevioletred"></i>
         }
         @else {
-        <i (click)="onAddToFavorites(animeResponse.anime)" class="bi bi-heart"></i>
+          <i (click)="onAddToFavorites(animeResponse.anime)" class="bi bi-heart"></i>
         }
       </div>
       <img src="{{environment.imageHostUrl}}/anime/poster/{{animeResponse.anime.imageUrl}}" />

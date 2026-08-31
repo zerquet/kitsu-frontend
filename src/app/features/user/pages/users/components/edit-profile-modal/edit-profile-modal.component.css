@@ -125,7 +125,7 @@ form {
   font-size: .85rem;
 }
 
-#edit-profile-footer input {
+#updateProfileBtn {
   display: block;
   background-color: #16a085;
   margin-left: auto;
@@ -137,6 +137,15 @@ form {
   font-size: 14px;
 }
 
-#edit-profile-footer input:hover {
+#updateProfileBtn:hover {
   background-color: #19b698;
+}
+
+#updateProfileBtn.disabled {
+  cursor: not-allowed;
+  background-color: #B4B4B4;
+}
+
+#updateProfileBtn.disabled:hover {
+  background-color: #B4B4B4;
 }

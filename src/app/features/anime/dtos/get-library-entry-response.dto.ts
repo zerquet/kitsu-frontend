@@ -1,5 +1,5 @@
 import { Anime } from "../../../shared/models/anime.model";
-import { UserProfile } from "../../../shared/models/userProfile.model";
+import { UserProfile } from "../../../shared/models/user-profile.model";
 import { GetMediaReactionByUserResponseDto } from "../../user/dtos/get-media-reaction-by-user-response.dto";
 
 export interface GetLibraryEntryResponseDto {

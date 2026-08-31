@@ -1,12 +1,13 @@
 import { Component, inject, Input } from '@angular/core';
 import { AuthService } from '../../../../../../features/auth/services/auth.service';
-import { UserProfile } from '../../../../../../shared/models/userProfile.model';
+import { UserProfile } from '../../../../../../shared/models/user-profile.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditProfileModalComponent } from '../edit-profile-modal/edit-profile-modal.component';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../../../environments/environment';
 import { UsersService } from '../../../../../../shared/services/users.service';
+import { TypedModalService } from '../../../../../../shared/services/typed-modal.service';
 
 @Component({
   selector: 'primary-info',
@@ -16,7 +17,7 @@ import { UsersService } from '../../../../../../shared/services/users.service';
   styleUrl: './primary-info.component.css'
 })
 export class PrimaryInfoComponent {
-  modalService = inject(NgbModal);
+  private typedModalService = inject(TypedModalService);
   private usersService = inject(UsersService);
   //@Input() userProfile: UserProfile | undefined;
   environment = environment;
@@ -26,8 +27,6 @@ export class PrimaryInfoComponent {
   canEdit$ = this.usersService.canEdit$;
 
   onEditProfileClick() {
-    const modal = this.modalService.open(EditProfileModalComponent);
-    modal.componentInstance.initializeModalData();
-    //set input() to open to a tab
+    this.typedModalService.open(EditProfileModalComponent, { currentTabId: 'profile.aboutme'});
   }
 }

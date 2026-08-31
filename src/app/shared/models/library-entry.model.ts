@@ -1,6 +1,6 @@
 import { Anime } from "./anime.model";
 import { MediaReaction } from "./mediaReaction.model";
-import { UserProfile } from "./userProfile.model";
+import { UserProfile } from "./user-profile.model";
 
 export interface LibraryEntry {
   id: number;

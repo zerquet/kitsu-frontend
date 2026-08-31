@@ -1,16 +1,19 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ManageFavoritesComponent } from '../manage-favorites/manage-favorites.component';
 import { Utils } from '../../../../../../core/services/utils';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
 import { UsersService } from '../../../../../../shared/services/users.service';
-import { take } from 'rxjs';
+import { BehaviorSubject, Subject, take } from 'rxjs';
 import { ModalTitleComponent } from "../../../../../../shared/components/modal-title/modal-title.component";
 import { TabItem } from '../../../../../../shared/models/tab-item.model';
 import { NavTabsComponent } from "../../../../../../shared/components/nav-tabs/nav-tabs.component";
+import { DEFAULT_USER_COVER, DEFAULT_USER_PROFILE } from '../../../../../../shared/constants/constants';
+import { getFileNameWithoutExtension } from '../../../../../../shared/helpers/helpers';
+import { FavoriteAnimeDataService } from '../../../../services/favorite-anime-data.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -19,75 +22,64 @@ import { NavTabsComponent } from "../../../../../../shared/components/nav-tabs/n
   templateUrl: './edit-profile-modal.component.html',
   styleUrl: './edit-profile-modal.component.css'
 })
-export class EditProfileModalComponent {
+export class EditProfileModalComponent implements OnInit, OnDestroy {
   public activeModal = inject(NgbActiveModal);
   private usersService = inject(UsersService);
   private toastService = inject(AppToastService);
+  private favoritesDataService = inject(FavoriteAnimeDataService);
 
   currentTabId = 'profile.aboutme';
   tabs: TabItem[] = [
     {id: 'profile.aboutme', label: 'About Me'},
     {id: 'profile.favorites', label: 'Favorites'}
   ];
-  updateProfileForm = new FormGroup({
-    id: new FormControl(''),
-    displayId: new FormControl(''),
-    username: new FormControl(''),
-    location: new FormControl(''),
-    birthday: new FormControl<Date | null>(null),
-    gender: new FormControl(''),
-    bio: new FormControl(''),
-    profilePhoto: new FormControl<File | undefined>(undefined),
-    coverPhoto: new FormControl<File | undefined>(undefined)
-  });
-  newProfilePhoto: string | undefined = undefined;
-  newProfilePhotoSelected: boolean = false;
-  newCoverPhoto: string = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
+  updateProfileForm!: FormGroup;
+  currentProfilePhotoUrl: string | undefined = undefined;
+  currentProfilePhotoId: string | undefined;
+  currentCoverPhotoUrl: string = DEFAULT_USER_COVER;
+  currentCoverPhotoId: string | undefined;
   environment = environment;
 
   profileInfo$ = this.usersService.profile$;
+  private _saveTriggerSubject = new Subject<void>();
+  saveTrigger$ = this._saveTriggerSubject.asObservable();
 
-  @ViewChild(ManageFavoritesComponent) favoritesComponent!: ManageFavoritesComponent;
-
-  initializeModalData(openToTab: string = 'profile.aboutme') {
+  ngOnInit() {    
     this.profileInfo$
       .pipe(take(1))
       .subscribe(profile => {
-        if (!profile)
-          return;
+        if (!profile) return;
 
-        this.updateProfileForm.patchValue({ "id": profile.id });
-        this.updateProfileForm.patchValue({ "displayId": profile.displayId });
-        this.updateProfileForm.patchValue({ "username": profile.username });
-        this.updateProfileForm.patchValue({ "location": profile.location });
-        this.updateProfileForm.patchValue({ "birthday": profile.birthday });
-        this.updateProfileForm.patchValue({ "gender": profile.gender });
-        this.updateProfileForm.patchValue({ "bio": profile.bio });
-        this.newProfilePhoto = profile.profilePhotoId;
-        if (profile.profilePhotoId === null) {
-          this.newProfilePhoto = "https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg"; //not the best name. also check logic and fix bug
-        }
-        else {
-          this.newProfilePhoto = `${this.environment.imageHostUrl}/users/profile/${profile.profilePhotoId}.jpg`
-        }
+        this.currentProfilePhotoId = profile.profilePhotoId;
+        this.currentCoverPhotoId = profile.coverPhotoId;
 
-        if (profile.coverPhotoId === null) {
-          this.newCoverPhoto = "https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png";
-        }
-        else {
-          this.newCoverPhoto = `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`;
-        }
+        this.updateProfileForm = new FormGroup({
+          id: new FormControl<any>(profile.id),
+          location: new FormControl<any>(profile.location, [this.locationIsDifferent(profile.location)]),
+          birthday: new FormControl<any>(profile.birthday, [this.birthdayIsDifferent(profile.birthday)]),
+          gender: new FormControl<any>(profile.gender, [this.genderIsDifferent(profile.gender)]),
+          bio: new FormControl<any>(profile.bio, [this.bioIsDifferent(profile.bio)]),
+          profilePhoto: new FormControl<File | undefined>(undefined, [this.profilePhotoIsDifferent(profile.profilePhotoId)]),
+          coverPhoto: new FormControl<File | undefined>(undefined, [this.coverPhotoIsDifferent(profile.coverPhotoId)])
+        });        
 
-        this.currentTabId = openToTab;
-      })
+        this.currentProfilePhotoUrl = profile.profilePhotoId 
+          ? `${this.environment.imageHostUrl}/users/profile/${profile.profilePhotoId}.jpg` 
+          : DEFAULT_USER_PROFILE;
+
+        this.currentCoverPhotoUrl = profile.coverPhotoId
+          ? `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`
+          : DEFAULT_USER_COVER;
+      });
   }
 
+  ngOnDestroy() {
+    this.favoritesDataService.resetState();
+  }
 
-  onUpdateProfileClick() {
+  onSubmit() {
     const req = new FormData();
     req.append('id', this.id!.value!);
-    req.append('displayId', this.displayId!.value!);
-    req.append('username', this.username!.value!);
     req.append('location', this.location!.value!);
     req.append('bio', this.bio!.value!);
     if (!Utils.IsNullOrUndefined(this.birthday!.value)) req.append('birthday', new Date(this.birthday!.value!).toLocaleDateString());
@@ -97,12 +89,15 @@ export class EditProfileModalComponent {
 
     this.usersService.updateProfile(req)
       .subscribe({
-        next: () => this.toastService.show("Success", "Profile successfully updated!"),
+        next: () => {
+          this.activeModal.close();
+          this.toastService.show("Success", "Profile successfully updated!")
+        },
         error: () => this.toastService.show("Error", "Updates could not be saved.")
       });
 
     if (this.currentTabId === 'profile.favorites') {
-      this.favoritesComponent.onUpdateProfileClick();
+      this._saveTriggerSubject.next();
     }
   }
 
@@ -119,10 +114,10 @@ export class EditProfileModalComponent {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      this.newProfilePhoto = reader.result?.toString();
+      this.currentProfilePhotoUrl = reader.result?.toString();
     }
+    this.currentProfilePhotoId = getFileNameWithoutExtension(file.name);
     this.updateProfileForm.patchValue({ profilePhoto: file });
-    this.newProfilePhotoSelected = true;
   }
 
   onCoverPhotoChange(event: Event) {
@@ -131,9 +126,10 @@ export class EditProfileModalComponent {
     reader.readAsDataURL(file);
     reader.onload = () => {
       if (reader.result !== null) {
-        this.newCoverPhoto = reader.result.toString();
+        this.currentCoverPhotoUrl = reader.result.toString();
       }
     }
+    this.currentCoverPhotoId = getFileNameWithoutExtension(file.name);
     this.updateProfileForm.patchValue({ coverPhoto: file });
   }
 
@@ -141,10 +137,63 @@ export class EditProfileModalComponent {
     this.currentTabId = tabId;
   }
 
+  // FORM VALIDATORS
+  locationIsDifferent(location: string | undefined): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === location) {
+        return null;
+      }
+      return { locationIsDifferent: true }
+    }
+  }
+
+  birthdayIsDifferent(birthday: Date | undefined): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === birthday) {        
+        return null;
+      }
+      return { birthdayIsDifferent: true }
+    }
+  }
+
+  genderIsDifferent(gender: string | undefined): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === gender) {
+        return null;
+      }
+      return { genderIsDifferent: true }
+    }
+  }
+
+  bioIsDifferent(bio: string | undefined): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === bio) {
+        return null;
+      }
+      return { bioIsDifferent: true }
+    }
+  }
+  
+  profilePhotoIsDifferent(profilePhotoId: string | undefined): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (this.currentProfilePhotoId === profilePhotoId) {
+        return null;
+      }
+      return { profilePhotoIsDifferent: true }
+    }
+  }
+  
+  coverPhotoIsDifferent(coverPhotoId: string | undefined): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (this.currentCoverPhotoId === coverPhotoId) {
+        return null;
+      }
+      return { coverPhotoIsDifferent: true }
+    }
+  }
+
   // FORM GETTERS
   get id() { return this.updateProfileForm.get('id') }
-  get displayId() { return this.updateProfileForm.get('displayId') }
-  get username() { return this.updateProfileForm.get('username') }
   get location() { return this.updateProfileForm.get("location") }
   get birthday() { return this.updateProfileForm.get("birthday") }
   get gender() { return this.updateProfileForm.get("gender") }

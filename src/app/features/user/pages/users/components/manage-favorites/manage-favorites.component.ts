@@ -11,6 +11,7 @@ import { environment } from '../../../../../../../environments/environment';
 import { FavoriteAnime } from '../../../../../../shared/models/favoriteAnime.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalTitleComponent } from "../../../../../../shared/components/modal-title/modal-title.component";
+import { FavoriteAnimeDataService } from '../../../../services/favorite-anime-data.service';
 
 @Component({
   selector: 'manage-favorites',
@@ -22,8 +23,10 @@ import { ModalTitleComponent } from "../../../../../../shared/components/modal-t
 export class ManageFavoritesComponent implements OnInit {
   private userAnimeService = inject(UserAnimeService);
   private animeService = inject(AnimeService); //use setState fn to stop fetching all anime in ctor
+  private favoritesDataService = inject(FavoriteAnimeDataService);
   private destroyRef = inject(DestroyRef);
-  @Input() parentModelRef: NgbActiveModal | null = null;
+  @Input() parentModalRef: NgbActiveModal | null = null;
+  @Input() saveTrigger$: Observable<void> | null = null;
 
   showSearchResults = false;
   searchAnimesForm = new FormGroup({
@@ -43,68 +46,63 @@ export class ManageFavoritesComponent implements OnInit {
         else
           this.showSearchResults = false;
       }),
-      takeUntil(this.destroy$)
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(keyword => this.term$.next(keyword));
 
     this.userProfile$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (profile) => {
-          if (!profile?.displayId) {
-            return;
-          }
-
+        next: (profile) => {          
+          if (!profile?.displayId) return;
+          
+          console.log('setting profile');
           this.userAnimeService.loadFavoriteAnime(profile?.displayId);
         }
-      })
+      });
+
+    this.saveTrigger$
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.saveFavorites());   
   }
 
-  private destroy$ = new Subject<void>();
   term$ = new BehaviorSubject<string>("");
-  pendingFavorites$ = this.userAnimeService.favoriteAnimes$;
+  pendingFavorites$ = this.favoritesDataService.pendingList$;
   //search logic is already duplicated 3 times throughout app. add to service?
   searchResults$ = combineLatest([this.term$]).pipe(
     map(([keyword]) => keyword),
     switchMap(keyword => this.search(keyword)),
-    takeUntil(this.destroy$));
+    takeUntilDestroyed(this.destroyRef));
 
   userProfile$ = this.userAnimeService.profile$;
 
   onUnfavoriteClick(animeId: number) {
-    let pendingFavorites = this.pendingFavorites$.getValue();
-    pendingFavorites = pendingFavorites.filter((a) => a.animeId !== animeId);
-    this.pendingFavorites$.next(pendingFavorites);
+    this.favoritesDataService.remove(animeId);   
   }
 
-  onUpdateProfileClick() {
-    this.userAnimeService.updateFavoriteAnimes(this.pendingFavorites$.getValue())
+  private saveFavorites() {
+    this.favoritesDataService.commit()
       .subscribe({
-        next: () => this.parentModelRef?.close()
+        next: () => this.parentModalRef?.close()
       });
   }
 
   onAnimeSelect(anime: Anime) {
-    let pendingFavorites = this.pendingFavorites$.getValue();
-    let favoriteExists = pendingFavorites.includes(pendingFavorites[pendingFavorites.findIndex(a => a.animeId === anime.id)]);
-
-    if (favoriteExists === false) {
+    if (!this.favoritesDataService.exists(anime.id)) {
       //*Questionable: Creating instance of FavoriteAnime at this point which is later used in state after saving changes.
       //               Also, authenticated user's userId must always have a value.  */
-      let favoriteToAdd: FavoriteAnime = {
+      let newFavorite: FavoriteAnime = {
         animeId: anime.id,
         anime: anime
       }
 
-      pendingFavorites.push(favoriteToAdd);
-      //*Questionable */
-      this.pendingFavorites$.next(pendingFavorites);
+      this.favoritesDataService.add(newFavorite);
     }
     this.showSearchResults = false;
     this.term$.next("");
   }
 
   onFavoriteImageClick() {
-    this.parentModelRef?.close();
+    this.parentModalRef?.close();
   }
 
   private search(term: string) {
