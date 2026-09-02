@@ -4,6 +4,9 @@ import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../features/auth/services/auth.service';
 import { UserProfile } from '../models/user-profile.model';
+import { GetUserProfileResponseDto } from '../../features/user/dtos/get-user-profile-response.dto';
+import { mapGetUserProfileToUserProfile, mapUpdateUserProfileToUserProfile } from '../mappers/user-profile.mapper';
+import { UpdateUserProfileResponseDto } from '../../features/user/dtos/update-user-profile-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +15,9 @@ export class UsersService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private readonly baseUrl = `${environment.apiUrl}/users`;
-  private profileSubject = new BehaviorSubject<UserProfile | null>(null);
+  private _profileSubject = new BehaviorSubject<UserProfile | null>(null);
 
-  profile$ = this.profileSubject.asObservable();
+  profile$ = this._profileSubject.asObservable();
   //profile$ = new BehaviorSubject<UserProfile | null>(null);
   canEdit$ = combineLatest([
     this.profile$,
@@ -37,9 +40,10 @@ export class UsersService {
    * @param userDisplayId the user's display ID
    */
   loadProfile(userDisplayId: string) {
-    this.http.get<UserProfile>(`${this.baseUrl}/${userDisplayId}`)
+    this.http.get<GetUserProfileResponseDto>(`${this.baseUrl}/${userDisplayId}`)
+      .pipe(map(mapGetUserProfileToUserProfile))
       .subscribe({
-        next: (res) => this.profileSubject.next(res)
+        next: (userProfile) => this._profileSubject.next(userProfile)
       });
   }
 
@@ -48,15 +52,16 @@ export class UsersService {
    * @param userProfile the profile object
    */
   setProfile(userProfile: UserProfile) {
-    this.profileSubject.next(userProfile);
+    this._profileSubject.next(userProfile);
   }
 
-  updateProfile(req: FormData): Observable<UserProfile> {
+  updateProfile(req: FormData): Observable<UpdateUserProfileResponseDto> {
     return this.http.put<UserProfile>(`${this.baseUrl}`, req)
       .pipe(
-        tap((res) => {
-          this.profileSubject.next(res);
-          this.authService.updateAuthenticatedUser(res);
+        map(mapUpdateUserProfileToUserProfile),
+        tap((userProfile) => {
+          this._profileSubject.next(userProfile);
+          this.authService.updateAuthenticatedUser(userProfile);
         })
       );
   }

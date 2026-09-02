@@ -9,6 +9,8 @@ export interface AuthenticatedUser {
   gender?: string;
   email: string;
   profilePhotoId?: string;
+  profilePhotoUrl: string;
   coverPhotoId?: string;
+  coverPhotoUrl: string;
   isAdmin: boolean; //frontend-only property
 }

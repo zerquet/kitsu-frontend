@@ -1,6 +1,6 @@
 @if (userProfile$ | async; as userProfile) {
   <div id="cover-section">
-    <cover-photo coverPhotoUrl="{{environment.imageHostUrl}}/users/cover/{{userProfile.coverPhotoId}}.jpg"></cover-photo>
+    <cover-photo [coverPhotoUrl]="userProfile.coverPhotoUrl"></cover-photo>
     <!--find solution that works for prod-->
     <primary-info></primary-info>
   </div>

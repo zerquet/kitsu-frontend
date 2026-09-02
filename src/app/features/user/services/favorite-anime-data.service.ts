@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable, OnInit } from '@angular/core';
 import { UserAnimeService } from '../../../shared/services/user-anime.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { FavoriteAnime } from '../../../shared/models/favoriteAnime.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -11,7 +11,29 @@ export class FavoriteAnimeDataService {
   private userAnimeService = inject(UserAnimeService);
   private destroyRef = inject(DestroyRef);
   pendingList$ = new BehaviorSubject<FavoriteAnime[]>([]);
+  sourceList$ = this.userAnimeService.favoriteAnimes$;
+  favoritesChanged$ = combineLatest([
+    this.pendingList$, 
+    this.sourceList$]
+  ).pipe(
+    map(([pendingList, sourceList]) => {
+      if (pendingList.length !== sourceList.length) return true;
 
+      const pending = pendingList.map(f => f.animeId).sort();
+      const source = sourceList.map(f => f.animeId).sort();
+
+      let isDifferent = false;
+      for (let i = 0; i < pending.length; i++) {
+        if (pending[i] !== source[i]) {
+          isDifferent = true;
+          break;
+        }
+      }
+
+      return isDifferent;
+    })
+  )
+  
   constructor() {
     this.loadData();
   }

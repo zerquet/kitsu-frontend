@@ -37,13 +37,7 @@
               data-bs-toggle="dropdown">
               <div class="profile-icon">
                 <!--may need to get auth user's profile on app start and set state from there-->
-                @if(authenticatedUser.profilePhotoId !== null) {
-                <img src="{{environment.imageHostUrl}}/users/profile/{{authenticatedUser.profilePhotoId}}.jpg">
-                }
-                @else {
-                <img src="https://media.kitsu.app/user/1523778/avatar/large-77089f27577b3c80b2f270125e0c85ee.jpeg"
-                  alt="">
-                }
+                <img [src]="authenticatedUser.profilePhotoUrl">
               </div>
             </a>
             <ul class="dropdown-menu">

@@ -10,6 +10,7 @@ import { Utils } from '../../../core/services/utils';
 import { Router } from '@angular/router';
 import { LoginResponseDto } from '../dtos/login-response.dto';
 import { UserProfile } from '../../../shared/models/user-profile.model';
+import { getCoverPhotoUrl, getProfilePhotoUrl } from '../../../shared/helpers/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +20,16 @@ export class AuthService {
   private router = inject(Router);
   private readonly baseUrl = `${environment.apiUrl}`;
   private _tokenIsDecoded = false;
-  private currentUserSubject = new BehaviorSubject<AuthenticatedUser | null>(null);
+  private _currentUserSubject = new BehaviorSubject<AuthenticatedUser | null>(null);
 
   constructor() {
-    if (this._tokenIsDecoded === false) {
+    //Try to log in via JWT token
+    if (!this._tokenIsDecoded) {
       this.decodeToken();
     }
   }
 
-  authenticatedUser$ = this.currentUserSubject.asObservable();
+  authenticatedUser$ = this._currentUserSubject.asObservable();
   isAdminPage$ = new BehaviorSubject<boolean>(false); //variable to turn off nav menu in admin dashboard
 
   login(req: LoginRequest) {
@@ -36,18 +38,18 @@ export class AuthService {
         tap((res) => {
           localStorage.setItem("access_token", res.token);
           if (!res.user) {
-            this.currentUserSubject.next(null);
+            this._currentUserSubject.next(null);
             return;
           }
           res.user.isAdmin = res.isAdmin
-          this.currentUserSubject.next(res.user);
+          this._currentUserSubject.next(res.user);
         })
       );
   }
 
   logout() {
     localStorage.setItem("access_token", "");
-    this.currentUserSubject.next(null);
+    this._currentUserSubject.next(null);
     this.router.navigate(['/explore'])
   }
 
@@ -64,13 +66,15 @@ export class AuthService {
           email: decoded.email,
           isAdmin: decoded.is_admin === "True" ? true : false,
           profilePhotoId: decoded.profile_photo_id,
+          profilePhotoUrl: getProfilePhotoUrl(decoded.profile_photo_id),
           coverPhotoId: decoded.cover_photo_id,
+          coverPhotoUrl: getCoverPhotoUrl(decoded.cover_photo_id),
           location: '',
           bio: '',
           birthday: undefined,
           gender: ''
         };
-        this.currentUserSubject.next(authenticatedUser);
+        this._currentUserSubject.next(authenticatedUser);
         this._tokenIsDecoded = true;
       }
       else {
@@ -80,7 +84,7 @@ export class AuthService {
   }
 
   updateAuthenticatedUser(updatedUser: UserProfile) {
-    let currentUser = this.currentUserSubject.getValue();
+    let currentUser = this._currentUserSubject.getValue();
     if (currentUser === null) {
       return;
     }
@@ -92,6 +96,6 @@ export class AuthService {
     currentUser.location = updatedUser.location;
     currentUser.profilePhotoId = updatedUser.profilePhotoId;
 
-    this.currentUserSubject.next(currentUser);
+    this._currentUserSubject.next(currentUser);
   }
 }

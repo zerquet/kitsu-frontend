@@ -48,7 +48,7 @@
     }
     <div class="d-flex" id="edit-profile-footer">
       <div class="settings-verbiage"><small> Visit your settings page to change your username, email, notification settings, and more. </small></div>
-      <div><input id="updateProfileBtn" type="button" value="Update Profile" (click)="onSubmit()" [class.disabled]="updateProfileForm.valid" [disabled]="updateProfileForm.valid"></div>
+      <div><input id="updateProfileBtn" type="button" value="Update Profile" (click)="onSubmit()" [class.disabled]="!(canSubmit$ | async)" [disabled]="!(canSubmit$ | async)"></div>
     </div>
   </div>
 }

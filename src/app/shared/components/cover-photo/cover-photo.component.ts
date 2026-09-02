@@ -8,5 +8,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './cover-photo.component.css'
 })
 export class CoverPhotoComponent {
-  @Input() coverPhotoUrl: string  = 'https://kitsu.app/images/default_cover-22e5f56b17aeced6dc7f69c8d422a1ab.png';
+  @Input() coverPhotoUrl?: string;
 }

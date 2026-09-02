@@ -55,7 +55,6 @@ export class ManageFavoritesComponent implements OnInit {
         next: (profile) => {          
           if (!profile?.displayId) return;
           
-          console.log('setting profile');
           this.userAnimeService.loadFavoriteAnime(profile?.displayId);
         }
       });
@@ -82,11 +81,11 @@ export class ManageFavoritesComponent implements OnInit {
   private saveFavorites() {
     this.favoritesDataService.commit()
       .subscribe({
-        next: () => this.parentModalRef?.close()
+        next: () => this.closeModal()
       });
   }
 
-  onAnimeSelect(anime: Anime) {
+  selectAnime(anime: Anime) {
     if (!this.favoritesDataService.exists(anime.id)) {
       //*Questionable: Creating instance of FavoriteAnime at this point which is later used in state after saving changes.
       //               Also, authenticated user's userId must always have a value.  */
@@ -101,7 +100,7 @@ export class ManageFavoritesComponent implements OnInit {
     this.term$.next("");
   }
 
-  onFavoriteImageClick() {
+  closeModal() {
     this.parentModalRef?.close();
   }
 

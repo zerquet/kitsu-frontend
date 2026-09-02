@@ -12,7 +12,7 @@
             }
             @else {
               @for(anime of searchResults; track anime.id) {
-                <div (click)="onAnimeSelect(anime)" class="results-item"><strong>{{anime.title}}</strong></div>
+                <div (click)="selectAnime(anime)" class="results-item"><strong>{{anime.title}}</strong></div>
               }
             }
           }
@@ -28,8 +28,8 @@
           <div class="favorite-info-section">
             <div class="favorite-photo-section">
               <a routerLink="/anime/{{favorite.animeId}}/summary" href="javascript:void(0);"
-                (click)="onFavoriteImageClick()">
-                <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.anime.imageUrl}}" />
+                (click)="closeModal()">
+                <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.anime.imageUrl}}" /> <!--TODO build anime poster image URL as property as you did with user profile?-->
               </a>
             </div>
             <div class="favorite-title-section">

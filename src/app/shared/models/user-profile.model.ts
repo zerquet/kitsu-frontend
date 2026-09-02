@@ -6,7 +6,10 @@ export interface UserProfile {
   location?: string;
   bio?: string;
   birthday?: Date;
+  birthdayPublic: string;
   gender?: string;
   profilePhotoId?: string;
+  profilePhotoUrl: string;
   coverPhotoId?: string;
+  coverPhotoUrl: string;
 }

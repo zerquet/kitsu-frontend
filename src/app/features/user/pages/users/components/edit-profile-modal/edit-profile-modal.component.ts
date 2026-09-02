@@ -7,13 +7,14 @@ import { Utils } from '../../../../../../core/services/utils';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
 import { UsersService } from '../../../../../../shared/services/users.service';
-import { BehaviorSubject, Subject, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, startWith, Subject, take } from 'rxjs';
 import { ModalTitleComponent } from "../../../../../../shared/components/modal-title/modal-title.component";
 import { TabItem } from '../../../../../../shared/models/tab-item.model';
 import { NavTabsComponent } from "../../../../../../shared/components/nav-tabs/nav-tabs.component";
 import { DEFAULT_USER_COVER, DEFAULT_USER_PROFILE } from '../../../../../../shared/constants/constants';
-import { getFileNameWithoutExtension } from '../../../../../../shared/helpers/helpers';
+import { getCoverPhotoUrl, getFileNameWithoutExtension, getProfilePhotoUrl } from '../../../../../../shared/helpers/helpers';
 import { FavoriteAnimeDataService } from '../../../../services/favorite-anime-data.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-edit-profile',
@@ -33,7 +34,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     {id: 'profile.aboutme', label: 'About Me'},
     {id: 'profile.favorites', label: 'Favorites'}
   ];
-  updateProfileForm!: FormGroup;
+  updateProfileForm!: FormGroup; //VALID = SAME DATA = DISABLED. INVALID = DIFFERENT DATA = ENABLED
   currentProfilePhotoUrl: string | undefined = undefined;
   currentProfilePhotoId: string | undefined;
   currentCoverPhotoUrl: string = DEFAULT_USER_COVER;
@@ -41,9 +42,11 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
   environment = environment;
 
   profileInfo$ = this.usersService.profile$;
+  private destroyRef = inject(DestroyRef);
   private _saveTriggerSubject = new Subject<void>();
   saveTrigger$ = this._saveTriggerSubject.asObservable();
-
+  canSubmit$!: Observable<boolean>;
+  
   ngOnInit() {    
     this.profileInfo$
       .pipe(take(1))
@@ -63,13 +66,21 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
           coverPhoto: new FormControl<File | undefined>(undefined, [this.coverPhotoIsDifferent(profile.coverPhotoId)])
         });        
 
-        this.currentProfilePhotoUrl = profile.profilePhotoId 
-          ? `${this.environment.imageHostUrl}/users/profile/${profile.profilePhotoId}.jpg` 
-          : DEFAULT_USER_PROFILE;
+        this.currentProfilePhotoUrl = profile.profilePhotoUrl;
+        this.currentCoverPhotoUrl = profile.coverPhotoUrl;
 
-        this.currentCoverPhotoUrl = profile.coverPhotoId
-          ? `${this.environment.imageHostUrl}/users/cover/${profile.coverPhotoId}.jpg`
-          : DEFAULT_USER_COVER;
+        this.canSubmit$ = combineLatest([
+          this.updateProfileForm.statusChanges.pipe(startWith(this.updateProfileForm.status), map(status => status === "VALID")),
+          this.favoritesDataService.favoritesChanged$
+        ]).pipe(
+          map(([formIsValid, favoritesChanged]) => {
+            console.log(!formIsValid || favoritesChanged);
+            
+            return !formIsValid || favoritesChanged
+          } ),
+          takeUntilDestroyed(this.destroyRef)
+        );
+
       });
   }
 

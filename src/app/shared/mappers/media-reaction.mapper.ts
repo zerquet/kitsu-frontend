@@ -2,6 +2,7 @@ import { AddMediaReactionResponseDto } from "../../features/user/dtos/add-media-
 import { GetMediaReactionByIdResponseDto } from "../../features/user/dtos/get-media-reaction-by-id-response.dto";
 import { GetMediaReactionByUserResponseDto } from "../../features/user/dtos/get-media-reaction-by-user-response.dto";
 import { MediaReaction, MediaReactionWithUser } from "../models/mediaReaction.model";
+import { mapGetUserProfileToUserProfile } from "./user-profile.mapper";
 
 export function mapGetMediaReactionByIdToMediaReaction(dto: GetMediaReactionByIdResponseDto) : MediaReactionWithUser {
   return {
@@ -12,7 +13,7 @@ export function mapGetMediaReactionByIdToMediaReaction(dto: GetMediaReactionById
     reaction: dto.reaction,
     upvoteCount: dto.upvoteCount,
     anime: dto.anime,
-    userProfile: dto.userProfile
+    userProfile: mapGetUserProfileToUserProfile(dto.userProfile)
   }
 }
 

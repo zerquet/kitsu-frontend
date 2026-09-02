@@ -13,11 +13,11 @@
     <div>
       <div class="profile-card">
         <div class="user-background"
-          style="background: url({{environment.imageHostUrl}}/users/cover/{{vm.userProfile?.coverPhotoId}}.jpg)">
+          style="background: url({{vm.userProfile?.coverPhotoUrl}})">
         </div>
         <div class="user-bottom">
           <a href="javascript:void(0);" routerLink="/users/{{vm.userProfile?.displayId}}/about">
-            <img src="{{environment.imageHostUrl}}/users/profile/{{vm.userProfile?.profilePhotoId}}.jpg"
+            <img [src]="vm.userProfile?.profilePhotoUrl"
               class="user-avatar">
           </a>
           <a href="javascript:void(0);" routerLink="/users/{{vm.userProfile?.displayId}}/about">

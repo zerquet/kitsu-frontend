@@ -1,13 +1,10 @@
-import { Component, inject, Input } from '@angular/core';
-import { AuthService } from '../../../../../../features/auth/services/auth.service';
-import { UserProfile } from '../../../../../../shared/models/user-profile.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, inject } from '@angular/core';
 import { EditProfileModalComponent } from '../edit-profile-modal/edit-profile-modal.component';
-import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../../../environments/environment';
 import { UsersService } from '../../../../../../shared/services/users.service';
 import { TypedModalService } from '../../../../../../shared/services/typed-modal.service';
+import { getProfilePhotoUrl } from '../../../../../../shared/helpers/helpers'
 
 @Component({
   selector: 'primary-info',
