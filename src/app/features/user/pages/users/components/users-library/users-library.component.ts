@@ -11,11 +11,9 @@ import { environment } from '../../../../../../../environments/environment';
 import { AddMediaReactionModalComponent } from '../add-media-reaction-modal/add-media-reaction-modal.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { UsersService } from '../../../../../../shared/services/users.service';
-import { MediaReaction } from '../../../../../../shared/models/mediaReaction.model';
+import { MediaReaction } from '../../../../../../shared/models/media-reaction.model';
 import { EditMediaReactionModalComponent } from '../../../../components/edit-media-reaction-modal/edit-media-reaction-modal.component';
-import { EditMediaReactionModel } from '../../../../models/edit-media-reaction.model';
 import { progressIsValid } from '../../../../../../shared/validators/validators';
-import { AddMediaReactionModel } from '../../../../models/add-media-reaction.model';
 
 @Component({
   selector: 'users-library',
@@ -195,29 +193,14 @@ export class UsersLibraryComponent implements OnInit {
     return list.filter(a => a.watchStatus === type).length;
   }
 
-  onAddMediaReaction(libraryEntry: LibraryEntryDetail) {
-    const data: AddMediaReactionModel = {
-      libraryEntryId: libraryEntry.id,
-      animeId: libraryEntry.animeId,
-      animeImageUrl: libraryEntry.anime.imageUrl,
-      animeTitle: libraryEntry.anime.title
-    }
-    const modal = this.modalService.open(AddMediaReactionModalComponent);
-    modal.componentInstance.initializeModalData(data);
+  onAddMediaReaction(libraryEntry: LibraryEntryDetail) { //TODO combine onAdd and onEdit methods
+    this.userAnimeService.changeCurrentEntry(libraryEntry);
+    this.modalService.open(AddMediaReactionModalComponent);
   }
 
-  onEditMediaReactionClick(reaction: MediaReaction) {
-    const data: EditMediaReactionModel = {
-      mediaReactionId: reaction.id,
-      userId: reaction.userId,
-      libraryEntryId: reaction.libraryEntryId,
-      animeId: reaction.animeId,
-      reaction: reaction.reaction,
-      animeTitle: reaction.anime.title,
-      animeImageUrl: reaction.anime.imageUrl
-    }
-    const modal = this.modalService.open(EditMediaReactionModalComponent);
-    modal.componentInstance.initializeModalData(data)
+  onEditMediaReactionClick(libraryEntry: LibraryEntryDetail) {
+    this.userAnimeService.changeCurrentEntry(libraryEntry);
+    this.modalService.open(EditMediaReactionModalComponent);
   }
 
   private sorter(list: LibraryEntryDetail[], column: string, direction: string, library: string, searchTerm: string): LibraryEntryDetail[] {

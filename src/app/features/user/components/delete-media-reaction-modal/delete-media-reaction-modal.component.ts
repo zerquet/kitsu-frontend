@@ -1,22 +1,26 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { UserAnimeService } from '../../../../shared/services/user-anime.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ModalTitleComponent } from "../../../../shared/components/modal-title/modal-title.component";
 
 @Component({
   selector: 'delete-media-reaction',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ModalTitleComponent],
   template: `
+    <div id="delete-modal-title">
+      <modal-title title="Are you sure you want to do this?"/>
+    </div>
     <div class="delete-reaction-modal">
-      <h3>Are you sure you want to do this?</h3>
       <form
         [formGroup]="deleteMediaReactionForm"
-        (submit)="onMediaReactionDeleteSubmit()"
+        (submit)="onSubmit()"
       >
         <div class="delete-btn-container">
-          <input type="submit" value="Confirm">
+          <input id="delete-reaction-btn" type="submit" value="Confirm">
         </div>
       </form>
     </div>
@@ -26,7 +30,6 @@ import { UserAnimeService } from '../../../../shared/services/user-anime.service
       border-radius: 5px;
     }
     .delete-reaction-modal {
-      background-color: #323242;
       border-radius: 5px;
       padding: 15px;
       text-align: center;
@@ -34,22 +37,44 @@ import { UserAnimeService } from '../../../../shared/services/user-anime.service
     .delete-btn-container, .delete-btn-container input {
       width: 100%;
     }
+    #delete-modal-title {
+      text-align: center;
+      padding: 20px 20px 5px 20px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    #delete-reaction-btn {
+      background-color: #16a085;
+      border-style: none;
+      border-radius: 3px;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 24px;
+    }
+    #delete-reaction-btn:hover {
+      background-color: #19b698;
+    }
   `
 })
-export class DeleteMediaReactionModalComponent {
+export class DeleteMediaReactionModalComponent implements OnInit {
   public activeModal = inject(NgbActiveModal);
   public toastService = inject(AppToastService);
   public usersService = inject(UserAnimeService);
+  private userAnimeService = inject(UserAnimeService);
+  private destroyRef = inject(DestroyRef);
 
-  deleteMediaReactionForm = new FormGroup({
-    reactionId: new FormControl()
-  });
+  deleteMediaReactionForm!: FormGroup;
 
-  initializeModalData(reactionId: number) {
-    this.deleteMediaReactionForm.patchValue({ "reactionId": reactionId })
+  ngOnInit() {
+    this.userAnimeService.currentMediaReaction$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(mediaReaction => {
+        this.deleteMediaReactionForm = new FormGroup({
+            reactionId: new FormControl(mediaReaction?.id)
+          });
+      });
   }
 
-  onMediaReactionDeleteSubmit() {
+  onSubmit() {
     if (this.reactionId !== null && this.reactionId.value !== null) {
       this.usersService.deleteMediaReaction(this.reactionId.value)
         .subscribe({

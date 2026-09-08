@@ -92,6 +92,21 @@ body {
   height: 34px !important;
 }
 
+/*Delete Reaction tooltip class applied via tooltipClass from ngbTooltip. Placed here so I don't have to disable Encapsulation in edit reaction component, since could mess up global styles.*/
+.delete-reaction-tooltip .tooltip-inner {
+  background-color: #464646;
+}
+
+.delete-reaction-tooltip.bs-tooltip-start .tooltip-arrow::before {
+  border-left-color: #464646;
+}
+
+.modal-dark-backdrop {
+  background-color: #000;
+  opacity: .92 !important;
+  transition: all .45s linear;
+}
+
 html,
 body {
   height: 100%;

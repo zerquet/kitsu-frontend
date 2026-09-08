@@ -1,11 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { combineLatest, map, switchMap, tap } from 'rxjs';
+import { combineLatest, map, switchMap, takeUntil, tap } from 'rxjs';
 import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 import { AsyncPipe } from '@angular/common';
 import { ReactionCardComponent } from '../../components/reaction-card/reaction-card.component';
 import { environment } from '../../../../../environments/environment';
 import { UsersService } from '../../../../shared/services/users.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-media-reactions',
@@ -14,19 +15,24 @@ import { UsersService } from '../../../../shared/services/users.service';
   templateUrl: './media-reactions.component.html',
   styleUrl: './media-reactions.component.css'
 })
-export class MediaReactionsComponent {
+export class MediaReactionsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userAnimeService = inject(UserAnimeService);
   private usersService = inject(UsersService);
+  private destroyRef = inject(DestroyRef);
   environment = environment;
 
-  mediaReaction$ = this.route.params.pipe(
-    switchMap(params => this.userAnimeService.getMediaReactionById(params['id'])),
-    tap(reaction => this.usersService.setProfile(reaction.userProfile))
-  )
+  ngOnInit() {
+    this.route.params.pipe(
+      switchMap(params => this.userAnimeService.loadCurrentMediaReaction(params['id'])),
+      tap(reaction => this.usersService.setProfile(reaction.userProfile)),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe()
+  }
 
   canEdit$ = this.usersService.canEdit$;
   userProfile$ = this.usersService.profile$
+  mediaReaction$ = this.userAnimeService.currentMediaReaction$;
   vm$ = combineLatest([
     this.mediaReaction$,
     this.userProfile$

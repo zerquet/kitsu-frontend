@@ -18,12 +18,12 @@
         </li>
         @if (canEdit$ | async) {
         <li>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="onEdit(reaction.id)">
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onEdit()">
             Edit Reaction
           </a>
         </li>
         <li>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="onDelete(reaction.id)">
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onDelete()">
             Delete Reaction
           </a>
         </li>

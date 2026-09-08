@@ -1,5 +1,5 @@
 import { Anime } from "./anime.model";
-import { MediaReaction } from "./mediaReaction.model";
+import { MediaReaction } from "./media-reaction.model";
 import { UserProfile } from "./user-profile.model";
 
 export interface LibraryEntry {

@@ -1,57 +1,54 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { LibraryEntry, LibraryEntryDetail } from '../../../../../../shared/models/library-entry.model';
 import { environment } from '../../../../../../../environments/environment';
 import { AppToastService } from '../../../../../../shared/services/app-toast.service';
 import { UserAnimeService } from '../../../../../../shared/services/user-anime.service';
-import { AddMediaReactionModel } from '../../../../models/add-media-reaction.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AsyncPipe } from '@angular/common';
+import { filter, switchMap, tap } from 'rxjs';
+import { LibraryEntryDetail } from '../../../../../../shared/models/library-entry.model';
 
 @Component({
   selector: 'add-media-reaction',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncPipe],
   templateUrl: './add-media-reaction-modal.component.html',
   styleUrl: './add-media-reaction-modal.component.css'
 })
 export class AddMediaReactionModalComponent implements OnInit {
   private activeModal = inject(NgbActiveModal);
   private toastService = inject(AppToastService);
-  private usersService = inject(UserAnimeService);
-  
-  public viewModel: AddMediaReactionModel | null = null;
+  private userAnimeService = inject(UserAnimeService);
+  private destroyRef = inject(DestroyRef);
   public environment = environment;
 
-  addMediaReactionForm = new FormGroup({
-    reaction: new FormControl(''),
-    animeId: new FormControl(),
-    libraryEntryId: new FormControl()
-  });
+  libraryEntry$ = this.userAnimeService.currentEntry$;
+  addMediaReactionForm!: FormGroup;
 
   charsLeft = 140;
 
-  ngOnInit(): void {
-    this.addMediaReactionForm.controls['reaction'].valueChanges.pipe(
-
-    ).subscribe((term) => {
-      if (!term) {
-        this.charsLeft = 140;
-      }
-      else if (term.length === 0) {
-        this.charsLeft = 140;
-      }
-      else {
-        this.charsLeft = 140 - term?.length;
-      }
-    })
-  }
-
-  initializeModalData(data: AddMediaReactionModel) {
-    this.viewModel = data;
-    this.addMediaReactionForm.patchValue({
-      animeId: data.animeId,
-      libraryEntryId: data.libraryEntryId
-    });
+  ngOnInit() {
+    //When adding media reaction, implied entry.reaction is null. So this.mediaReaction$ is null, can't use it to create form. 
+    //this.mediaReaction$ extends this.currentEntry$, so use this.currentEntry instead? (potentially meaning this.mediaReaction$ can then be used in edit component) 
+    this.libraryEntry$
+      .pipe(
+        filter((libraryEntry): libraryEntry is LibraryEntryDetail => !!libraryEntry), //drop undefined/false entries from stream. filter = true = continue. "is" type guard removes null checking
+        tap(libraryEntry => {
+          this.addMediaReactionForm = new FormGroup({
+            reaction: new FormControl(''),
+            animeId: new FormControl(libraryEntry.animeId),
+            libraryEntryId: new FormControl(libraryEntry.id)
+          });
+          console.log(libraryEntry);
+          
+        }),
+        switchMap(() => this.addMediaReactionForm.controls['reaction'].valueChanges),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(term => {
+        this.charsLeft = term?.length ? 140 - term.length : 140;
+      });
   }
 
   onSubmit() {
@@ -66,7 +63,7 @@ export class AddMediaReactionModalComponent implements OnInit {
       req.append('reaction', this.reaction.value)
     }
 
-    this.usersService.addMediaReaction(req)
+    this.userAnimeService.addMediaReaction(req)
       .subscribe({
         next: () => {
           this.activeModal.close();

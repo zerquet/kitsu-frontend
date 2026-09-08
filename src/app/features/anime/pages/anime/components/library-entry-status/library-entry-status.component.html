@@ -1,51 +1,55 @@
 <div id="sidebar-form">
   <!-- Anime is in library -->
   @if (this.libraryEntry$ | async; as libraryEntry) {
+    <span id="sidebar-heading"><span>Update Library</span></span>
     @if (libraryEntry.watchStatus === 'completed') {
-        <span id="sidebar-heading"><span>Update Library</span></span>
-        <div id="sidebar-container">
-          <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
-          <div>
-            <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating"
-              (click)="onAddToLibrary('planning')" />
-          </div>
-          <div>
+      <div id="sidebar-container">
+        <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
+        <div>
+          <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating"
+            (click)="onAddToLibrary('planning')" />
+        </div>
+        <div>
+          @if (!libraryEntry.mediaReaction) {
             <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Post Reaction" 
-              (click)="onAddToLibrary('watching')" />
-          </div>
-          <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+              (click)="onPostReaction()" />
+          }
+          @else {
+            <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Edit Reaction" 
+              (click)="onEditReaction()" />
+          }
         </div>
-      }
-      @else if (libraryEntry.watchStatus === 'planning') {
-        <span id="sidebar-heading"><span>Update Library</span></span>
-        <div id="sidebar-container">
-          <div class="saved-in-library"><span>Saved in <a href="">Want to Watch</a></span></div>
-          <div>
-            <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started"
-              (click)="onChangeWatchStatus('watching')" />
-          </div>
-          <div>
-            <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed" 
-              (click)="onChangeWatchStatus('completed')" />
-          </div>
-          <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+        <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+      </div>
+    }
+    @else if (libraryEntry.watchStatus === 'planning') {
+      <div id="sidebar-container">
+        <div class="saved-in-library"><span>Saved in <a href="">Want to Watch</a></span></div>
+        <div>
+          <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started"
+            (click)="onChangeWatchStatus('watching')" />
         </div>
-      } 
-      @else if (libraryEntry.watchStatus === 'watching') {
-        <span id="sidebar-heading"><span>Update Library</span></span>
-        <div id="sidebar-container">
-          <div class="saved-in-library"><span>Saved in <a href="">Currently Watching</a></span></div>
-          <div>
-            <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
-              (click)="onChangeWatchStatus('completed')" />
-          </div>
-          <div>
-            <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating" 
-              (click)="onAddToLibrary('completed')" />
-          </div>
-          <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+        <div>
+          <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed" 
+            (click)="onChangeWatchStatus('completed')" />
         </div>
-      }
+        <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+      </div>
+    } 
+    @else if (libraryEntry.watchStatus === 'watching') {
+      <div id="sidebar-container">
+        <div class="saved-in-library"><span>Saved in <a href="">Currently Watching</a></span></div>
+        <div>
+          <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
+            (click)="onChangeWatchStatus('completed')" />
+        </div>
+        <div>
+          <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating" 
+            (click)="onAddToLibrary('completed')" />
+        </div>
+        <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+      </div>
+    }
   }
   <!--New library entry or user logged out-->
   @else if (!(this.libraryEntry$ | async) || !(this.authService.authenticatedUser$ | async)) {

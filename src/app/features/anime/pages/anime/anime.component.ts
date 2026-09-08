@@ -53,12 +53,12 @@ export class AnimeComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.authenticatedUser$
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: (authenticatedUser) => {
-        if (authenticatedUser) this.isLoggedIn = true;
-      }
-    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (authenticatedUser) => {
+          if (authenticatedUser) this.isLoggedIn = true;
+        }
+      })
   }
 
   isFavorite$ = new BehaviorSubject<boolean>(false);

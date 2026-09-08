@@ -1,64 +1,58 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../../environments/environment';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { UserAnimeService } from '../../../../shared/services/user-anime.service';
-import { FormControl, FormControlName, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UpdateMediaReactionRequest } from '../../../../shared/contracts/updateMediaReactionRequest.interface';
-import { EditMediaReactionModel } from '../../models/edit-media-reaction.model';
+import { filter, switchMap, tap } from 'rxjs';
+import { MediaReaction } from '../../../../shared/models/media-reaction.model';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'edit-media-reaction',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncPipe, NgbTooltip],
   templateUrl: './edit-media-reaction-modal.component.html',
   styleUrl: './edit-media-reaction-modal.component.css'
 })
 export class EditMediaReactionModalComponent implements OnInit {
   private activeModal = inject(NgbActiveModal);
   private toastService = inject(AppToastService);
-  private usersService = inject(UserAnimeService);
-  
-  public viewModel: EditMediaReactionModel | null = null;
+  private userAnimeService = inject(UserAnimeService);
   public environment = environment;
 
-  editMediaReactionForm = new FormGroup({
-    reaction: new FormControl(''),
-    reactionId: new FormControl(),
-    animeId: new FormControl(),
-    libraryEntryId: new FormControl(),
-    userId: new FormControl('')
-  });
+  mediaReaction$ = this.userAnimeService.currentMediaReaction$;
+  editMediaReactionForm!: FormGroup;
 
   charsLeft = 140;
 
   ngOnInit(): void {
-    this.editMediaReactionForm.controls['reaction'].valueChanges.pipe(
+    this.mediaReaction$
+      .pipe(
+        filter((mediaReaction): mediaReaction is MediaReaction => !!mediaReaction),
+        tap(mediaReaction => {
+          this.editMediaReactionForm = new FormGroup({
+            reaction: new FormControl(mediaReaction.reaction),
+            reactionId: new FormControl(mediaReaction.id),
+            animeId: new FormControl(mediaReaction.animeId),
+            libraryEntryId: new FormControl(mediaReaction.libraryEntryId),
+            userId: new FormControl(mediaReaction.userId)
+          });
 
-    ).subscribe((term) => {
-      if (!term) {
-        this.charsLeft = 140;
-      }
-      else if (term.length === 0) {
-        this.charsLeft = 140;
-      }
-      else {
-        this.charsLeft = 140 - term?.length;
-      }
-    })
+          this.charsLeft = 140 - (mediaReaction.reaction.length ?? 0);
+        }),
+        switchMap(() => this.editMediaReactionForm.controls['reaction'].valueChanges)
+      )
+      .subscribe(term => {
+        this.charsLeft = term?.length ? 140 - term.length : 140;
+      });
+    
   }
 
-  initializeModalData(data: EditMediaReactionModel) {    
-    this.viewModel = data;
-    this.editMediaReactionForm.patchValue({ 
-      animeId: data.animeId,
-      libraryEntryId : data.libraryEntryId,
-      userId : data.userId,
-      reactionId : data.mediaReactionId,
-      reaction : data.reaction
-    });
-
-    this.charsLeft = 140 - (data.reaction?.length ?? 0);
+  deleteReaction(mediaReactionId: number) {
+    this.userAnimeService.deleteMediaReaction(mediaReactionId)
+      .subscribe(() => this.activeModal.close())
   }
 
   onSubmit() {
@@ -76,11 +70,9 @@ export class EditMediaReactionModalComponent implements OnInit {
     else {
       //Reaction was not updated.
       return;
-    }
-    console.log(req);
-    
+    }    
 
-    this.usersService.updateMediaReaction(req)
+    this.userAnimeService.updateMediaReaction(req)
       .subscribe({
         next: () => {
           this.activeModal.close();

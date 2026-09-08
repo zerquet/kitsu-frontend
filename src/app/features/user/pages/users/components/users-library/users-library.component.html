@@ -45,14 +45,14 @@
                 <td [ngClass]="entry.watchStatus" class="status-bar-cell"></td>
                 <td class="title-cell">
                   <span class="title-cell-thumbnail-span">
-                    <div><img src="{{environment.imageHostUrl}}/anime/poster/{{entry.anime.imageUrl}}" alt=""></div>
+                    <div><img src="{{environment.imageHostUrl}}/anime/poster/{{entry.anime.imageUrl}}.jpg" alt=""></div>
                   </span>
                   <div class="title-cell-span">
                     <div class="title-cell-title" routerLink="/anime/{{entry.animeId}}/summary">{{entry.anime.title}}
                     </div>
                     @if (entry.mediaReaction) {
                       <div class="media-reaction-edit">
-                        <i class="bi bi-chat-left-dots" (click)="onEditMediaReactionClick(entry.mediaReaction)"
+                        <i class="bi bi-chat-left-dots" (click)="onEditMediaReactionClick(entry)"
                           placement="bottom" [openDelay]="150" [closeDelay]="100"
                           [ngbTooltip]="entry.mediaReaction.reaction"></i>
                       </div>

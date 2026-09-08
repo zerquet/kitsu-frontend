@@ -11,6 +11,8 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { ManageLibraryEntryModalComponent } from '../../../../../../shared/components/manage-library-entry-modal/manage-library-entry-modal.component';
 import { of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AddMediaReactionModalComponent } from '../../../../../user/pages/users/components/add-media-reaction-modal/add-media-reaction-modal.component';
+import { EditMediaReactionModalComponent } from '../../../../../user/components/edit-media-reaction-modal/edit-media-reaction-modal.component';
 
 @Component({
   selector: 'library-entry-status',
@@ -40,31 +42,36 @@ export class LibraryEntryStatusComponent implements OnInit {
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
 
-    this.authService.authenticatedUser$.pipe(
-      switchMap(authenticatedUser => {
-        this.isLoggedIn = !!authenticatedUser;
+    this.authService.authenticatedUser$
+      .pipe(
+        switchMap(authenticatedUser => {
+          this.isLoggedIn = !!authenticatedUser;
 
-        if (!authenticatedUser) return of(null);
+          if (!authenticatedUser) return of(null);
 
-        return this.userAnimeService.loadCurrentEntry(authenticatedUser.id, animeId);
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+          return this.userAnimeService.loadCurrentEntry(authenticatedUser.id, animeId);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe();
 
-    this.userAnimeService.currentEntry$.pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(libraryEntry => {
-      if (libraryEntry === null) return;
+    this.userAnimeService.currentEntry$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(libraryEntry => {
+        if (libraryEntry === null) return;
 
-      this.updateLibraryEntryForm.patchValue({
-        libraryEntryId: libraryEntry.id,
-        episodeProgress: libraryEntry.episodesWatched,
-        status: libraryEntry.watchStatus,
-        rating: libraryEntry.userRating
+        this.updateLibraryEntryForm.patchValue({
+          libraryEntryId: libraryEntry.id,
+          episodeProgress: libraryEntry.episodesWatched,
+          status: libraryEntry.watchStatus,
+          rating: libraryEntry.userRating
+        });
       });
-    });
 
   }
+
+  //TODO when posting or editing an existing media reaction, you pass a component to the modal service. 
+  // the media reaction components still use initializeModalData(), which is outdated and should use the typed modal service, but it'll need a few tweaks.
+  // So the calling components need to be updated. Then, post/put actions for media reactions should update the current entry and the libary states in the service. 
 
   onAddToLibrary(watchStatus: string) {
     if (!this.isLoggedIn) {
@@ -113,30 +120,16 @@ export class LibraryEntryStatusComponent implements OnInit {
       .subscribe();
   }
 
-  onEditLibraryEntry() {
-    this.modalService.open(ManageLibraryEntryModalComponent);
+  onPostReaction() {
+    this.modalService.open(AddMediaReactionModalComponent);
   }
 
-  onSubmit() {
-    const formData = this.updateLibraryEntryForm.value;
+  onEditReaction() {
+    this.modalService.open(EditMediaReactionModalComponent, { backdropClass: 'modal-dark-backdrop'}); //TODO automatically add class to each modal instance.
+  }
 
-    let req: UpdateLibraryEntryRequest = {
-      libraryEntryId: formData.libraryEntryId,
-      episodesWatched: formData.episodeProgress,
-      watchStatus: formData.status,
-      userRating: formData.rating
-    }
-
-    this.userAnimeService.updateEntry(req)
-      .subscribe({
-        next: (libraryEntry) => {
-          this.updateLibraryEntryForm.patchValue({
-            episodeProgress: libraryEntry.episodesWatched,
-            status: libraryEntry.watchStatus,
-            rating: libraryEntry.userRating 
-          });
-        }
-      });
+  onEditLibraryEntry() {
+    this.modalService.open(ManageLibraryEntryModalComponent);
   }
 
   /**FORM GETTERS */

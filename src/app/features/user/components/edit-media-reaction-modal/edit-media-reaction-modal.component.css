@@ -51,6 +51,14 @@
   color: #e74c3c
 }
 
+.delete-reaction i {
+  color: #ff4136;
+}
+
+.delete-reaction i:hover {
+  cursor: pointer;
+}
+
 .post-reaction-container {
   display: flex;
   justify-content: end;
