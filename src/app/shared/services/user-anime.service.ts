@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, tap } from 'rxjs';
 import { LibraryEntry, LibraryEntryDetail, LibraryEntryWithUser } from '../models/library-entry.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
 import { MediaReaction, MediaReactionWithUser } from '../models/media-reaction.model';
 import { GetMediaReactionByIdResponseDto } from '../../features/user/dtos/get-media-reaction-by-id-response.dto';
-import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
+import { UpdateMediaReactionRequestDto } from '../contracts/update-media-reaction-request.dto';
 import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
 import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryRequest.interface';
 import { GetLibraryEntryResponseDto } from '../../features/anime/dtos/get-library-entry-response.dto';
@@ -19,6 +19,7 @@ import { GetLibraryResponseDto } from '../../features/user/dtos/get-library-resp
 import { mapCreateLibraryEntryToLibraryEntry, mapGetLibraryEntryToLibraryEntry, mapGetLibraryToLibraryEntry, mapUpdateLibraryEntryToLibraryEntry } from '../mappers/library-entry.mapper';
 import { mapGetMediaReactionByUserToMediaReaction, mapGetMediaReactionByIdToMediaReaction, mapAddMediaReactionToMediaReaction, mapUpdateMediaReactionToMediaReaction } from '../mappers/media-reaction.mapper';
 import { UpdateMediaReactionResponseDto } from '../../features/user/dtos/update-media-reaction-response.dto';
+import { AddMediaReactionRequestDto } from '../contracts/add-media-reaction-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,7 @@ export class UserAnimeService {
     return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
       .pipe(
         tap(dto => this.usersService.setProfile(dto.userProfile)),
+        filter(dto => !!dto.libraryEntryId), //only proceed if library entry exists. otherwise just set profile.
         map(mapGetLibraryEntryToLibraryEntry),
         tap(libraryEntry => {
           this._currentEntrySubject.next(libraryEntry);
@@ -191,7 +193,7 @@ export class UserAnimeService {
     this._currentMediaReactionSubject.next(mediaReaction);
   }
 
-  addMediaReaction(req: FormData): Observable<MediaReaction> { //TODO use simpler DTO instead of unnecessary FormData
+  addMediaReaction(req: AddMediaReactionRequestDto): Observable<MediaReaction> { //TODO use simpler DTO instead of unnecessary FormData
     return this.http.post<AddMediaReactionResponseDto>(this.mediaReactionsBaseUrl, req)
       .pipe(
         map(mapAddMediaReactionToMediaReaction),
@@ -230,7 +232,7 @@ export class UserAnimeService {
     return updatedLibraryEntry;
   }
 
-  updateMediaReaction(req: UpdateMediaReactionRequest): Observable<MediaReaction> {
+  updateMediaReaction(req: UpdateMediaReactionRequestDto): Observable<MediaReaction> {
     return this.http.put<UpdateMediaReactionResponseDto>(this.mediaReactionsBaseUrl, req)
       .pipe(
         map(mapUpdateMediaReactionToMediaReaction),

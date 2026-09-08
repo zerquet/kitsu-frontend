@@ -4,7 +4,7 @@ import { UserAnimeService } from '../../../../../../shared/services/user-anime.s
 import { AuthService } from '../../../../../auth/services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { CreateLibraryEntryRequest } from '../../../../../../shared/contracts/createLibraryEntryRequest.interface';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterComponent } from '../../../../../auth/register/register.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -17,7 +17,7 @@ import { EditMediaReactionModalComponent } from '../../../../../user/components/
 @Component({
   selector: 'library-entry-status',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe],
+  imports: [ReactiveFormsModule, AsyncPipe, NgbPopover],
   templateUrl: './library-entry-status.component.html',
   styleUrl: './library-entry-status.component.css'
 })
@@ -96,6 +96,8 @@ export class LibraryEntryStatusComponent implements OnInit {
               episodeProgress: libraryEntry.episodesWatched,
               status: libraryEntry.watchStatus 
             });
+
+            this.onEditLibraryEntry();
           }
         });
     }

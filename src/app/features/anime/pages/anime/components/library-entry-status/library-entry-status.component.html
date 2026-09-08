@@ -6,8 +6,7 @@
       <div id="sidebar-container">
         <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
         <div>
-          <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating"
-            (click)="onAddToLibrary('planning')" />
+          <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Add Rating" ngbPopover="add rating" [autoClose]="'outside'" />
         </div>
         <div>
           @if (!libraryEntry.mediaReaction) {

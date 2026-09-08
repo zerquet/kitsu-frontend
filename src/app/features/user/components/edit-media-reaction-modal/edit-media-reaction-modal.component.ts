@@ -4,7 +4,7 @@ import { environment } from '../../../../../environments/environment';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { UserAnimeService } from '../../../../shared/services/user-anime.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { UpdateMediaReactionRequest } from '../../../../shared/contracts/updateMediaReactionRequest.interface';
+import { UpdateMediaReactionRequestDto } from '../../../../shared/contracts/update-media-reaction-request.dto';
 import { filter, switchMap, tap } from 'rxjs';
 import { MediaReaction } from '../../../../shared/models/media-reaction.model';
 import { AsyncPipe } from '@angular/common';
@@ -56,7 +56,7 @@ export class EditMediaReactionModalComponent implements OnInit {
   }
 
   onSubmit() {
-    let req: UpdateMediaReactionRequest = {
+    let req: UpdateMediaReactionRequestDto = {
       reactionId: 0,
       reaction: ""
     };

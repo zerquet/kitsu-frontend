@@ -8,6 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe } from '@angular/common';
 import { filter, switchMap, tap } from 'rxjs';
 import { LibraryEntryDetail } from '../../../../../../shared/models/library-entry.model';
+import { AddMediaReactionRequestDto } from '../../../../../../shared/contracts/add-media-reaction-request.dto';
 
 @Component({
   selector: 'add-media-reaction',
@@ -52,15 +53,20 @@ export class AddMediaReactionModalComponent implements OnInit {
   }
 
   onSubmit() {
-    var req = new FormData();
+    let req: AddMediaReactionRequestDto = {
+      animeId: 0,
+      libraryEntryId: 0,
+      reaction: ""
+    }
+
     if (this.animeId !== null) {
-      req.append('animeId', this.animeId.value);
+      req.animeId = this.animeId.value;
     }
     if (this.libraryEntryId !== null) {
-      req.append('libraryEntryId', this.libraryEntryId.value);
+      req.libraryEntryId = this.libraryEntryId.value;
     }
     if (this.reaction !== null && this.reaction.value !== null) {
-      req.append('reaction', this.reaction.value)
+      req.reaction = this.reaction.value;
     }
 
     this.userAnimeService.addMediaReaction(req)
