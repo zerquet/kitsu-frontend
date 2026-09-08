@@ -22,6 +22,6 @@ export class SearchResultsComponent {
   onResultClick(id: number) {
     this.navMenuSearchDataService.show$.next(false);
     this.navMenuSearchDataService.term$.next("");
-    this.router.navigate(['/anime/' + id]);
+    this.router.navigate(['/anime/' + id + '/summary']);
   }
 }

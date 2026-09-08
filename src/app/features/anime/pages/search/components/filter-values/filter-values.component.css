@@ -1,0 +1,11 @@
+:host {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.filter-values-pill {
+  background: #3f2e3e;
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 12px;
+}

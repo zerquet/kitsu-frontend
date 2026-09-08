@@ -1,0 +1,23 @@
+:host {
+  position: fixed;
+  width: 259px;
+  background: #332532;
+  color: #a3a9b7;
+  border-left: 1px solid var(--border-black);
+  border-right: 1px solid var(--border-black);
+  font-size: 13px;
+  height: 100vh;
+}
+
+.filter-option {
+  border-bottom: 1px solid var(--border-black);
+  padding: 10px;
+}
+
+mat-slider {
+  width: 93%;
+}
+
+.checkbox-field {
+  padding-bottom: 6px;
+}

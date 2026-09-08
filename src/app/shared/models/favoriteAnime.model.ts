@@ -1,4 +1,6 @@
+import { Anime } from "./anime.model";
+
 export interface FavoriteAnime {
-    kitsuUserId: string;
-    animeId: number;
+  animeId: number;
+  anime: Anime;
 }

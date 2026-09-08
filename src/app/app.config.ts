@@ -11,13 +11,10 @@ import { MyPreset } from './mytheme';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([jwtInterceptor])),
     provideAnimationsAsync(),
-    providePrimeNG({
-      theme: {
-        preset: MyPreset
-      },
-    }),
-  ]};
+
+  ]
+};

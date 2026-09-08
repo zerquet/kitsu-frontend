@@ -33,6 +33,8 @@
   --hover-turquoise2: #19b698;
   --text-turquoise: #1abc9c;
   --disabled-turquoise: #79beb0;
+  --hover-gray: #c1c1c1;
+  --invalid-orange: #e74c3c;
 }
 
 * {
@@ -40,14 +42,15 @@
   font-optical-sizing: auto;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
   margin: 0;
-  background-color: #404050;
-  color: #dddddd;
+  background-color: #f7f7f7;
+  color: #464646;
 }
 
 /* * {
@@ -69,6 +72,7 @@ body {
 }
 
 .mdc-slider__thumb-knob {
+  border-radius: 50% !important;
   border-width: 4px !important;
   width: 15px !important;
   height: 15px !important;
@@ -86,4 +90,29 @@ body {
 
 .p-datepicker:has(.p-datepicker-input-icon-container) .p-datepicker-input {
   height: 34px !important;
+}
+
+/*Delete Reaction tooltip class applied via tooltipClass from ngbTooltip. Placed here so I don't have to disable Encapsulation in edit reaction component, since could mess up global styles.*/
+.delete-reaction-tooltip .tooltip-inner {
+  background-color: #464646;
+}
+
+.delete-reaction-tooltip.bs-tooltip-start .tooltip-arrow::before {
+  border-left-color: #464646;
+}
+
+.modal-dark-backdrop {
+  background-color: #000;
+  opacity: .92 !important;
+  transition: all .45s linear;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

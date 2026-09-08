@@ -1,0 +1,36 @@
+<div id="about-container">
+  <div id="about-me-section">
+    <div id="about-me-heading">
+      <span><strong>About Me</strong></span>
+    </div>
+    @if (userProfile$ | async; as userProfile) {
+      @if (userProfile !== null) {
+        <div id="about-me-bio" class="mb-3">{{userProfile.bio}}</div>
+        <ul>
+          <li><strong><i class="bi bi-person-fill"></i> Gender:</strong>{{userProfile.gender}}</li>
+          <li><strong><i class="bi bi-geo-alt-fill"></i> Location:</strong>{{userProfile.location}}</li>
+          <li><strong><i class="bi bi-cake2-fill"></i> Birthday:</strong>{{userProfile.birthdayPublic}}</li>
+        </ul>
+      }
+    }
+  </div>
+  <div id="favorites-section">
+    <div><span><strong>Favorite Series</strong></span></div>
+    <div class="d-flex flex-row flex-wrap">
+    @if (favoriteAnimes$ | async; as favorites) {
+      @for (favorite of favorites; track favorite.animeId) {
+        <div class="favorite-poster">
+          <span class="tooltiptext">{{favorite.anime.title}}</span>
+          <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.anime.imageUrl}}"
+            routerLink="/anime/{{favorite.animeId}}/summary" />
+        </div>
+      }
+    }
+    </div>
+    @if (canEdit$ | async) {
+      <div id="edit-favorite-section">
+        <input id="edit-favorite-btn" type="button" (click)="onEditProfile()" value="Edit favorite anime" />
+      </div>
+    }
+  </div>
+</div>

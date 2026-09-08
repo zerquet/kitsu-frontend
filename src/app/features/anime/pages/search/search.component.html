@@ -1,0 +1,23 @@
+<div id="search-container">
+  <div class="container d-flex">
+    <!--25%-->
+    <filter-options 
+      (filtersChange)="onFiltersChange($event)" 
+      (mediaTypesChange)="onMediaTypesChange($event)"
+    >
+    </filter-options>
+    <div id="search-filters-section-placeholder"></div>
+    
+    <!--75%-->
+    <div id="search-main-section">
+      <advanced-search (formChange)="onFormChange($event)"></advanced-search>
+      <div id="search-results-section" class="pt-2 ps-4">
+        <sort-dropdown></sort-dropdown>
+        @if(dataService$.filteredSearchResults$| async; as animes) {
+          <anime-grid [animes]="animes" [showCardTitle]="true"></anime-grid>
+        }    
+      </div>
+    </div>
+    
+  </div>
+</div>

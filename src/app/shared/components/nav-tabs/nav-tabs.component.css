@@ -1,35 +1,44 @@
 :host {
   display: block;
   /*ng host components are inline, so setting this to block so container class applies*/
-  background-color: #2c2c3c;
+  background-color: #fff;
 }
 
-#anime-tabs {
+.tab-left-pad {
   margin-left: 16%;
 }
 
-#anime-tabs ul {
+.no-bottom-border {
+  border-bottom: none !important;
+}
+
+.anime-tabs ul {
   display: flex;
   list-style: none;
   padding-left: 0px;
   margin-bottom: 0px;
   cursor: pointer;
   margin-left: 1%;
+  font-size: .90rem;
 }
 
-#anime-tabs ul li {
+.anime-tabs ul li {
+  border: 1px solid #eaeaea;
   padding: 8px 16px;
   transition: all 80ms ease-in-out;
+  color: #9f9f9f;
 }
 
-#anime-tabs ul li:hover {
-  background-color: #222232;
+.anime-tabs ul li:hover {
+  background-color: #f7f7f7;
+  color: #464646;
 }
 
-#anime-tabs ul li.active {
-  background-color: #222232;
+.anime-tabs ul li.active {
+  background-color: #f7f7f7;
+  color: #464646;
 }
 
-#anime-tabs ul li.active:hover {
-  background-color: #1d1d2d;
+.anime-tabs ul li.active:hover {
+  background-color: #f2f2f2;
 }

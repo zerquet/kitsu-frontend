@@ -1,0 +1,50 @@
+<div id="favorites-section">
+  <modal-title title="Favorites"></modal-title>
+  <form [formGroup]="searchAnimesForm">
+    <div id="search-section">
+      <input formControlName="search" type="text" placeholder="Start typing to search" class="form-control form-control-sm shadow-none">
+      @if (showSearchResults === true) {
+        <div class="minimalistic-dropdown open">
+          <div class="results-scroller">
+          @if (searchResults$ | async; as searchResults) {
+            @if (searchResults.length === 0) {
+              <div class="results-item"><strong>We couldn't find any results :&lpar;</strong></div>
+            }
+            @else {
+              @for(anime of searchResults; track anime.id) {
+                <div (click)="selectAnime(anime)" class="results-item"><strong>{{anime.title}}</strong></div>
+              }
+            }
+          }
+          </div>
+        </div>
+      }
+      <div></div>
+    </div>
+    <div>
+    @if (pendingFavorites$ | async; as pendingFavorites) {
+      @for(favorite of pendingFavorites; track favorite.animeId) {
+        <div class="favorite-record-container">
+          <div class="favorite-info-section">
+            <div class="favorite-photo-section">
+              <a routerLink="/anime/{{favorite.animeId}}/summary" href="javascript:void(0);"
+                (click)="closeModal()">
+                <img src="{{environment.imageHostUrl}}/anime/poster/{{favorite.anime.imageUrl}}" /> <!--TODO build anime poster image URL as property as you did with user profile?-->
+              </a>
+            </div>
+            <div class="favorite-title-section">
+              <span>{{favorite.anime.title}}</span>
+            </div>
+          </div>
+          <div class="favorite-remove-section">
+            <a (click)="onUnfavoriteClick(favorite.animeId)" ngbTooltip="Remove Favorite?" placement="start"
+              href="javascript:void(0);">
+              <i class="bi bi-x-circle-fill"></i>
+            </a>
+          </div>
+        </div>
+      }
+    }
+    </div>
+  </form>
+</div>

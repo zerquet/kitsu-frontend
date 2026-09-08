@@ -1,0 +1,14 @@
+@if(anime !== undefined) {
+  @if(tab === 'summary') {
+    <anime-summary [anime]="anime"></anime-summary>
+  }
+  @else if(tab === 'episodes') {
+    <anime-episodes [id]="anime.id"></anime-episodes>
+  }
+  @else if (tab === 'franchise') {
+    <anime-franchise [id]="anime.franchiseId" [franchiseName]="anime.title"></anime-franchise>
+  }
+  @else {
+    <span>Error. Tab not found.</span>
+  }
+}

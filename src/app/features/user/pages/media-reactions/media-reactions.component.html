@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="reaction-container">
+    @if(vm$ | async; as vm) {
+      <div>
+        <reaction-card [reaction]="vm.mediaReaction ?? undefined"></reaction-card>
+        <div class="users-reactions-container">
+          <a href="javascript:void(0);" class="users-reactions"
+            routerLink="/users/{{vm.userProfile?.displayId}}/reactions">
+            View all of <strong>3</strong> user's reactions
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="profile-card">
+          <div class="user-background"
+            style="background: url({{vm.userProfile?.coverPhotoUrl}})">
+          </div>
+          <div class="user-bottom">
+            <a href="javascript:void(0);" routerLink="/users/{{vm.userProfile?.displayId}}/about">
+              <img [src]="vm.userProfile?.profilePhotoUrl"
+                class="user-avatar">
+            </a>
+            <a href="javascript:void(0);" routerLink="/users/{{vm.userProfile?.displayId}}/about">
+              <h4 class="user-username">{{vm.userProfile?.username}}</h4>
+            </a>
+            @if (canEdit$ | async) {
+              <div class="reaction-button">
+                <button type="button">Hey, that's you!</button>
+              </div>
+            }
+            @else {
+              <div class="reaction-button-public">
+                <button type="button">Follow</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    @else {
+      <h3>404</h3>
+    }
+  </div>
+</div>

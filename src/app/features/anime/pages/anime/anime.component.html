@@ -1,0 +1,25 @@
+@if (animeResponse$ | async; as animeResponse) {
+<cover-photo
+  coverPhotoUrl="{{environment.imageHostUrl}}/anime/cover/{{animeResponse.anime.coverImageId}}"></cover-photo>
+<nav-tabs [tabs]="tabs" [scootRight]="true"></nav-tabs>
+<div class="container d-flex">
+  <div id="sidebar-section">
+    <div>
+      <div id="favorite-section">
+        @if (isFavorite$.getValue() === true) {
+          <i (click)="onUnfavorite(animeResponse.anime.id)" class="bi bi-heart-fill"
+            style="color: palevioletred"></i>
+        }
+        @else {
+          <i (click)="onAddToFavorites(animeResponse.anime)" class="bi bi-heart"></i>
+        }
+      </div>
+      <img src="{{environment.imageHostUrl}}/anime/poster/{{animeResponse.anime.imageUrl}}" />
+    </div>
+    <library-entry-status [animeId]="animeId" [animeEpisodeCount]="animeEpisodeCount"></library-entry-status>
+  </div>
+  @if (currentTab$ | async; as currentTab) {
+  <anime-container [anime]="animeResponse.anime" [tab]="currentTab"></anime-container>
+  }
+</div>
+}

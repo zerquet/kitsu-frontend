@@ -1,0 +1,83 @@
+<div id="form-heading">
+  <h5><a class="cursor" routerLink="../../episodes">Episodes</a> <i class="bi bi-chevron-right"></i></h5>
+</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="edit-intro">
+    <h5>Add Episode Record</h5>
+  </div>
+  <div id="form-layout">
+    <div class="important-fields">
+
+      <div class="field">
+        <label for="matchingAnime">Anime</label>
+        <div>
+          <input pInputText formControlName="matchingAnime" id="matchingAnime" type="text" pSize="small">
+          @if(this.show === true) {
+            @if(animeResults$ | async; as animeResults) {
+              <div class="dropdown open">
+                <div class="scroller">
+                  @for (anime of animeResults; track anime.id) {
+                    <div class="item">
+                      <span class="imgSquare" style="border-radius: 3px;">
+                        <div>
+                            <img class="resultsAnimeImg" [src]="anime.imageUrl">
+                        </div>
+                      </span>
+                      <div class="resultInfoContainer">
+                        <p (click)="selectAnimeForEpisodeAddition(anime)">{{anime.title}}</p>
+                      </div>
+                    </div>
+                  }
+                  @if(animeResults.length === 0) {
+                    <div class="item">
+                      <div class="resultInfoContainer">No results found.</div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+      @if (selectedAnime !== null) {
+        <div class="field">
+          <label for="selectedAnime">Selected Anime</label>
+          <input pInputText [disabled]="true" [value]="selectedAnime.title" pSize="small"/>
+          <div class="clear-selection">
+            <button title="Clear selected anime" (click)="deselectAnime()" type="button"><i class="bi bi-trash3"></i></button>
+          </div>
+        </div>
+      }
+      <div class="field">
+        <label for="epNumber">Episode Number</label>
+        <p-inputnumber formControlName="epNumber" id="epNumber" mode="decimal" [useGrouping]="false" size="small" />
+      </div>
+      <div class="field label">
+        <label for="title">Title</label>
+        <input appTrim pInputText pSize="small" formControlName="title" id="title" type="text" />
+        <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="required">
+          <div *ngIf="title?.hasError('required')">
+            Title is required.
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="description" class="align-top">Description</label>
+        <textarea appTrim pTextarea pSize="small" formControlName="description" id="description" rows="6"></textarea>
+      </div>
+      <div class="field date">
+        <label for="airDate">Air Date</label>
+        <p-datepicker formControlName="airDate" id="airDate" showIcon iconDisplay="input" size="small" />
+      </div>
+      <div class="field">
+        <label for="japaneseTitle">Title (Japanese)</label>
+        <input appTrim pInputText formControlName="japaneseTitle" id="japaneseTitle" type="text" pSize="small">
+      </div>
+    </div>
+
+  </div>
+
+  <div id="add-btn-section" class="text-center mt-4">
+    <button id="add-btn" type="submit" [disabled]="!form.valid">Add Episode Record</button>
+  </div>
+</form>

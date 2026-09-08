@@ -1,30 +1,27 @@
 import { Category } from "./category.model";
-
-export interface AnimeDetails {
-    animeId: number;
-    releaseStatus: string | null;
-    coverImageUrl: string;
-    episodeCount: number | null;
-    mediaType: string | null;
-    englishTitle: string | null;
-    japaneseTitle: string | null;
-    japaneseTitleRomaji: string | null;
-    season: string | null;
-    startAirDate: Date | null;
-    endAirDate: Date | null;
-    tvRating: string | null;
-    episodeLength: number | null;
-    franchiseId: number | null;
-    franchiseName: string | null;
-}
+import { Franchise } from "./franchise.model";
 
 export interface Anime {
-    id: number;
-    title: string;
-    description: string | null;
-    imageUrl: string; 
-    year: number | null;
-    score: number | null;
-    categories: Category[]; 
-    details: AnimeDetails;
+  id: number;
+  title: string;
+  description?: string;
+  score?: number;
+  categories: Category[];
+  releaseStatus?: string;
+  imageUrl: string;
+  year?: number;
+  coverImageId: string;
+  episodeCount?: number;
+  mediaType?: string;
+  englishTitle?: string;
+  japaneseTitle?: string;
+  japaneseTitleRomaji?: string;
+  season?: string;
+  startAirDate?: Date;
+  endAirDate?: Date;
+  tvRating?: string;
+  episodeLength?: number;
+  franchiseId?: number;
+  franchise?: Franchise;
+  //add the rest?
 }

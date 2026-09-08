@@ -1,0 +1,23 @@
+@if (userProfile$ | async; as userProfile) {
+  <div id="cover-section">
+    <cover-photo [coverPhotoUrl]="userProfile.coverPhotoUrl"></cover-photo>
+    <!--find solution that works for prod-->
+    <primary-info></primary-info>
+  </div>
+  <nav-tabs [tabs]="tabs"></nav-tabs>
+  <div id="profile-tab-content-container" class="container">
+  @if (currentTab$ | async; as currentTab) {
+    <!--since there's only 2, no need for a wrapper component like anime-->
+    <!--can this be children routes?-->
+    @if(currentTab === "about") {
+      <users-about></users-about>
+    }
+    @else if(currentTab === "library") {
+      <users-library></users-library>
+    }
+    @else if(currentTab === 'reactions') {
+      <users-reactions></users-reactions>
+    }
+  }
+  </div>
+}

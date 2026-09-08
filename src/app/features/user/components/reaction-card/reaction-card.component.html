@@ -1,0 +1,53 @@
+@if (reaction !== undefined) {
+<div class="reaction-card"
+  style="background: url({{environment.imageHostUrl}}/anime/poster/{{reaction.anime.imageUrl}})">
+  <div class="reaction-top">
+    <a href="javascript:void(0);" class="reaction-upvote">
+      <i class="bi bi-caret-up-fill"></i> 0
+    </a>
+    <div class="dropdown pe-2 reaction-ellipsis-container">
+      <a href="javascript:void(0);" class="reaction-ellipsis" role="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <i class="bi bi-three-dots"></i>
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onCopyLink()">
+            Copy Link to Reaction
+          </a>
+        </li>
+        @if (canEdit$ | async) {
+        <li>
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onEdit()">
+            Edit Reaction
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0);" (click)="onDelete()">
+            Delete Reaction
+          </a>
+        </li>
+        }
+      </ul>
+    </div>
+  </div>
+  <div class="reaction-card-info">
+    <div class="reaction-main">
+      <small>
+        <a routerLink="/anime/{{reaction.animeId}}/summary">
+          {{reaction.anime.title}}
+        </a>
+        {{reaction.anime.mediaType}}
+        <i class="bi bi-dot"></i>
+        {{reaction.anime.year}}
+      </small>
+    </div>
+    <div>
+      <a routerLink="/media-reactions/{{reaction.id}}" class="reaction-link">
+        {{reaction.reaction}}
+      </a>
+    </div>
+  </div>
+  <div class="reaction-card-dark-overlay"></div>
+</div>
+}

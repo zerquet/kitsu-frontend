@@ -1,0 +1,54 @@
+@if (profileInfo$ | async; as profileInfo) {
+  <div style="background: url({{currentCoverPhotoUrl}})" id="modal-cover-photo">
+    <a id="cover-photo-overlay" (click)="onCoverPhotoClick()">
+      <span class="change-photo-span cover">
+        <i class="bi bi-camera"></i>
+        <span class="cover-photo-text">Change your cover photo</span>
+      </span>
+    </a>
+    <input id="cover-photo-input" type="file" (change)="onCoverPhotoChange($event)">
+  </div>
+  <div id="modal-profile-photo">
+    <a id="profile-photo-overlay" (click)="onProfilePhotoClick()">
+      <span class="change-photo-span"><i class="bi bi-camera"></i></span>
+    </a>
+    <img [src]="currentProfilePhotoUrl">
+    <input id="profile-photo-input" type="file" (change)="onProfilePhotoChange($event)">
+  </div>
+  <nav-tabs [tabs]="tabs" [scootRight]="true" (tabClicked)="onTabClicked($event)" [activeTabId]="currentTabId" [hasBottomBorder]="false"></nav-tabs>
+  <div>
+    @if (currentTabId === 'profile.aboutme') {
+      <form [formGroup]="updateProfileForm" (ngSubmit)="null">
+        <modal-title title="About Me"></modal-title>
+        <div class="field-section">
+          <label for="location">Location</label>
+          <input formControlName="location" type="text" id="location" class="form-control form-control-sm shadow-none">
+        </div>
+        <div class="field-section">
+          <label for="birthday">Birthday</label>
+          <input formControlName="birthday" type="date" id="birthday" class="form-control form-control-sm shadow-none">
+        </div>
+        <div class="field-section">
+          <label for="gender">Gender</label>
+          <select id="gender" formControlName="gender" class="form-select form-select-sm shadow-none">
+            <option value="Secret">It's a secret</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field-section">
+          <label for="bio">Bio</label>
+          <textarea formControlName="bio" id="bio" class="form-control form-control-sm shadow-none"></textarea>
+        </div>
+      </form>
+    }
+    @else if (currentTabId === 'profile.favorites') {
+      <manage-favorites [parentModalRef]="activeModal" [saveTrigger$]="saveTrigger$"></manage-favorites> 
+    }
+    <div class="d-flex" id="edit-profile-footer">
+      <div class="settings-verbiage"><small> Visit your settings page to change your username, email, notification settings, and more. </small></div>
+      <div><input id="updateProfileBtn" type="button" value="Update Profile" (click)="onSubmit()" [class.disabled]="!(canSubmit$ | async)" [disabled]="!(canSubmit$ | async)"></div>
+    </div>
+  </div>
+}

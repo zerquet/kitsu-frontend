@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavMenuComponent } from './core/layout/nav-menu/nav-menu.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
-import { AuthService } from './core/auth/services/auth.service';
+import { AuthService } from './features/auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -13,16 +13,16 @@ import { AuthService } from './core/auth/services/auth.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'animetracker-client';
-  constructor(public authService: AuthService) {}
+  title = 'kitsu-frontend';
+  constructor(public authService: AuthService) { }
   ngOnInit(): void {
     // this.authService.getUser().subscribe(res => {
     //   this.authService.currentUser$.next(res);
     //   console.log("app")
     //   console.log(this.authService.currentUser$.value);
     // })
-    
-    if(window.location.pathname.includes('admin')) {
+
+    if (window.location.pathname.includes('admin')) {
       this.authService.isAdminPage$.next(true);
     }
     else {

@@ -9,20 +9,23 @@
 }
 
 .navbar {
-  background-color: #2c2c3c !important;
+  background-color: #402F3F !important;
 }
 
 .navbar-brand {
-  color: #dddddd;
+  color: #fff;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-weight: 900;
 }
 
 .nav-link {
-  color: #dddddd;
+  color: #999;
   font-size: 14px;
 }
 
-.nav-link:hover {
-  color: #fff;
+.nav-link:hover,
+.nav-link.active {
+  color: RGBA(237, 240, 241, 1);
 }
 
 #nav-search-form {
@@ -38,8 +41,8 @@
 }
 
 #navbar-search-field {
-  color: #dddddd;
-  background-color: #3c3c4c;
+  background-color: #332532;
+  color: #edf0f1;
   padding-left: 30px;
   border: none;
   border-radius: 3px;
@@ -52,12 +55,52 @@
   color: #fff;
 }
 
-#navbar-search-field:active, #navbar-search-field:focus {
-  background-color: #404050;
+#navbar-search-field:active,
+#navbar-search-field:focus {
+  background-color: #241a24;
   outline-color: transparent;
   outline-style: none;
 }
 
 .cursor {
   cursor: pointer;
+}
+
+.profile-icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.profile-icon {
+  width: 26px;
+}
+
+.profile-icon:hover {
+  cursor: pointer;
+}
+
+.profile-icon img {
+  width: 100%;
+  border-radius: 50%;
+}
+
+/*Copied from library component. Make shared dropdown component?*/
+#sort-options-btn {
+  border: none;
+}
+
+#sort-options-btn::after {
+  content: none;
+}
+
+.dropdown-menu {
+  background-color: #fff;
+}
+
+.dropdown-menu .dropdown-item {
+  color: #464646
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: RGBA(237, 240, 241, 1)
 }
