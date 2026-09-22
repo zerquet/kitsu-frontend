@@ -1,0 +1,30 @@
+<rating-options #ratingOptionsCmp (ratingSelected)="updateRating($event)"></rating-options>
+@if (libraryEntry) {
+  <!-- no rating UI-->
+  @if (!libraryEntry.userRating) {
+    <input 
+      class="sidebar-watch-status-btn mb-2" 
+      id="blue-action-btn" 
+      type="button" 
+      value="Add Rating" 
+      [ngbPopover]="ratingOptionsCmp.template" [autoClose]="'outside'" popoverClass="user-rating-popover"/>
+  }
+  <!-- existing rating UI-->
+  @else {
+    <div class="btn-group sidebar-manage-rating-btn">
+      <button type="button" class="btn btn-primary" id="current-rating-btn" #ratingPopover="ngbPopover" [ngbPopover]="ratingOptionsCmp.template" [autoClose]="'outside'" popoverClass="user-rating-popover">
+        <span class="current-rating-container">
+          <i [class]="(currentRatingOption?.iconClass ?? '') + ' ' + (currentRatingOption?.colorClass ?? '')"></i>
+          <span [class]="currentRatingOption?.colorClass" class="current-rating-span">{{currentRatingOption?.ratingLabel | uppercase}}</span>
+        </span>
+      </button>
+      <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent" data-bs-display="static">
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" (click)="ratingPopover.open()">Change Rating</a></li>
+        <li><a class="dropdown-item" (click)="removeRating()">Remove Rating</a></li>
+      </ul>
+    </div>
+  }
+}

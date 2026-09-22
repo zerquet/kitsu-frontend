@@ -1,0 +1,51 @@
+.sidebar-watch-status-btn {
+  width: 100%;
+  border-style: none;
+  border-radius: 5px;
+  color: #464646;
+  font-size: 14px;
+  padding: 6px 0px 6px 10px;
+  text-align: start;
+  background-color: #eceeef;
+}
+
+.sidebar-manage-rating-btn {
+  display: flex;
+  border-style: none;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 6px 0px;
+}
+
+.sidebar-manage-rating-btn a:hover {
+  cursor: pointer;
+}
+
+.sidebar-manage-rating-btn button {
+  background-color: #eceeef;
+  color: #464646;
+  border: none;
+}
+
+#current-rating-btn {
+  width: 100%;
+}
+
+.current-rating-span {
+  font-weight: 700;
+}
+
+.current-rating-container {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.current-rating-container i {
+  margin-right: 10px;
+}
+
+.notAllowedToEdit {
+  cursor: not-allowed !important;
+}

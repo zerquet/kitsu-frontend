@@ -8,11 +8,12 @@ import { UpdateLibraryEntryRequest } from '../../../shared/contracts/updateLibra
 import { UsersService } from '../../../shared/services/users.service';
 import { progressIsValid } from '../../../shared/validators/validators';
 import { ModalTitleComponent } from "../modal-title/modal-title.component";
+import { ManageRatingFormComponent } from "../manage-rating-form/manage-rating-form.component";
 
 @Component({
   selector: 'app-library-entry',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, NgbTooltip, ModalTitleComponent],
+  imports: [ReactiveFormsModule, AsyncPipe, NgbTooltip, ModalTitleComponent, ManageRatingFormComponent],
   templateUrl: './manage-library-entry-modal.component.html',
   styleUrl: './manage-library-entry-modal.component.css'
 })
@@ -44,6 +45,10 @@ export class ManageLibraryEntryModalComponent implements OnInit {
         this.addNotAllowedClass = !canEdit;
         this.animeEpisodeCount = libraryEntry.anime.episodeCount ?? 0;
       })
+  }
+
+  updateRating(rating: number) {
+    this.rating?.patchValue(rating)
   }
 
   onClose = () => this.activeModal.close();

@@ -4,7 +4,7 @@ import { UserAnimeService } from '../../../../../../shared/services/user-anime.s
 import { AuthService } from '../../../../../auth/services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { CreateLibraryEntryRequest } from '../../../../../../shared/contracts/createLibraryEntryRequest.interface';
-import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterComponent } from '../../../../../auth/register/register.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -13,11 +13,12 @@ import { of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddMediaReactionModalComponent } from '../../../../../user/pages/users/components/add-media-reaction-modal/add-media-reaction-modal.component';
 import { EditMediaReactionModalComponent } from '../../../../../user/components/edit-media-reaction-modal/edit-media-reaction-modal.component';
+import { ManageRatingComponent } from "../../../../../../shared/components/manage-rating/manage-rating.component";
 
 @Component({
   selector: 'library-entry-status',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, NgbPopover],
+  imports: [ReactiveFormsModule, AsyncPipe, ManageRatingComponent],
   templateUrl: './library-entry-status.component.html',
   styleUrl: './library-entry-status.component.css'
 })

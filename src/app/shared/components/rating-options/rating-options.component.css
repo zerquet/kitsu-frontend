@@ -1,0 +1,14 @@
+#rating-options-container {
+  display: flex;
+  font-size: 25px;
+}
+
+.rating-option {
+  margin: 8px;
+  transition: transform .1s linear;
+}
+
+.rating-option:hover {
+  cursor: pointer;
+  transform: translateY(-5px);
+}

@@ -66,44 +66,7 @@
                   </div>
                 </td>
                 <td class="rating-cell">
-                  @if(canEdit$ | async;) {
-                    @if(currAnimeIdForEditingRating !== entry.animeId) {
-                      <span class="rating-cell-span" (click)="onRatingClick(entry.animeId)">
-                        {{entry.userRating! > 0 ? entry.userRating! : "-"}}
-                      </span>
-                    }
-                    @else {
-                      <span>
-                        <select class="update-rating-selection" #ratingEditMenu>
-                          <option (click)="onRatingValueSelect(entry, '')" [selected]="null === entry.userRating" value="-">-
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '1')" [selected]="1 === entry.userRating" value="1">1
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '2')" [selected]="2 === entry.userRating" value="2">2
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '3')" [selected]="3 === entry.userRating" value="3">3
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '4')" [selected]="4 === entry.userRating" value="4">4
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '5')" [selected]="5 === entry.userRating" value="5">5
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '6')" [selected]="6 === entry.userRating" value="6">6
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '7')" [selected]="7 === entry.userRating" value="7">7
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '8')" [selected]="8 === entry.userRating" value="8">8
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '9')" [selected]="9 === entry.userRating" value="9">9
-                          </option>
-                          <option (click)="onRatingValueSelect(entry, '10')" [selected]="10 === entry.userRating" value="10">
-                            10</option>
-                        </select>
-                      </span>
-                    }
-                  }
-                  @else {
-                    <span class="rating-cell-span-readonly">{{entry.userRating! > 0 ? entry.userRating! : "-"}}</span>
-                  }
+                  <manage-rating-library [libraryEntry]="entry" [readonly]="!(canEdit$ | async)"></manage-rating-library>
                 </td>
                 <td class="progress-cell">
                   @if(canEdit$ | async) {

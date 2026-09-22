@@ -17,7 +17,7 @@
               <option value="watching">Currently Watching</option>
               <option value="planning">Want to Watch</option>
             </select>
-          </div>
+          </div>  
         </div>
         <div class="flex">
           <div><label for="progress">Progress</label></div>
@@ -31,20 +31,7 @@
         <div class="flex">
           <div><label for="rating">Rating</label></div>
           <div>
-            <select formControlName="rating" id="rating" [class.notAllowedToEdit]="addNotAllowedClass"
-              class="form-select form-select-sm shadow-none">
-              <option value="">-</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
+            <manage-rating-form [libraryEntry]="libraryEntry" [readonly]="!(canEdit$ | async)" (ratingChange)="updateRating($event)"></manage-rating-form>
           </div>
         </div>
       </div>
