@@ -11,14 +11,14 @@ import { environment } from '../../../../../../../environments/environment';
 import { AddMediaReactionModalComponent } from '../add-media-reaction-modal/add-media-reaction-modal.component';
 import { UpdateLibraryEntryRequest } from '../../../../../../shared/contracts/updateLibraryEntryRequest.interface';
 import { UsersService } from '../../../../../../shared/services/users.service';
-import { MediaReaction } from '../../../../../../shared/models/media-reaction.model';
 import { EditMediaReactionModalComponent } from '../../../../components/edit-media-reaction-modal/edit-media-reaction-modal.component';
 import { progressIsValid } from '../../../../../../shared/validators/validators';
+import { ManageRatingLibraryComponent } from "../manage-rating-library/manage-rating-library.component";
 
 @Component({
   selector: 'users-library',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink, NgbTooltip],
+  imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink, NgbTooltip, ManageRatingLibraryComponent],
   templateUrl: './users-library.component.html',
   styleUrl: './users-library.component.css'
 })
@@ -31,10 +31,6 @@ export class UsersLibraryComponent implements OnInit {
   private renderer = inject(Renderer2).listen("window", "click", (e: Event) => {
     //when all dropdowns are not shown, ratingEditMenu will be undefined. Return since we don't need to do anything else.
     //Only run when the dropdown is not clicked. Otherwise, all clicks (including on the dropdown) get into this and the menu will never close
-    if (this.ratingCellMode === "edit" && this.ratingEditMenu !== undefined && e.target !== this.ratingEditMenu.nativeElement) {
-      this.ratingCellMode = "read";
-      this.currAnimeIdForEditingRating = -1;
-    }
     if (this.progressCellMode === "edit" && this.progressEditField !== undefined && e.target !== this.progressEditField.nativeElement) {
       this.progressCellMode = "read";
       this.currAnimeIdForEditingProgress = -1;
@@ -56,8 +52,6 @@ export class UsersLibraryComponent implements OnInit {
   })
 
   searchLibraryForm: FormGroup = new FormGroup({ search: new FormControl() });
-  ratingCellMode = "read";
-  currAnimeIdForEditingRating = -1;
   progressCellMode = "read";
   currAnimeIdForEditingProgress = -1;
   pendingProgressUpdate: LibraryEntry | undefined = undefined;
@@ -138,11 +132,6 @@ export class UsersLibraryComponent implements OnInit {
     this.modalService.open(ManageLibraryEntryModalComponent);
   }
 
-  onRatingClick(animeId: number) {
-    this.ratingCellMode = this.ratingCellMode === "read" ? "edit" : "read";
-    this.currAnimeIdForEditingRating = animeId;
-  }
-
   onProgressClick(animeId: number) {
     this.progressCellMode = this.progressCellMode === "read" ? "edit" : "read";
     this.currAnimeIdForEditingProgress = animeId;
@@ -199,7 +188,9 @@ export class UsersLibraryComponent implements OnInit {
   }
 
   onEditMediaReactionClick(libraryEntry: LibraryEntryDetail) {
-    this.userAnimeService.changeCurrentEntry(libraryEntry);
+    if (!libraryEntry.mediaReaction) return;
+
+    this.userAnimeService.changeCurrentMediaReaction(libraryEntry.mediaReaction);
     this.modalService.open(EditMediaReactionModalComponent);
   }
 

@@ -188,19 +188,15 @@ tbody {
   display: none;
 }
 
-.media-reaction-edit {}
-
 .title-cell:hover .media-reaction-add {
   display: block;
 }
 
-.rating-cell-span,
 .progress-cell-span {
   cursor: pointer;
   color: #16a085;
 }
 
-.rating-cell-span:hover,
 .progress-cell-span:hover {
   color: #0d5d4d;
 }

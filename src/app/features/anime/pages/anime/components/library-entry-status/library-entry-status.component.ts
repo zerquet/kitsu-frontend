@@ -13,11 +13,12 @@ import { of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddMediaReactionModalComponent } from '../../../../../user/pages/users/components/add-media-reaction-modal/add-media-reaction-modal.component';
 import { EditMediaReactionModalComponent } from '../../../../../user/components/edit-media-reaction-modal/edit-media-reaction-modal.component';
+import { ManageRatingComponent } from "../../../../../../shared/components/manage-rating/manage-rating.component";
 
 @Component({
   selector: 'library-entry-status',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe],
+  imports: [ReactiveFormsModule, AsyncPipe, ManageRatingComponent],
   templateUrl: './library-entry-status.component.html',
   styleUrl: './library-entry-status.component.css'
 })
@@ -41,7 +42,7 @@ export class LibraryEntryStatusComponent implements OnInit {
 
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
-
+     
     this.authService.authenticatedUser$
       .pipe(
         switchMap(authenticatedUser => {
@@ -57,7 +58,10 @@ export class LibraryEntryStatusComponent implements OnInit {
     this.userAnimeService.currentEntry$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(libraryEntry => {
-        if (libraryEntry === null) return;
+        if (libraryEntry === null) {
+          this.updateLibraryEntryForm.reset();
+          return;
+        }
 
         this.updateLibraryEntryForm.patchValue({
           libraryEntryId: libraryEntry.id,
@@ -96,6 +100,8 @@ export class LibraryEntryStatusComponent implements OnInit {
               episodeProgress: libraryEntry.episodesWatched,
               status: libraryEntry.watchStatus 
             });
+
+            this.onEditLibraryEntry();
           }
         });
     }

@@ -26,31 +26,31 @@
           <input id="navbar-search-field" type="search" placeholder="Search" formControlName="searchControl">
         </form>
         @if(show$.value === true ) {
-        <search-results [results$]="searchResults$"></search-results>
+          <search-results [results$]="searchResults$"></search-results>
         }
       </div>
       <ul class="navbar-nav me-autp mb-2 mb-lg-0 ms-3">
         @if (this.authenticatedUser$ | async; as authenticatedUser) {
-        <li class="nav-item profile-icon-container">
-          <div class="dropdown pe-2">
-            <a id="sort-options-btn" class="btn btn-sm dropdown-toggle" href="#" role="button"
-              data-bs-toggle="dropdown">
-              <div class="profile-icon">
-                <!--may need to get auth user's profile on app start and set state from there-->
-                <img [src]="authenticatedUser.profilePhotoUrl">
-              </div>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item cursor" routerLink="/users/{{authenticatedUser.displayId}}/about">View
-                  Profile</a></li>
-              <li><a class="dropdown-item cursor" (click)="logout()">Logout</a></li>
-            </ul>
-          </div>
-        </li>
+          <li class="nav-item profile-icon-container">
+            <div class="dropdown pe-2">
+              <a id="sort-options-btn" class="btn btn-sm dropdown-toggle" href="#" role="button"
+                data-bs-toggle="dropdown">
+                <div class="profile-icon">
+                  <!--may need to get auth user's profile on app start and set state from there-->
+                  <img [src]="authenticatedUser.profilePhotoUrl">
+                </div>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item cursor" routerLink="/users/{{authenticatedUser.displayId}}/about">View
+                    Profile</a></li>
+                <li><a class="dropdown-item cursor" (click)="logout()">Logout</a></li>
+              </ul>
+            </div>
+          </li>
         }
         @else {
-        <li class="nav-item"><a class="nav-link cursor" (click)="openSignInModal()">Sign In</a></li>
-        <li class="nav-item"><a class="nav-link cursor" (click)="openSignUpModal()">Sign Up</a></li>
+          <li class="nav-item"><a class="nav-link cursor" (click)="openSignUpModal()">Sign Up</a></li>
+          <li class="nav-item"><a class="nav-link cursor" (click)="openSignInModal()">Sign In</a></li>
         }
       </ul>
     </div>

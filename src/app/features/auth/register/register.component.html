@@ -1,7 +1,10 @@
 <div class="modal-body">
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="text-center mb-3">
-            <p><strong>What should we call you?</strong></p>
+        <div class="mb-3">
+            <p>
+              <strong>What should we call you?</strong><br>
+              <small>Your username should be original, being wity is optional.</small>
+            </p>
             <input id="username" placeholder="Username" formControlName="username">
             <div *ngIf="username?.invalid && (username?.touched || username?.dirty)" class="required">
                 <div *ngIf="username?.hasError('required')">
@@ -9,8 +12,11 @@
                 </div>
             </div>
         </div>
-        <div class="text-center mb-3">
-            <p><strong>What email should we use?</strong></p>
+        <div class="mb-3">
+            <p>
+              <strong>What email should we use?</strong><br>
+              <small>We'll use your email address to send you occasional updates and help you out if you forget your password.</small>
+            </p>
             <input id="email" placeholder="Email" formControlName="email">
             <div *ngIf="email?.invalid && (email?.touched || email?.dirty)" class="required">
                 <div *ngIf="email?.hasError('required')">
@@ -18,8 +24,14 @@
                 </div>
             </div>
         </div>
-        <div class="text-center mb-3">
-            <p><strong>Think of a strong password</strong></p>
+        <div class="mb-3">
+            <p>
+              <strong>Think of a strong password</strong><br>
+              <small>
+                Your password should be at least 8 characters. You should also consider mixing in numbers and special characters! This is to keep the bad guys
+                from doing bad guy things with your account.
+              </small>
+            </p>
             <input id="password" placeholder="Password" formControlName="password">
             <div *ngIf="password?.invalid && (password?.touched || password?.dirty)" class="required">
                 <div *ngIf="password?.hasError('required')">
@@ -27,6 +39,9 @@
                 </div>
             </div>
         </div>
-        <div class="text-center"><button id="register-btn" type="submit" [disabled]="!registerForm.valid">Let's create that account</button></div>
+        <button id="register-btn" type="submit" [disabled]="!registerForm.valid">
+          @if(!registerForm.valid) { Let's get some basic info first }
+          @else { Cool- Let's create that account }
+        </button>
     </form>
 </div>

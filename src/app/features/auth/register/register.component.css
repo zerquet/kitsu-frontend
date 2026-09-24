@@ -5,12 +5,26 @@
 input {
   outline-color: transparent;
   outline-style: none;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #eee;
 }
 
 #register-btn {
-  text-decoration: none;
+  width: 100%;
+  text-align: center;
   border: none;
   border-radius: 3px;
+  padding: 10px;
+  background-color: #16a085;
+  color: #fff;
+}
+
+#register-btn:disabled {
+  color: inherit;
+  background-color: inherit;
+  border: 1px solid #ccc;
+  cursor: not-allowed !important;
 }
 
 .required {

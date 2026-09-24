@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, tap } from 'rxjs';
 import { LibraryEntry, LibraryEntryDetail, LibraryEntryWithUser } from '../models/library-entry.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
 import { MediaReaction, MediaReactionWithUser } from '../models/media-reaction.model';
 import { GetMediaReactionByIdResponseDto } from '../../features/user/dtos/get-media-reaction-by-id-response.dto';
-import { UpdateMediaReactionRequest } from '../contracts/updateMediaReactionRequest.interface';
+import { UpdateMediaReactionRequestDto } from '../contracts/update-media-reaction-request.dto';
 import { CreateLibraryEntryRequest } from '../contracts/createLibraryEntryRequest.interface';
 import { UpdateLibraryEntryRequest } from '../contracts/updateLibraryEntryRequest.interface';
 import { GetLibraryEntryResponseDto } from '../../features/anime/dtos/get-library-entry-response.dto';
@@ -19,6 +19,7 @@ import { GetLibraryResponseDto } from '../../features/user/dtos/get-library-resp
 import { mapCreateLibraryEntryToLibraryEntry, mapGetLibraryEntryToLibraryEntry, mapGetLibraryToLibraryEntry, mapUpdateLibraryEntryToLibraryEntry } from '../mappers/library-entry.mapper';
 import { mapGetMediaReactionByUserToMediaReaction, mapGetMediaReactionByIdToMediaReaction, mapAddMediaReactionToMediaReaction, mapUpdateMediaReactionToMediaReaction } from '../mappers/media-reaction.mapper';
 import { UpdateMediaReactionResponseDto } from '../../features/user/dtos/update-media-reaction-response.dto';
+import { AddMediaReactionRequestDto } from '../contracts/add-media-reaction-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -46,14 +47,15 @@ export class UserAnimeService {
 
   //profile is only relevant in the context of library page. here, i get userId from auth service.
   loadCurrentEntry(userId: string | null, animeId: number): Observable<LibraryEntryDetail | null> {
-    if (userId === null) {
-      this._currentEntrySubject.next(null);
-      return of(null);
-    }
+    this._currentEntrySubject.next(null);
+    this._currentMediaReactionSubject.next(null);
+    
+    if (userId === null) return of(null);
     
     return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
       .pipe(
         tap(dto => this.usersService.setProfile(dto.userProfile)),
+        filter(dto => !!dto.libraryEntryId), //only proceed if library entry exists. otherwise just set profile.
         map(mapGetLibraryEntryToLibraryEntry),
         tap(libraryEntry => {
           this._currentEntrySubject.next(libraryEntry);
@@ -191,7 +193,7 @@ export class UserAnimeService {
     this._currentMediaReactionSubject.next(mediaReaction);
   }
 
-  addMediaReaction(req: FormData): Observable<MediaReaction> { //TODO use simpler DTO instead of unnecessary FormData
+  addMediaReaction(req: AddMediaReactionRequestDto): Observable<MediaReaction> { //TODO use simpler DTO instead of unnecessary FormData
     return this.http.post<AddMediaReactionResponseDto>(this.mediaReactionsBaseUrl, req)
       .pipe(
         map(mapAddMediaReactionToMediaReaction),
@@ -230,7 +232,7 @@ export class UserAnimeService {
     return updatedLibraryEntry;
   }
 
-  updateMediaReaction(req: UpdateMediaReactionRequest): Observable<MediaReaction> {
+  updateMediaReaction(req: UpdateMediaReactionRequestDto): Observable<MediaReaction> {
     return this.http.put<UpdateMediaReactionResponseDto>(this.mediaReactionsBaseUrl, req)
       .pipe(
         map(mapUpdateMediaReactionToMediaReaction),
@@ -243,21 +245,19 @@ export class UserAnimeService {
     this._currentMediaReactionSubject.next(mediaReaction);
     
     //2. update media reactions state with updated media reaction
-    const mediaReactions = this.mediaReactions$.getValue();
-    const idx = mediaReactions.findIndex((e) => e.id === mediaReaction.id);
-
-    if (idx !== -1) {
-      mediaReactions[idx] = mediaReaction;
-      this.mediaReactions$.next([...mediaReactions]);
-    }
+    this.mediaReactions$.next(
+      this.mediaReactions$.getValue().map((m) => m.id === mediaReaction.id ? mediaReaction : m)
+    );
 
     //3. update current library entry
-    const updatedLibraryEntry = this.updateCurrentEntryMediaReaction(mediaReaction);
-    if (!updatedLibraryEntry) return;
+    this.updateCurrentEntryMediaReaction(mediaReaction);
 
     //4. update user library state
-    this.updateLibrary(updatedLibraryEntry);
+    this.library$.next(
+      this.library$.getValue().map((e) => e.id === mediaReaction.libraryEntryId ? {...e, mediaReaction: mediaReaction} : e)
+    );
   }
+
 
   deleteMediaReaction(mediaReactionId: number): Observable<void> {
     return this.http.delete<void>(`${this.mediaReactionsBaseUrl}/${mediaReactionId}`)
@@ -267,20 +267,22 @@ export class UserAnimeService {
   }
 
   private deleteMediaReactionApplyUpdates(mediaReactionId: number) {
-    //1. remove media reaction from media reactions state
+    //1. update current media reaction
+    this._currentMediaReactionSubject.next(null);
+    
+    //2. remove media reaction from media reactions state
     this.mediaReactions$.next(
       this.mediaReactions$.getValue().filter((m) => m.id !== mediaReactionId)
     );
 
-    //2. update current library entry
-    const updatedLibraryEntry = this.updateCurrentEntryMediaReaction(undefined);
-    if (!updatedLibraryEntry) return;
+    //3. update current library entry
+    this.updateCurrentEntryMediaReaction(undefined);
 
-    //3. update user library state
-    this.updateLibrary(updatedLibraryEntry);
+    //4. update user library state
+    this.library$.next(
+      this.library$.getValue().map((e) => e.mediaReaction?.id === mediaReactionId ? {...e, mediaReaction: undefined} : e)
+    );
 
-    //4. update current media reaction
-    this._currentMediaReactionSubject.next(null);
   }
 
   loadUserMediaReactions(userDisplayId: string) {

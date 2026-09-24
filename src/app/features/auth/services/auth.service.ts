@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
-import { LoginRequest } from '../loginRequest.model';
+import { LoginRequestDto } from '../dtos/login-request.dto';
 import { AuthenticatedUser } from '../authenticatedUser.model';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../jwtPayload.model';
@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { LoginResponseDto } from '../dtos/login-response.dto';
 import { UserProfile } from '../../../shared/models/user-profile.model';
 import { getCoverPhotoUrl, getProfilePhotoUrl } from '../../../shared/helpers/helpers';
+import { RegisterRequestDto } from '../dtos/register-request.dto';
+import { RegisterResponseDto } from '../dtos/register-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -32,18 +34,19 @@ export class AuthService {
   authenticatedUser$ = this._currentUserSubject.asObservable();
   isAdminPage$ = new BehaviorSubject<boolean>(false); //variable to turn off nav menu in admin dashboard
 
-  login(req: LoginRequest) {
+  login(req: LoginRequestDto) {
     return this.http.post<LoginResponseDto>(`${this.baseUrl}/auth/login`, req)
       .pipe(
         tap((res) => {
-          localStorage.setItem("access_token", res.token);
-          if (!res.user) {
-            this._currentUserSubject.next(null);
-            return;
-          }
-          res.user.isAdmin = res.isAdmin
-          this._currentUserSubject.next(res.user);
-        })
+            localStorage.setItem("access_token", res.token);
+            if (!res.user) {
+              this._currentUserSubject.next(null);
+              return;
+            }
+            res.user.profilePhotoUrl = getProfilePhotoUrl(res.user.profilePhotoId);
+            res.user.coverPhotoUrl = getCoverPhotoUrl(res.user.coverPhotoId);
+            this._currentUserSubject.next(res.user);
+          })
       );
   }
 
@@ -62,7 +65,7 @@ export class AuthService {
         var authenticatedUser: AuthenticatedUser = {
           id: decoded.nameid,
           displayId: decoded.display_id,
-          userName: decoded.given_name,
+          username: decoded.given_name,
           email: decoded.email,
           isAdmin: decoded.is_admin === "True" ? true : false,
           profilePhotoId: decoded.profile_photo_id,
@@ -97,5 +100,28 @@ export class AuthService {
     currentUser.profilePhotoId = updatedUser.profilePhotoId;
 
     this._currentUserSubject.next(currentUser);
+  }
+
+  register(req: RegisterRequestDto) {
+    return this.http.post<RegisterResponseDto>(`${this.baseUrl}/auth/register`, req)
+      .pipe(
+        tap((res) => {
+          localStorage.setItem("access_token", res.token);
+          if (!res.userId) {
+            this._currentUserSubject.next(null)
+            return;
+          }
+          const newUser: AuthenticatedUser = {
+            email: res.email,
+            isAdmin: res.isAdmin,
+            id: res.userId,
+            username: res.username,
+            displayId: res.displayId,
+            profilePhotoUrl: getProfilePhotoUrl(undefined),
+            coverPhotoUrl: getCoverPhotoUrl(undefined)
+          }
+          this._currentUserSubject.next(newUser);
+        })
+      );
   }
 }

@@ -1,0 +1,37 @@
+<rating-options #ratingOptionsCmp (ratingSelected)="updateRating($event)"></rating-options>
+@if (libraryEntry) {
+  @if (readonly) {
+    @if (!libraryEntry.userRating) {
+      <span class="rating-cell-span"><i class="bi bi-circle"></i></span>
+    }
+    @else {
+      <i [class]="(currentRatingOption?.iconClass ?? '') + ' ' + (currentRatingOption?.colorClass ?? '')"></i>
+    }
+  }
+  @else {
+    <!-- no rating UI-->
+    @if (!libraryEntry.userRating) {
+      <span class="rating-cell-span" [ngbPopover]="ratingOptionsCmp.template" [autoClose]="'outside'" popoverClass="user-rating-popover">
+        <i class="bi bi-circle"></i>
+      </span>
+    }
+    <!-- existing rating UI-->
+    @else {
+      <div class="dropdown">
+        <span
+          class="rating-cell-span dropdown-toggle"
+          data-bs-toggle="dropdown"
+          role="button"
+          #ratingPopover="ngbPopover"
+          [ngbPopover]="ratingOptionsCmp.template" [triggers]="'manual'" [autoClose]="'outside'" popoverClass="user-rating-popover"
+        >
+          <i [class]="(currentRatingOption?.iconClass ?? '') + ' ' + (currentRatingOption?.colorClass ?? '')"></i>
+        </span>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="ratingPopover.open()">Change Rating</a></li>
+          <li><a class="dropdown-item" (click)="removeRating()">Remove Rating</a></li>
+        </ul>
+      </div>
+    }
+  }
+}

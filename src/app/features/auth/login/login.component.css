@@ -5,14 +5,46 @@
 input {
   outline-color: transparent;
   outline-style: none;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #eee;
+}
+
+input#email {
+  border-bottom: none;
 }
 
 #login-btn {
-  text-decoration: none;
+  width: 100%;
+  text-align: center;
   border: none;
   border-radius: 3px;
+  padding: 10px;
+  background-color: #16a085;
+  color: #fff;
+}
+
+#login-btn:hover {
+  background-color: #19b698;
+}
+
+#login-btn:disabled {
+  color: inherit;
+  background-color: inherit;
+  border: 1px solid #ccc;
+  cursor: not-allowed !important;
 }
 
 .required {
   color: #ee5555;
+}
+
+#forgot-password-label {
+  color: #f75239;
+  display: flex;
+  justify-content: end;
+}
+
+#forgot-password-label:hover {
+  color: #f3290a;
 }
