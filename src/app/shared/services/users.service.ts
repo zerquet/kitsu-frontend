@@ -24,7 +24,7 @@ export class UsersService {
     this.authService.authenticatedUser$
   ]).pipe(
     map(([authenticatedUser, userProfile]) => {
-      console.log("authed user: " + authenticatedUser + " and current user " + userProfile);
+      //console.log("authed user: " + authenticatedUser + " and current user " + userProfile);
       if (!authenticatedUser || !userProfile) {
         return false;
       }

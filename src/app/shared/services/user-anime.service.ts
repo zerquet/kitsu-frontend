@@ -47,10 +47,10 @@ export class UserAnimeService {
 
   //profile is only relevant in the context of library page. here, i get userId from auth service.
   loadCurrentEntry(userId: string | null, animeId: number): Observable<LibraryEntryDetail | null> {
-    if (userId === null) {
-      this._currentEntrySubject.next(null);
-      return of(null);
-    }
+    this._currentEntrySubject.next(null);
+    this._currentMediaReactionSubject.next(null);
+    
+    if (userId === null) return of(null);
     
     return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
       .pipe(
@@ -245,21 +245,19 @@ export class UserAnimeService {
     this._currentMediaReactionSubject.next(mediaReaction);
     
     //2. update media reactions state with updated media reaction
-    const mediaReactions = this.mediaReactions$.getValue();
-    const idx = mediaReactions.findIndex((e) => e.id === mediaReaction.id);
-
-    if (idx !== -1) {
-      mediaReactions[idx] = mediaReaction;
-      this.mediaReactions$.next([...mediaReactions]);
-    }
+    this.mediaReactions$.next(
+      this.mediaReactions$.getValue().map((m) => m.id === mediaReaction.id ? mediaReaction : m)
+    );
 
     //3. update current library entry
-    const updatedLibraryEntry = this.updateCurrentEntryMediaReaction(mediaReaction);
-    if (!updatedLibraryEntry) return;
+    this.updateCurrentEntryMediaReaction(mediaReaction);
 
     //4. update user library state
-    this.updateLibrary(updatedLibraryEntry);
+    this.library$.next(
+      this.library$.getValue().map((e) => e.id === mediaReaction.libraryEntryId ? {...e, mediaReaction: mediaReaction} : e)
+    );
   }
+
 
   deleteMediaReaction(mediaReactionId: number): Observable<void> {
     return this.http.delete<void>(`${this.mediaReactionsBaseUrl}/${mediaReactionId}`)
@@ -269,20 +267,22 @@ export class UserAnimeService {
   }
 
   private deleteMediaReactionApplyUpdates(mediaReactionId: number) {
-    //1. remove media reaction from media reactions state
+    //1. update current media reaction
+    this._currentMediaReactionSubject.next(null);
+    
+    //2. remove media reaction from media reactions state
     this.mediaReactions$.next(
       this.mediaReactions$.getValue().filter((m) => m.id !== mediaReactionId)
     );
 
-    //2. update current library entry
-    const updatedLibraryEntry = this.updateCurrentEntryMediaReaction(undefined);
-    if (!updatedLibraryEntry) return;
+    //3. update current library entry
+    this.updateCurrentEntryMediaReaction(undefined);
 
-    //3. update user library state
-    this.updateLibrary(updatedLibraryEntry);
+    //4. update user library state
+    this.library$.next(
+      this.library$.getValue().map((e) => e.mediaReaction?.id === mediaReactionId ? {...e, mediaReaction: undefined} : e)
+    );
 
-    //4. update current media reaction
-    this._currentMediaReactionSubject.next(null);
   }
 
   loadUserMediaReactions(userDisplayId: string) {

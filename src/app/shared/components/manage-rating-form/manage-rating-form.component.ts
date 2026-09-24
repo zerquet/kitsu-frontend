@@ -21,6 +21,7 @@ export class ManageRatingFormComponent {
   ratingOptionsPopover = viewChild(NgbPopover);
   
   get currentRatingOption() {
+    //TODO: this runs too many times when it should only run 4 times. console log and see
     return RATING_OPTIONS.find(r => r.userRating === this.libraryEntry?.userRating);
   }
 

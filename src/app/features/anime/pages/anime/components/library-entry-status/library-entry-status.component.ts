@@ -42,7 +42,7 @@ export class LibraryEntryStatusComponent implements OnInit {
 
   ngOnInit() {
     var animeId = this.route.snapshot.params['id'];
-
+     
     this.authService.authenticatedUser$
       .pipe(
         switchMap(authenticatedUser => {
@@ -58,7 +58,10 @@ export class LibraryEntryStatusComponent implements OnInit {
     this.userAnimeService.currentEntry$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(libraryEntry => {
-        if (libraryEntry === null) return;
+        if (libraryEntry === null) {
+          this.updateLibraryEntryForm.reset();
+          return;
+        }
 
         this.updateLibraryEntryForm.patchValue({
           libraryEntryId: libraryEntry.id,

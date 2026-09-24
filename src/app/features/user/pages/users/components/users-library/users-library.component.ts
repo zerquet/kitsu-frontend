@@ -188,7 +188,9 @@ export class UsersLibraryComponent implements OnInit {
   }
 
   onEditMediaReactionClick(libraryEntry: LibraryEntryDetail) {
-    this.userAnimeService.changeCurrentEntry(libraryEntry);
+    if (!libraryEntry.mediaReaction) return;
+
+    this.userAnimeService.changeCurrentMediaReaction(libraryEntry.mediaReaction);
     this.modalService.open(EditMediaReactionModalComponent);
   }
 
