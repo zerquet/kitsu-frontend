@@ -1,27 +1,37 @@
-# Kitsu
+# Kitsu clone (front-end)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.9.
+This project is a [Kitsu](https://kitsu.app/) clone for tracking anime.  
+You can [demo the live app](https://icy-sky-0b3ce1210.6.azurestaticapps.net/). A demo login is provided below for you to use:  
+**Email**:  
+**Password**: 
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Explore Anime
+Find anime in the explore page or by searching.  
+<img width="1280" height="729" alt="KitsuMozillaFirefox2026-09-2816-52-57-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/668f6270-eec8-4510-8d60-986a020a6713" />
 
-## Code scaffolding
+### Track anime 
+Track anime with ratings, progress, and a library.  
+<img width="1280" height="726" alt="KitsuMozillaFirefox2026-09-2817-14-54-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/d14f1387-6f68-43ad-afca-2508187188c9" />
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### View your profile 
+Manage your profile with a profile/cover photo or a list of favorite anime.  
+<img width="1280" height="727" alt="KitsuMozillaFirefox2026-09-2817-43-49-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/9fa519f8-202f-4b14-a693-363e513f15a1" />
 
-## Build
+### Manage your library 
+Edit your library entries with a search, filter, and sorting options.  
+<img width="1280" height="724" alt="KitsuMozillaFirefox2026-09-2818-22-49-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/d2e048f2-b49f-416b-9b79-ef9f2e7dfb7a" />  
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Tech stack used: 
+- Angular 18 (front-end)
+- ASP.NET Core (back-end, [repository link](https://github.com/zerquet/kitsu-backend))
+- SQL Server (database)
+- Azure (Static Web App for front-end, App Service for API, SQL Server for database, Storage account for image hosting)
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Architecture Notes:
+The code-base is structured by features
+- `admin/ ` relates to the admin hub
+- `anime` relates to the search, explore and anime pages
+- `auth/` relates to authentication (sign in/sign out)
+- `user/` relates to the user's library, profile, and media reactions. 
