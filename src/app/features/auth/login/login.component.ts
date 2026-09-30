@@ -36,7 +36,7 @@ export class LoginComponent {
     this.authService.login(req)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (res) => {
+        next: (res) => {          
           if (!res.user) {
             return;
           }

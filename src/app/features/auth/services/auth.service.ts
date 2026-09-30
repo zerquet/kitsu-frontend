@@ -24,7 +24,7 @@ export class AuthService {
   private _tokenIsDecoded = false;
   private _currentUserSubject = new BehaviorSubject<AuthenticatedUser | null>(null);
 
-  constructor() {
+  constructor() {    
     //Try to log in via JWT token
     if (!this._tokenIsDecoded) {
       this.decodeToken();
@@ -37,15 +37,15 @@ export class AuthService {
   login(req: LoginRequestDto) {
     return this.http.post<LoginResponseDto>(`${this.baseUrl}/auth/login`, req)
       .pipe(
-        tap((res) => {
-            localStorage.setItem("access_token", res.token);
-            if (!res.user) {
-              this._currentUserSubject.next(null);
-              return;
-            }
-            res.user.profilePhotoUrl = getProfilePhotoUrl(res.user.profilePhotoId);
-            res.user.coverPhotoUrl = getCoverPhotoUrl(res.user.coverPhotoId);
-            this._currentUserSubject.next(res.user);
+        tap((res) => {          
+          localStorage.setItem("access_token", res.token);
+          if (!res.user) {
+            this._currentUserSubject.next(null);
+            return;
+          }
+          res.user.profilePhotoUrl = getProfilePhotoUrl(res.user.profilePhotoId);
+          res.user.coverPhotoUrl = getCoverPhotoUrl(res.user.coverPhotoId);
+          this._currentUserSubject.next(res.user); 
           })
       );
   }
@@ -67,7 +67,7 @@ export class AuthService {
           displayId: decoded.display_id,
           username: decoded.given_name,
           email: decoded.email,
-          isAdmin: decoded.is_admin === "True" ? true : false,
+          isAdmin: decoded.role === "Admin" ? true : false,
           profilePhotoId: decoded.profile_photo_id,
           profilePhotoUrl: getProfilePhotoUrl(decoded.profile_photo_id),
           coverPhotoId: decoded.cover_photo_id,
@@ -78,7 +78,7 @@ export class AuthService {
           gender: ''
         };
         this._currentUserSubject.next(authenticatedUser);
-        this._tokenIsDecoded = true;
+        this._tokenIsDecoded = true;        
       }
       else {
         this.logout();
