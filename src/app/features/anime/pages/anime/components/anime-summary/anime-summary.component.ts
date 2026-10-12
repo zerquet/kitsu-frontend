@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Anime } from '../../../../../../shared/models/anime.model';
+import { Anime, AnimeDetail } from '../../../../../../shared/models/anime.model';
 
 @Component({
   selector: 'anime-summary',
@@ -11,6 +11,6 @@ import { Anime } from '../../../../../../shared/models/anime.model';
   styleUrl: './anime-summary.component.css'
 })
 export class AnimeSummaryComponent {
-  @Input() anime!: Anime;
+  @Input() anime!: AnimeDetail;
 
 }

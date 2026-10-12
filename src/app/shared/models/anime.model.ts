@@ -6,10 +6,13 @@ export interface Anime {
   title: string;
   description?: string;
   score?: number;
-  categories: Category[];
-  releaseStatus?: string;
   imageUrl: string;
   year?: number;
+}
+
+export interface AnimeDetail extends Anime {
+  categories: Category[];
+  releaseStatus?: string;
   coverImageId: string;
   episodeCount?: number;
   mediaType?: string;

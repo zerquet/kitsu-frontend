@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
-import { Anime } from '../models/anime.model';
+import { Anime, AnimeDetail } from '../models/anime.model';
 import { environment } from '../../../environments/environment';
 import { GetAnimeByIdResponseDto } from '../../features/anime/dtos/get-anime-by-id-response.dto';
+import { GetExploreAnimeResponseDto } from '../../features/anime/dtos/get-explore-anime-response.dto';
+import { mapGetExploreAnimeToExplore } from '../mappers/anime.mapper';
+import { ExplorePageModel } from '../../features/anime/models/explore-page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +16,22 @@ export class AnimeService {
   private readonly baseUrl = `${environment.apiUrl}/animes`;
   private readonly franchiseBaseUrl = `${environment.apiUrl}/franchises`;
 
-  private _animes$ = new BehaviorSubject<Anime[]>([]); //STATE
+  private _animes$ = new BehaviorSubject<AnimeDetail[]>([]); //STATE
 
   constructor() {
-    this.http.get<Anime[]>(`${this.baseUrl}`)
+    this.http.get<AnimeDetail[]>(`${this.baseUrl}`)
       .subscribe((animes) => {
         this._animes$.next(animes)
       });
   }
 
-  getAnimes(): Observable<Anime[]> {
+  getAnimes(): Observable<AnimeDetail[]> {
     return this._animes$;
+  }
+
+  getExploreAnime(): Observable<ExplorePageModel> {
+    return this.http.get<GetExploreAnimeResponseDto>(`${this.baseUrl}/explore`)
+      .pipe(map(mapGetExploreAnimeToExplore));
   }
 
   //app store/state is not cache. don't get id from animes$ because state is not meant to be used as a cache, but rather to reduce API calls. query db instead for anime
@@ -46,7 +54,7 @@ export class AnimeService {
 
   //if app gets bigger, we may need to call APi directly...
   //and maybe hold a store for animes of a certain category? not sure how it'll work but i have an idea
-  getAnimesByCategory(category: string): Observable<Anime[]> {
+  getAnimesByCategory(category: string): Observable<AnimeDetail[]> {
     return this._animes$.pipe(
       map((animes) => {
         return animes.filter((anime) => {
@@ -55,7 +63,7 @@ export class AnimeService {
       }),
       switchMap((stateResults) => {
         const skipQueryString = stateResults.map(x => x.id.toString()).join(',');
-        return this.http.get<Anime[]>(`${environment.apiUrl}/${category}/animes?skip=${skipQueryString}`,)
+        return this.http.get<AnimeDetail[]>(`${environment.apiUrl}/${category}/animes?skip=${skipQueryString}`,)
           .pipe(
             map((serverResults) => {
               return stateResults.concat(serverResults);
@@ -65,8 +73,8 @@ export class AnimeService {
     );
   }
 
-  addAnime(req: FormData): Observable<Anime> {
-    return this.http.post<Anime>(this.baseUrl, req)
+  addAnime(req: FormData): Observable<AnimeDetail> {
+    return this.http.post<AnimeDetail>(this.baseUrl, req)
       .pipe(
         tap((res) => {
           const animes = this._animes$.getValue();
@@ -76,8 +84,8 @@ export class AnimeService {
       );
   }
 
-  updateAnime(req: FormData): Observable<Anime> {
-    return this.http.put<Anime>(this.baseUrl, req)
+  updateAnime(req: FormData): Observable<AnimeDetail> {
+    return this.http.put<AnimeDetail>(this.baseUrl, req)
       .pipe(
         tap((res) => {
           const animes = this._animes$.getValue();
@@ -128,14 +136,14 @@ export class AnimeService {
   }
 
   //TODO move to franchise svc?
-  getAnimesByFranchiseId(franchiseId: number): Observable<Anime[]> {
+  getAnimesByFranchiseId(franchiseId: number): Observable<AnimeDetail[]> {
     return this._animes$.pipe(
       map((animes) => {
         return animes.filter((anime) => anime.franchiseId == franchiseId);
       }),
       switchMap((stateResults) => {
         const skipQueryString = stateResults.map(x => x.id.toString()).join(',');
-        return this.http.get<Anime[]>(`${this.franchiseBaseUrl}/${franchiseId}/animes?skip=${skipQueryString}`)
+        return this.http.get<AnimeDetail[]>(`${this.franchiseBaseUrl}/${franchiseId}/animes?skip=${skipQueryString}`)
           .pipe(
             map((serverResults) => {
               return stateResults.concat(serverResults);

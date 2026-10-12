@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { Anime } from '../../../../../../shared/models/anime.model';
+import { Anime, AnimeDetail } from '../../../../../../shared/models/anime.model';
 import { AnimeService } from '../../../../../../shared/services/anime.service';
 import { AnimeTooltipComponent } from '../../../../components/anime-tooltip/anime-tooltip.component';
 import { environment } from '../../../../../../../environments/environment';
@@ -16,7 +16,7 @@ import { environment } from '../../../../../../../environments/environment';
 })
 export class AnimeFranchiseComponent {
   private animeService = inject(AnimeService);
-  animes$ = new BehaviorSubject<Anime[]>([]); //TODO make into observable?
+  animes$ = new BehaviorSubject<AnimeDetail[]>([]); //TODO make into observable?
   @Input() franchiseName: string = "";
   @Input() set id(id: number | undefined) {
     if (id != null) {

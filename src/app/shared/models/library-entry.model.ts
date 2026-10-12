@@ -1,4 +1,4 @@
-import { Anime } from "./anime.model";
+import { Anime, AnimeDetail } from "./anime.model";
 import { MediaReaction } from "./media-reaction.model";
 import { UserProfile } from "./user-profile.model";
 
@@ -13,7 +13,7 @@ export interface LibraryEntry {
 }
 
 export interface LibraryEntryDetail extends LibraryEntry {
-  anime: Anime;
+  anime: AnimeDetail;
 }
 
 export interface LibraryEntryWithUser extends LibraryEntryDetail {

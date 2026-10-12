@@ -13,7 +13,7 @@ export function mapGetMediaReactionByIdToMediaReaction(dto: GetMediaReactionById
     libraryEntryId: dto.libraryEntryId,
     reaction: dto.reaction,
     upvoteCount: dto.upvoteCount,
-    anime: dto.anime,
+    anime: dto.anime, 
     userProfile: mapGetUserProfileToUserProfile(dto.userProfile)
   }
 }

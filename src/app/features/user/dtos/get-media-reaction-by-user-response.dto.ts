@@ -1,4 +1,4 @@
-import { Anime } from "../../../shared/models/anime.model";
+import { Anime, AnimeDetail } from "../../../shared/models/anime.model";
 
 export interface GetMediaReactionByUserResponseDto {
   mediaReactionId: number;
@@ -7,5 +7,5 @@ export interface GetMediaReactionByUserResponseDto {
   animeId: number;
   reaction: string;
   upvoteCount: number;
-  anime: Anime;
+  anime: AnimeDetail;
 }

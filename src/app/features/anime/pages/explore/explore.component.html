@@ -10,7 +10,14 @@
         <main-search class="col-sm-12"></main-search>
       </div>
       @if(animes$ | async; as animes) {
-        <anime-grid [animes]="animes" [showGreeting]="true" class="row"></anime-grid>
+        <anime-grid [animes]="animes.highestRatedAnime" [caption]="'Highest Rated Anime'" class="row"></anime-grid>
+        <view-more-link></view-more-link>
+
+        <anime-grid [animes]="animes.newAnime" [caption]="'New Anime'" class="row"></anime-grid>
+        <view-more-link></view-more-link>
+
+        <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular Anime'" class="row"></anime-grid>
+        <view-more-link></view-more-link>
       }
     </div>
 

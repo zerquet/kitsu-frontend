@@ -14,7 +14,7 @@ import { Franchise } from '../../../../shared/models/franchise.model';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { CategoryService } from '../../../../shared/services/category.service';
 import { FranchiseService } from '../../../../shared/services/franchise.service';
-import { Anime } from '../../../../shared/models/anime.model';
+import { Anime, AnimeDetail } from '../../../../shared/models/anime.model';
 import { Utils } from '../../../../core/services/utils';
 import { Category } from '../../../../shared/models/category.model';
 import { TrimDirective } from '../../../../core/directives/trim.directive';
@@ -62,7 +62,7 @@ export class AnimeEditComponent implements OnInit {
   airingStatuses = ['Finished', 'Airing', 'Upcoming'];
   mediaTypes = ['TV', 'Movie', 'ONA'];
   maturityRatings = ['PG', 'R'];
-  anime = new BehaviorSubject<Anime | null>(null);
+  anime = new BehaviorSubject<AnimeDetail | null>(null);
   newAnimeImage: string | undefined = undefined;
   newCoverImage: string | undefined = undefined;
   environment = environment;
@@ -206,7 +206,7 @@ export class AnimeEditComponent implements OnInit {
     this.mediaType?.patchValue('');
   }
 
-  private prefillform(res: Anime) {
+  private prefillform(res: AnimeDetail) {
     this.form.patchValue({
       animeId: res.id,
       title: res.title,

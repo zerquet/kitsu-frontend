@@ -17,6 +17,17 @@ export function getCoverPhotoUrl(coverPhotoId: string | undefined) {
     : DEFAULT_USER_COVER;
 }
 
+export function getAnimePosterUrl(posterImgFileName: string | undefined) {
+  //anime poster should not be optional...?
+  return `${environment.imageHostUrl}/anime/poster/${posterImgFileName}`;
+}
+
+export function getAnimeCoverUrl(animeCoverImgFileName: string | undefined) {
+  return animeCoverImgFileName
+    ? `${environment.imageHostUrl}/anime/cover/${animeCoverImgFileName}`
+    : DEFAULT_USER_COVER;
+}
+
 export function formatBirthday(birthda: Date) {
   const birthday = new Date(birthda);
   const month = birthday.toLocaleString('default', { month: 'long' });

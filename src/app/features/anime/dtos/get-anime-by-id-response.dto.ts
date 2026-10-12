@@ -1,6 +1,6 @@
-import { Anime } from "../../../shared/models/anime.model";
+import { Anime, AnimeDetail } from "../../../shared/models/anime.model";
 
 export interface GetAnimeByIdResponseDto {
-  anime: Anime;
+  anime: AnimeDetail;
   isFavorite: boolean;
 }
