@@ -1,4 +1,4 @@
-@if (animeResponse$ | async; as animeResponse) {
+@if (anime$ | async; as animeResponse) {
 <cover-photo
   coverPhotoUrl="{{environment.imageHostUrl}}/anime/cover/{{animeResponse.anime.coverImageId}}"></cover-photo>
 <nav-tabs [tabs]="tabs" [scootRight]="true"></nav-tabs>

@@ -50,7 +50,8 @@
 }
 
 .search-result-item-image-container {
-  width: 12%;
+  min-width: 12%;
+  max-width: 12%;
 }
 
 .search-result-item-img {

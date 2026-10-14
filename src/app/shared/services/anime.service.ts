@@ -4,9 +4,10 @@ import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Anime, AnimeDetail } from '../models/anime.model';
 import { environment } from '../../../environments/environment';
 import { GetAnimeByIdResponseDto } from '../../features/anime/dtos/get-anime-by-id-response.dto';
-import { GetExploreAnimeResponseDto } from '../../features/anime/dtos/get-explore-anime-response.dto';
-import { mapGetExploreAnimeToExplore } from '../mappers/anime.mapper';
+import { AnimeSearchResultResponseDto, GetExploreAnimeResponseDto } from '../../features/anime/dtos/get-explore-anime-response.dto';
+import { mapGetAnimeByIdToAnimePage, mapGetExploreAnimeToExplorePage, mapSearchResultToAnime } from '../mappers/anime.mapper';
 import { ExplorePageModel } from '../../features/anime/models/explore-page.model';
+import { AnimePageModel } from '../../features/anime/models/anime-page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,38 +19,15 @@ export class AnimeService {
 
   private _animes$ = new BehaviorSubject<AnimeDetail[]>([]); //STATE
 
-  constructor() {
-    this.http.get<AnimeDetail[]>(`${this.baseUrl}`)
-      .subscribe((animes) => {
-        this._animes$.next(animes)
-      });
-  }
-
-  getAnimes(): Observable<AnimeDetail[]> {
-    return this._animes$;
-  }
-
   getExploreAnime(): Observable<ExplorePageModel> {
     return this.http.get<GetExploreAnimeResponseDto>(`${this.baseUrl}/explore`)
-      .pipe(map(mapGetExploreAnimeToExplore));
+      .pipe(map(mapGetExploreAnimeToExplorePage));
   }
 
   //app store/state is not cache. don't get id from animes$ because state is not meant to be used as a cache, but rather to reduce API calls. query db instead for anime
-  getAnimeById(animeId: number): Observable<GetAnimeByIdResponseDto | undefined> {
-    // const anime = this._animes$.getValue().find((anime) => anime.id == animeId);
-
-    // if(anime !== undefined) {
-    //   return of(anime);
-    // } 
-    // else {      
-    return this.http.get<GetAnimeByIdResponseDto>(`${this.baseUrl}/${animeId}`).pipe(
-      tap((res) => {
-        // const updatedAnimes = this._animes$.getValue();
-        // updatedAnimes.push(res);
-        // this._animes$.next(updatedAnimes);
-      })
-    );
-    //}
+  getAnimeById(animeId: number): Observable<AnimePageModel | undefined> {  
+    return this.http.get<GetAnimeByIdResponseDto>(`${this.baseUrl}/${animeId}`)
+      .pipe(map(mapGetAnimeByIdToAnimePage));
   }
 
   //if app gets bigger, we may need to call APi directly...
@@ -73,35 +51,12 @@ export class AnimeService {
     );
   }
 
-  addAnime(req: FormData): Observable<AnimeDetail> {
-    return this.http.post<AnimeDetail>(this.baseUrl, req)
-      .pipe(
-        tap((res) => {
-          const animes = this._animes$.getValue();
-          animes.push(res);
-          this._animes$.next(animes);
-        })
-      );
-  }
-
-  updateAnime(req: FormData): Observable<AnimeDetail> {
-    return this.http.put<AnimeDetail>(this.baseUrl, req)
-      .pipe(
-        tap((res) => {
-          const animes = this._animes$.getValue();
-          animes[animes.findIndex((a) => a.id == res.id)] = res;
-          this._animes$.next(animes);
-        })
-      );
-  }
-
   //Refactor this. Consider search result model 
-  miniSearch(term: string): Observable<Anime[]> {
-    return this.http
-      .get<Anime[]>(`${this.baseUrl}/byTitle?term=${term}`);
+  getAnimeByTitle(term: string): Observable<Anime[]> {
+    return this.http.get<Anime[]>(`${this.baseUrl}/byTitle?term=${term}`);
   }
 
-  advancedSearch(
+  searchAnime(
     term?: string,
     minYear?: string | null,
     maxYear?: string | null,
@@ -113,13 +68,13 @@ export class AnimeService {
     showMovie?: boolean
   ): Observable<Anime[]> {
     let queryString = '/search?';
-    queryString += `term=${term}`;
+    queryString += `term=${term ?? ''}`;
     if (minYear != null) queryString += `&minYear=${minYear}`;
     if (maxYear != null) queryString += `&maxYear=${maxYear}`;
     if (minRating != null) queryString += `&minRating=${minRating}`;
     if (maxRating != null) queryString += `&maxRating=${maxRating}`;
     if (minEpisodes != null) queryString += `&minEpisodes=${minEpisodes}`;
-    if (maxEpisodes != null && maxEpisodes !== "100") queryString += `&maxEpisodes=${maxEpisodes}`;
+    if (maxEpisodes != null) queryString += `&maxEpisodes=${maxEpisodes}`;
     if (showTv == true || showMovie == true) {
       let mediaTypeString = "&mediaType=";
       let types = [];
@@ -130,9 +85,10 @@ export class AnimeService {
       if (types.length == 1) mediaTypeString += types[0];
       queryString += mediaTypeString;
     }
-
-    return this.http
-      .get<Anime[]>(`${this.baseUrl}${queryString}`);
+    return this.http.get<AnimeSearchResultResponseDto[]>(`${this.baseUrl}${queryString}`)
+      .pipe(map(animeResults => {
+        return animeResults.map(mapSearchResultToAnime)
+      }));
   }
 
   //TODO move to franchise svc?

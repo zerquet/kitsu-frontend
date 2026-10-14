@@ -19,6 +19,7 @@ import { Utils } from '../../../../core/services/utils';
 import { Category } from '../../../../shared/models/category.model';
 import { TrimDirective } from '../../../../core/directives/trim.directive';
 import { environment } from '../../../../../environments/environment';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-anime-edit',
@@ -29,6 +30,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class AnimeEditComponent implements OnInit {
   private categoryService = inject(CategoryService);
+  private adminService = inject(AdminService);
   private animeService = inject(AnimeService);
   private toastService = inject(AppToastService);
   private franchiseService = inject(FranchiseService);
@@ -132,7 +134,7 @@ export class AnimeEditComponent implements OnInit {
     if (!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value?.toString()!);
     if (!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString());
 
-    this.animeService
+    this.adminService
       .updateAnime(data)
       .subscribe({
         next: () => {

@@ -17,6 +17,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { Select } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { TrimDirective } from '../../../../core/directives/trim.directive';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-anime-add',
@@ -27,7 +28,7 @@ import { TrimDirective } from '../../../../core/directives/trim.directive';
 })
 export class AnimeAddComponent {
   private categoryService = inject(CategoryService);
-  private animeService = inject(AnimeService);
+  private adminService = inject(AdminService);
   private toastService = inject(AppToastService);
   private franchiseService = inject(FranchiseService);
   private route = inject(ActivatedRoute);
@@ -113,7 +114,7 @@ export class AnimeAddComponent {
     if (!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value?.toString()!);
     if (!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString())
 
-    this.animeService
+    this.adminService
       .addAnime(data)
       .subscribe({
         next: () => {

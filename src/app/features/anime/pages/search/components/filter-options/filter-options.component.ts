@@ -6,6 +6,7 @@ import { FilterLegendComponent } from '../filter-legend/filter-legend.component'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, filter } from 'rxjs';
 import { Checkbox } from 'primeng/checkbox';
+import { DEFAULT_MAX_EPS, DEFAULT_MAX_RATING, DEFAULT_MAX_YEAR, DEFAULT_MIN_EPS, DEFAULT_MIN_RATING, DEFAULT_MIN_YEAR } from '../../../../../../shared/constants/constants';
 
 @Component({
   selector: 'filter-options',
@@ -24,12 +25,19 @@ export class FilterOptionsComponent {
 
   @Output() mediaTypesChange = new EventEmitter<'isMovie$' | 'isTv$'>();
 
-  minRatingPillValue = '5';
-  maxRatingPillValue = '100';
-  minYearPillValue = '1975';
-  maxYearPillValue = '2025';
-  minEpisodesPillValue = '1';
-  maxEpisodesPillValue = '100';
+  minRatingPillValue = DEFAULT_MIN_RATING;
+  maxRatingPillValue = DEFAULT_MAX_RATING;
+  minYearPillValue = DEFAULT_MIN_YEAR;
+  maxYearPillValue = DEFAULT_MAX_YEAR;
+  minEpisodesPillValue = DEFAULT_MIN_EPS;
+  maxEpisodesPillValue = DEFAULT_MAX_EPS;
+
+  minRating = Number(DEFAULT_MIN_RATING);
+  maxRating = Number(DEFAULT_MAX_RATING);
+  minYear = Number(DEFAULT_MIN_YEAR);
+  maxYear = Number(DEFAULT_MAX_YEAR);
+  minEps = Number(DEFAULT_MIN_EPS);
+  maxEps = Number(DEFAULT_MAX_EPS);
   
   tvChecked$ = new BehaviorSubject(false);
   movieChecked$ = new BehaviorSubject(false);

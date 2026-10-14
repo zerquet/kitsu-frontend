@@ -8,6 +8,7 @@ import { Anime, AnimeDetail } from '../../../../shared/models/anime.model';
 import { AnimeService } from '../../../../shared/services/anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'anime-list',
@@ -17,7 +18,7 @@ import { environment } from '../../../../../environments/environment';
   styleUrl: './anime-list.component.css'
 })
 export class AnimeListComponent {
-  private animeService = inject(AnimeService);
+  private adminService = inject(AdminService);
   private modalService = inject(NgbModal);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -45,7 +46,7 @@ export class AnimeListComponent {
 
   private destroy$ = new Subject<void>();
   searchTerm$ = new BehaviorSubject<string>('');
-  searchList$: Observable<AnimeDetail[]> = this.animeService.getAnimes(); //get recent animes if no search query.
+  searchList$: Observable<AnimeDetail[]> = this.adminService.getAnimes(); //get recent animes if no search query.
   filteredSearchList$: Observable<AnimeDetail[]> = combineLatest([this.searchList$, this.searchTerm$])
     .pipe(
       switchMap(([list, term]) => {

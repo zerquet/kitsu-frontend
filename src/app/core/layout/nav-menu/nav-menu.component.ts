@@ -73,7 +73,7 @@ export class NavMenuComponent {
     term = term.toLowerCase().trim();
     if (term.length === 0)
       return of([]);
-    return this.animeService.miniSearch(term);
+    return this.animeService.getAnimeByTitle(term);
   }
 
   openSignInModal() {
@@ -91,7 +91,7 @@ export class NavMenuComponent {
   }
 
   private checkUrl(url: string) {
-    if (url.includes('anime')) {
+    if (url.includes('anime') || url.includes('explore') || url.includes('search')) {
       this.activeMenuItem = 'anime';
     }
     else if (url.includes('users')) {

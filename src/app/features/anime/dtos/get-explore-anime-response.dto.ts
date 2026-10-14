@@ -12,3 +12,5 @@ export interface AnimeResponseItemDto {
   imageUrl?: string;
   year?: number;
 }
+
+export interface AnimeSearchResultResponseDto extends AnimeResponseItemDto {}
