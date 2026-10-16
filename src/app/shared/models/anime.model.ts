@@ -8,6 +8,7 @@ export interface Anime {
   score?: number;
   imageUrl: string;
   year?: number;
+  mediaType?: string;
 }
 
 export interface AnimeDetail extends Anime {
@@ -15,7 +16,6 @@ export interface AnimeDetail extends Anime {
   releaseStatus?: string;
   coverImageId: string;
   episodeCount?: number;
-  mediaType?: string;
   englishTitle?: string;
   japaneseTitle?: string;
   japaneseTitleRomaji?: string;
