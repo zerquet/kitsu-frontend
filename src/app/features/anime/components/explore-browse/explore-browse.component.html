@@ -1,0 +1,10 @@
+@if(animes$ | async; as animes) {
+  <anime-grid [animes]="animes.highestRatedAnime" [caption]="'Highest Rated Anime'" class="row"></anime-grid>
+  <view-more-link routerLink="/explore/highest-rated" ></view-more-link>
+
+  <anime-grid [animes]="animes.newAnime" [caption]="'New Anime'" class="row"></anime-grid>
+  <view-more-link routerLink="/explore/new"></view-more-link>
+
+  <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular Anime'" class="row"></anime-grid>
+  <view-more-link routerLink="/explore/most-popular"></view-more-link>
+}

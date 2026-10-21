@@ -4,21 +4,10 @@
     <!--75%-->
     <div class="col-sm-9">
       <div class="row">
-        @if(category$ | async; as category) {
-          <category-summary [category]="category" class="col-sm-12"></category-summary>
-        }
+        <category-summary class="col-sm-12"></category-summary>
         <main-search class="col-sm-12"></main-search>
       </div>
-      @if(animes$ | async; as animes) {
-        <anime-grid [animes]="animes.highestRatedAnime" [caption]="'Highest Rated Anime'" class="row"></anime-grid>
-        <view-more-link></view-more-link>
-
-        <anime-grid [animes]="animes.newAnime" [caption]="'New Anime'" class="row"></anime-grid>
-        <view-more-link></view-more-link>
-
-        <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular Anime'" class="row"></anime-grid>
-        <view-more-link></view-more-link>
-      }
+      <router-outlet></router-outlet>
     </div>
 
     <!--25%-->

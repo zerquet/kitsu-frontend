@@ -1,5 +1,5 @@
 import { GetAnimeByIdResponseDto } from "../../features/anime/dtos/get-anime-by-id-response.dto";
-import { AnimeSearchResultResponseDto, GetExploreAnimeResponseDto } from "../../features/anime/dtos/get-explore-anime-response.dto";
+import { AnimeResponseItemDto, AnimeSearchResultResponseDto, GetExploreAnimeResponseDto } from "../../features/anime/dtos/get-explore-anime-response.dto";
 import { AnimePageModel } from "../../features/anime/models/anime-page.model";
 import { ExplorePageModel } from "../../features/anime/models/explore-page.model";
 import { getAnimePosterUrl } from "../helpers/helpers";
@@ -7,9 +7,9 @@ import { Anime } from "../models/anime.model";
 
 export function mapGetExploreAnimeToExplorePage(dto: GetExploreAnimeResponseDto): ExplorePageModel {
   return {
-    highestRatedAnime: dto.highestRatedAnime.map(a => ({...a, imageUrl: getAnimePosterUrl(a.imageUrl)})),
-    newAnime: dto.newAnime.map(a => ({...a, imageUrl: getAnimePosterUrl(a.imageUrl)})),
-    popularAnime: dto.popularAnime.map(a => ({...a, imageUrl: getAnimePosterUrl(a.imageUrl)}))
+    highestRatedAnime: dto.highestRatedAnime.map(mapAnimeResponseItemToAnime),
+    newAnime: dto.newAnime.map(mapAnimeResponseItemToAnime),
+    popularAnime: dto.popularAnime.map(mapAnimeResponseItemToAnime)
   };
 }
 
@@ -28,5 +28,16 @@ export function mapGetAnimeByIdToAnimePage(dto: GetAnimeByIdResponseDto): AnimeP
   return {
     anime: dto.anime,
     isFavorite: dto.isFavorite
+  }
+}
+
+export function mapAnimeResponseItemToAnime(dto: AnimeResponseItemDto): Anime {
+  return {
+    id: dto.id,
+    title: dto.title,
+    description: dto.description,
+    score: dto.score,
+    imageUrl: getAnimePosterUrl(dto.imageUrl),
+    year: dto.year,
   }
 }

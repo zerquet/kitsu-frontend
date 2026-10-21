@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -9,5 +9,5 @@ import { RouterLink } from '@angular/router';
   styleUrl: './view-more-link.component.css'
 })
 export class ViewMoreLinkComponent {
-
+  @Input() routerLink: string | undefined = '/explore'; 
 }

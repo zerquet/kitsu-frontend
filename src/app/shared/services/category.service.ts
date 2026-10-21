@@ -12,6 +12,8 @@ export class CategoryService {
   private readonly baseUrl = `${environment.apiUrl}/categories`;
 
   private _categories$ = new BehaviorSubject<Category[]>([]);
+  private _currentCategorySummarySubject = new BehaviorSubject<string>('Explore Anime');
+  currentCategorySummary$ = this._currentCategorySummarySubject.asObservable();
 
   constructor() {
     this.http.get<Category[]>(this.baseUrl)
@@ -35,6 +37,12 @@ export class CategoryService {
         return of(category);
       })
     );
+  }
+
+  
+  changeCurrentCategorySummary(summary?: string) {
+    summary = !summary ? 'Explore Anime' : summary;
+    this._currentCategorySummarySubject.next(summary);
   }
 
   getCategories(): Observable<Category[]> {

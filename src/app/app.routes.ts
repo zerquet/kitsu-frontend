@@ -13,9 +13,22 @@ import { FranchiseListComponent } from './features/admin/components/franchise-li
 import { FranchiseAddComponent } from './features/admin/components/franchise-add/franchise-add.component';
 import { AdminGuard } from './features/admin/guards/admin.guard';
 import { MediaReactionsComponent } from './features/user/pages/media-reactions/media-reactions.component';
+import { ExploreCollectionComponent } from './features/anime/components/explore-collection/explore-collection.component';
+import { ExploreBrowseComponent } from './features/anime/components/explore-browse/explore-browse.component';
 
 export const routes: Routes = [
-  { path: "explore", component: ExploreComponent },
+  { 
+    path: "explore", component: ExploreComponent, children: [
+      {
+        path: "",
+        component: ExploreBrowseComponent
+      },
+      {
+        path: ":collection",
+        component: ExploreCollectionComponent
+      }
+    ] 
+  },
   { path: "explore/category/:category", component: ExploreComponent },
   { path: "anime/:id", component: AnimeComponent },
   { path: "anime/:id/:tab", component: AnimeComponent },

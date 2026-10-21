@@ -4,8 +4,8 @@ import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Anime, AnimeDetail } from '../models/anime.model';
 import { environment } from '../../../environments/environment';
 import { GetAnimeByIdResponseDto } from '../../features/anime/dtos/get-anime-by-id-response.dto';
-import { AnimeSearchResultResponseDto, GetExploreAnimeResponseDto } from '../../features/anime/dtos/get-explore-anime-response.dto';
-import { mapGetAnimeByIdToAnimePage, mapGetExploreAnimeToExplorePage, mapSearchResultToAnime } from '../mappers/anime.mapper';
+import { AnimeResponseItemDto, AnimeSearchResultResponseDto, GetExploreAnimeResponseDto } from '../../features/anime/dtos/get-explore-anime-response.dto';
+import { mapAnimeResponseItemToAnime, mapGetAnimeByIdToAnimePage, mapGetExploreAnimeToExplorePage, mapSearchResultToAnime } from '../mappers/anime.mapper';
 import { ExplorePageModel } from '../../features/anime/models/explore-page.model';
 import { AnimePageModel } from '../../features/anime/models/anime-page.model';
 
@@ -22,6 +22,13 @@ export class AnimeService {
   getExploreAnime(): Observable<ExplorePageModel> {
     return this.http.get<GetExploreAnimeResponseDto>(`${this.baseUrl}/explore`)
       .pipe(map(mapGetExploreAnimeToExplorePage));
+  }
+
+  getExploreAnimeByCollection(collection: string): Observable<Anime[]> {
+    return this.http.get<AnimeResponseItemDto[]>(`${this.baseUrl}/explore/${collection}`)
+      .pipe(map(animes => {
+        return animes.map(mapAnimeResponseItemToAnime)
+      }))
   }
 
   //app store/state is not cache. don't get id from animes$ because state is not meant to be used as a cache, but rather to reduce API calls. query db instead for anime

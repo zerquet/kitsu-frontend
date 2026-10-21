@@ -14,6 +14,18 @@ export const DEFAULT_IS_TV = false;
 export const DEFAULT_IS_MOVIE = false;
 export const DEFAULT_SORT_OPTION = 'Title';
 
+export const COLLECTION_SUMMARIES = {
+  'highest-rated': 'Highest Rated Anime',
+  'new': 'New Anime',
+  'most-popular': 'Most Popular Anime'
+} as const;
+
+export type CollectionKey = keyof typeof COLLECTION_SUMMARIES;
+
+export function isCollectionKey(param: string): param is CollectionKey {
+  return Object.hasOwn(COLLECTION_SUMMARIES, param);
+}
+
 
 export const RATING_OPTIONS: UserRatingOption[] = [
   {
