@@ -63,7 +63,7 @@ export class AnimeComponent implements OnInit {
 
   isFavorite$ = new BehaviorSubject<boolean>(false);
 
-  animeResponse$ = this.route.params.pipe(
+  anime$ = this.route.params.pipe(
     distinctUntilChanged(),
     switchMap(params => this.animeService.getAnimeById(params['id'])),
     tap(res => {

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { AnimeFranchiseComponent } from "../../../../pages/anime/components/anime-franchise/anime-franchise.component";
 import { AnimeEpisodesComponent } from "../../../../pages/anime/components/anime-episodes/anime-episodes.component";
 import { AnimeSummaryComponent } from "../../../../pages/anime/components/anime-summary/anime-summary.component";
-import { Anime } from '../../../../../../shared/models/anime.model';
+import { Anime, AnimeDetail } from '../../../../../../shared/models/anime.model';
 
 @Component({
   selector: 'anime-container',
@@ -13,5 +13,5 @@ import { Anime } from '../../../../../../shared/models/anime.model';
 })
 export class AnimeContainerComponent {
   @Input() tab: string | undefined;
-  @Input() anime: Anime | undefined;
+  @Input() anime: AnimeDetail | undefined;
 }

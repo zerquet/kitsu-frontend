@@ -1,4 +1,4 @@
-import { Anime } from "../../../shared/models/anime.model";
+import { Anime, AnimeDetail } from "../../../shared/models/anime.model";
 import { GetMediaReactionByUserResponseDto } from "../../user/dtos/get-media-reaction-by-user-response.dto";
 
 export interface UpdateLibraryEntryResponseDto {
@@ -7,6 +7,6 @@ export interface UpdateLibraryEntryResponseDto {
   episodesWatched: number;
   watchStatus: string;
   userRating: number;
-  anime: Anime;
+  anime: AnimeDetail;
   mediaReaction?: GetMediaReactionByUserResponseDto;
 }

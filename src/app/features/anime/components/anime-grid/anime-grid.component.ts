@@ -12,5 +12,5 @@ import { AnimeCardComponent } from '../anime-card/anime-card.component';
 export class AnimeGridComponent {
   @Input() animes: Anime[] = [];
   @Input() showCardTitle: boolean = false;
-  @Input() showGreeting: boolean = false;
+  @Input() caption: string | undefined = undefined;
 }

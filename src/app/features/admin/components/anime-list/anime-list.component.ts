@@ -4,10 +4,11 @@ import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/route
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, BehaviorSubject, Observable, combineLatest, switchMap, of, takeUntil, debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { AuthService } from '../../../../features/auth/services/auth.service';
-import { Anime } from '../../../../shared/models/anime.model';
+import { Anime, AnimeDetail } from '../../../../shared/models/anime.model';
 import { AnimeService } from '../../../../shared/services/anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'anime-list',
@@ -17,7 +18,7 @@ import { environment } from '../../../../../environments/environment';
   styleUrl: './anime-list.component.css'
 })
 export class AnimeListComponent {
-  private animeService = inject(AnimeService);
+  private adminService = inject(AdminService);
   private modalService = inject(NgbModal);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -45,8 +46,8 @@ export class AnimeListComponent {
 
   private destroy$ = new Subject<void>();
   searchTerm$ = new BehaviorSubject<string>('');
-  searchList$: Observable<Anime[]> = this.animeService.getAnimes(); //get recent animes if no search query.
-  filteredSearchList$: Observable<Anime[]> = combineLatest([this.searchList$, this.searchTerm$])
+  searchList$: Observable<AnimeDetail[]> = this.adminService.getAnimes(); //get recent animes if no search query.
+  filteredSearchList$: Observable<AnimeDetail[]> = combineLatest([this.searchList$, this.searchTerm$])
     .pipe(
       switchMap(([list, term]) => {
         if (term === '') {
@@ -62,5 +63,5 @@ export class AnimeListComponent {
     //modal.componentInstance.initializeModalData(id);
   }
 
-  private filterList = (term: string, list: Anime[]) => list.filter(a => a.title.toLowerCase().includes(term.toLowerCase()));
+  private filterList = (term: string, list: AnimeDetail[]) => list.filter(a => a.title.toLowerCase().includes(term.toLowerCase()));
 }

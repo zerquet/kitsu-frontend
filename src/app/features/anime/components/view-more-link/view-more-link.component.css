@@ -1,0 +1,13 @@
+#view-more-link-section {
+  font-size: 13px;
+  padding-left: 5px;
+}
+
+#view-more-link {
+  color: #f75239;
+  text-decoration: none;
+}
+
+#view-more-link:hover {
+  color: #f3290a;
+}

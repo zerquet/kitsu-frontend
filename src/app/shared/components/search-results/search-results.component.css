@@ -38,6 +38,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
+  text-decoration: none;
+  height: 75px;
+  max-height: 85px;
 }
 
 .search-result-item:hover {
@@ -50,12 +53,12 @@
 }
 
 .search-result-item-image-container {
-  width: 12%;
+  flex: 1;
 }
 
 .search-result-item-img {
-  width: 100%;
-  height: 100%;
+  width: 45px;
+  height: 63px;
 }
 
 .search-result-item-section {
@@ -63,14 +66,22 @@
   display: flex;
   top: -3px;
   position: relative;
+  flex: 5;
+  text-wrap: wrap;
 }
 
-.search-result-item-section a {
+.search-result-item-section p {
   color: #f75239;
   top: 0;
   text-decoration: none;
+  line-height: 1;
+  padding-top: 5px;
 }
 
-.search-result-item-section a:hover {
+.search-result-item-section p:hover {
   color: #f3290a;
+}
+
+.search-result-item .badge {
+  height: 21px;
 }

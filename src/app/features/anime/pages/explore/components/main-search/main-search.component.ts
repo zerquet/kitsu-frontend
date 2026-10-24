@@ -46,6 +46,6 @@ export class MainSearchComponent {
     term = term.toLowerCase().trim();
     if (term.length === 0)
       return of([]);
-    return this.animeService.miniSearch(term);
+    return this.animeService.getAnimeByTitle(term);
   }
 }

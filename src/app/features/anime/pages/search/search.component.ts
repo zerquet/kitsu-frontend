@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AnimeGridComponent } from '../../components/anime-grid/anime-grid.component';
@@ -21,8 +21,13 @@ import { AdvancedSearchDataService } from '../../services/advanced-search-data.s
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
   dataService$ = inject(AdvancedSearchDataService);
+
+  ngOnInit(): void {
+    this.dataService$.resetSearchOptions();
+    this.dataService$.loadSearchResults();
+  }
 
   onFormChange = (term: string) => this.dataService$.term$.next(term);
 

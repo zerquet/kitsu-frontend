@@ -1,4 +1,4 @@
-import { Anime } from "./anime.model";
+import { Anime, AnimeDetail } from "./anime.model";
 import { UserProfile } from "./user-profile.model";
 
 export interface MediaReaction {
@@ -6,7 +6,7 @@ export interface MediaReaction {
   userId: string;
   animeId: number;
   libraryEntryId: number;
-  anime: Anime;
+  anime: AnimeDetail;
   reaction: string;
   upvoteCount: number;
 }
