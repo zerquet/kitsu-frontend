@@ -23,13 +23,12 @@ export class ExploreCollectionComponent {
   
   animes$ = this.route.params.pipe(
     distinctUntilChanged(),
-    tap((params) => {
-      const collection = params['collection'];
-      if (isCollectionKey(collection))
-        this.categoryService.changeCurrentCategorySummary(COLLECTION_SUMMARIES[collection])
+    tap(({ collection, category }) => {
+      this.categoryService.setCategory(category);
+      this.categoryService.setCollection(isCollectionKey(collection) ? COLLECTION_SUMMARIES[collection] : undefined);
     }),
     switchMap((params) => {
-        return this.animeService.getExploreAnimeByCollection(params['collection']);
+        return this.animeService.getExploreAnimeByCollection(params['collection'], params['category']);
     }),
     takeUntilDestroyed(this.destroyRef)
   );

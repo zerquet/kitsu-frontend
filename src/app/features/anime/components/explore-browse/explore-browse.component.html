@@ -1,10 +1,25 @@
 @if(animes$ | async; as animes) {
-  <anime-grid [animes]="animes.highestRatedAnime" [caption]="'Highest Rated Anime'" class="row"></anime-grid>
-  <view-more-link routerLink="/explore/highest-rated" ></view-more-link>
+  <!-- /explore/category/:category route -->
+  @if (category$ | async; as category) {
+    <anime-grid [animes]="animes.highestRatedAnime" [caption]="'Highest Rated ' + category.name + ' Anime'" class="row"></anime-grid>
+    <view-more-link [routerLink]="'/explore/category/' + category.slug + '/highest-rated'" ></view-more-link>
 
-  <anime-grid [animes]="animes.newAnime" [caption]="'New Anime'" class="row"></anime-grid>
-  <view-more-link routerLink="/explore/new"></view-more-link>
+    <anime-grid [animes]="animes.newAnime" [caption]="'Newly Released ' + category.name + ' Anime'" class="row"></anime-grid>
+    <view-more-link [routerLink]="'/explore/category/' + category.slug + '/new'"></view-more-link>
 
-  <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular Anime'" class="row"></anime-grid>
-  <view-more-link routerLink="/explore/most-popular"></view-more-link>
+    <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular ' + category.name + ' Anime'" class="row"></anime-grid>
+    <view-more-link [routerLink]="'/explore/category/' + category.slug + '/most-popular'"></view-more-link>
+  }
+  <!--/explore route-->
+  @else {
+    <anime-grid [animes]="animes.highestRatedAnime" [caption]="'Highest Rated Anime'" class="row"></anime-grid>
+    <view-more-link routerLink="/explore/highest-rated" ></view-more-link>
+
+    <anime-grid [animes]="animes.newAnime" [caption]="'Newly Released Anime'" class="row"></anime-grid>
+    <view-more-link routerLink="/explore/new"></view-more-link>
+
+    <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular Anime'" class="row"></anime-grid>
+    <view-more-link routerLink="/explore/most-popular"></view-more-link>
+  }
+
 }

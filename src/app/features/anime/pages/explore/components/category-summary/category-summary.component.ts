@@ -10,8 +10,11 @@ import { AsyncPipe } from '@angular/common';
   template: `
   @if (this.summary$ | async; as summary) {
     <h3 class="pt-5">
-      <span>{{summary}}</span>
+      <span><strong>{{summary}}</strong></span>
     </h3>
+  }
+  @if (this.description$ | async; as description) {
+    <p>{{description}}</p>
   }
   `,
   styles: ``
@@ -19,4 +22,5 @@ import { AsyncPipe } from '@angular/common';
 export class CategorySummaryComponent {
   private categoryService = inject(CategoryService);
   summary$ = this.categoryService.currentCategorySummary$;
+  description$ = this.categoryService.currentCategoryDescription$;
 }

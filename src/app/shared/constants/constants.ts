@@ -15,9 +15,9 @@ export const DEFAULT_IS_MOVIE = false;
 export const DEFAULT_SORT_OPTION = 'Title';
 
 export const COLLECTION_SUMMARIES = {
-  'highest-rated': 'Highest Rated Anime',
-  'new': 'New Anime',
-  'most-popular': 'Most Popular Anime'
+  'highest-rated': 'Highest Rated',
+  'new': 'Newly Released',
+  'most-popular': 'Most Popular'
 } as const;
 
 export type CollectionKey = keyof typeof COLLECTION_SUMMARIES;

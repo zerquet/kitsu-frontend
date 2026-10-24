@@ -19,13 +19,19 @@ export class AnimeService {
 
   private _animes$ = new BehaviorSubject<AnimeDetail[]>([]); //STATE
 
-  getExploreAnime(): Observable<ExplorePageModel> {
-    return this.http.get<GetExploreAnimeResponseDto>(`${this.baseUrl}/explore`)
+  getExploreAnime(category?: string): Observable<ExplorePageModel> {
+    const url = category 
+      ? `${this.baseUrl}/explore?category=${category}` 
+      : `${this.baseUrl}/explore`;
+    return this.http.get<GetExploreAnimeResponseDto>(url)
       .pipe(map(mapGetExploreAnimeToExplorePage));
   }
 
-  getExploreAnimeByCollection(collection: string): Observable<Anime[]> {
-    return this.http.get<AnimeResponseItemDto[]>(`${this.baseUrl}/explore/${collection}`)
+  getExploreAnimeByCollection(collection: string, category?: string): Observable<Anime[]> {
+    const url = category
+      ? `${this.baseUrl}/explore/${collection}?category=${category}` 
+      : `${this.baseUrl}/explore/${collection}`;
+    return this.http.get<AnimeResponseItemDto[]>(url)
       .pipe(map(animes => {
         return animes.map(mapAnimeResponseItemToAnime)
       }))

@@ -19,17 +19,12 @@ import { ExploreBrowseComponent } from './features/anime/components/explore-brow
 export const routes: Routes = [
   { 
     path: "explore", component: ExploreComponent, children: [
-      {
-        path: "",
-        component: ExploreBrowseComponent
-      },
-      {
-        path: ":collection",
-        component: ExploreCollectionComponent
-      }
+      { path: "", component: ExploreBrowseComponent },
+      { path: ":collection", component: ExploreCollectionComponent },
+      { path: "category/:category", component: ExploreBrowseComponent },
+      { path: "category/:category/:collection", component : ExploreCollectionComponent }
     ] 
   },
-  { path: "explore/category/:category", component: ExploreComponent },
   { path: "anime/:id", component: AnimeComponent },
   { path: "anime/:id/:tab", component: AnimeComponent },
   { path: "search", component: SearchComponent },
