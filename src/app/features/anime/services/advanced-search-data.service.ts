@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, delay, map, Observable, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AnimeService } from '../../../shared/services/anime.service';
 import { Anime } from '../../../shared/models/anime.model';
 import { DEFAULT_IS_MOVIE, DEFAULT_IS_TV, DEFAULT_MAX_EPS, DEFAULT_MAX_RATING, DEFAULT_MAX_YEAR, DEFAULT_MIN_EPS, DEFAULT_MIN_RATING, DEFAULT_MIN_YEAR, DEFAULT_SORT_OPTION } from '../../../shared/constants/constants';

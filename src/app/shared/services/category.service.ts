@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, delay, map, Observable, startWith } from 'rxjs';
 import { Category } from '../models/category.model';
 import { environment } from '../../../environments/environment';
 import { GetCategoryResponseDto } from '../../features/anime/dtos/get-category-response.dto';
@@ -13,7 +13,8 @@ export class CategoryService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/categories`;
 
-  private _categories$ = new BehaviorSubject<Category[]>([]);
+  private _currentcategoriesSubject$ = new BehaviorSubject<Category[] | null>(null);
+  currentCategories$ = this._currentcategoriesSubject$.asObservable();
   private _currentCategoryDescriptionSubject = new BehaviorSubject<string>('');
   currentCategoryDescription$ = this._currentCategoryDescriptionSubject.asObservable();
   private _currentCategorySubject = new BehaviorSubject<Category | null>(null);
@@ -29,8 +30,9 @@ export class CategoryService {
 
   constructor() {
     this.http.get<Category[]>(this.baseUrl)
+      .pipe(startWith(null))
       .subscribe((categories) => {
-        this._categories$.next(categories);
+        this._currentcategoriesSubject$.next(categories);
       });
   }
 
@@ -59,9 +61,5 @@ export class CategoryService {
 
   private isCategoryLoaded(categorySlug: string) {
     return this._currentCategorySubject.value?.slug === categorySlug;
-  }
-
-  getCategories(): Observable<Category[]> {
-    return this._categories$;
   }
 }

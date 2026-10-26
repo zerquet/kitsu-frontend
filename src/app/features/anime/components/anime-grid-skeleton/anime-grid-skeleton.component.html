@@ -1,0 +1,15 @@
+<div class="pt-4" aria-busy="true" aria-label="Loading anime">
+  @if (showCaption) {
+    <div class="skeleton skeleton-caption"></div>
+  }
+  <div class="d-flex flex-row flex-wrap">
+    @for (placeholder of placeholders; track placeholder) {
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-poster"></div>
+        @if(showCardTitle) {
+          <div class="skeleton skeleton-title"></div>
+        }
+      </div>
+    }
+  </div>
+</div>

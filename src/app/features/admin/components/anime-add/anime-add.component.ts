@@ -78,7 +78,7 @@ export class AnimeAddComponent {
   }
 
   private destroy$ = new Subject<void>();
-  availableCategories$: Observable<Category[]> = this.categoryService.getCategories();
+  availableCategories$: Observable<Category[] | null> = this.categoryService.currentCategories$;
   franchiseSearchTerm$ = new BehaviorSubject<string>("");
   franchiseList$ = combineLatest([this.franchiseSearchTerm$]).pipe(
     distinctUntilChanged(),

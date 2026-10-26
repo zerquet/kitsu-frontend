@@ -1,17 +1,18 @@
 import { ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { distinctUntilChanged, tap, switchMap } from 'rxjs';
+import { distinctUntilChanged, tap, switchMap, startWith, delay } from 'rxjs';
 import { AnimeService } from '../../../../shared/services/anime.service';
 import { CategoryService } from '../../../../shared/services/category.service';
 import { AnimeGridComponent } from '../anime-grid/anime-grid.component';
+import { AnimeGridSkeletonComponent } from '../anime-grid-skeleton/anime-grid-skeleton.component';
 import { AsyncPipe } from '@angular/common';
 import { COLLECTION_SUMMARIES, isCollectionKey } from '../../../../shared/constants/constants';
 
 @Component({
   selector: 'explore-collection',
   standalone: true,
-  imports: [AnimeGridComponent, AsyncPipe],
+  imports: [AnimeGridComponent, AnimeGridSkeletonComponent, AsyncPipe],
   templateUrl: './explore-collection.component.html',
   styleUrl: './explore-collection.component.css'
 })
@@ -28,7 +29,8 @@ export class ExploreCollectionComponent {
       this.categoryService.setCollection(isCollectionKey(collection) ? COLLECTION_SUMMARIES[collection] : undefined);
     }),
     switchMap((params) => {
-        return this.animeService.getExploreAnimeByCollection(params['collection'], params['category']);
+        return this.animeService.getExploreAnimeByCollection(params['collection'], params['category'])
+          .pipe(startWith(null));
     }),
     takeUntilDestroyed(this.destroyRef)
   );

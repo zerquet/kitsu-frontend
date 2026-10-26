@@ -21,5 +21,9 @@
     <anime-grid [animes]="animes.popularAnime" [caption]="'Most Popular Anime'" class="row"></anime-grid>
     <view-more-link routerLink="/explore/most-popular"></view-more-link>
   }
-
+}
+@else {
+  <anime-grid-skeleton [count]="6" class="row"></anime-grid-skeleton>
+  <anime-grid-skeleton [count]="6" class="row"></anime-grid-skeleton>
+  <anime-grid-skeleton [count]="6" class="row"></anime-grid-skeleton>
 }
