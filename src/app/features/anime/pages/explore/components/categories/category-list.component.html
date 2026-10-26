@@ -2,11 +2,16 @@
   <div class="p-4">
     <div class="col-sm-12" id="categories-section-heading"><h6>CATEGORIES</h6></div>
     <div>
-      <ul id="categories-list">
-        @for (cat of categories; track cat) {
-          <li><a href="javascript:void(0);" routerLink="/explore/category/{{cat.slug}}">{{cat.name}}</a></li>
-        }
-      </ul>
+      @if (categories$ | async; as categories) {
+        <ul id="categories-list">
+          @for (cat of categories; track cat) {
+            <li><a href="javascript:void(0);" routerLink="/explore/category/{{cat.slug}}">{{cat.name}}</a></li>
+          }
+        </ul>
+      }
+      @else {
+        <categories-skeleton></categories-skeleton>
+      }
     </div>
   </div>
 </div>

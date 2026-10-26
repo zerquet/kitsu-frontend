@@ -6,6 +6,7 @@ import { AdvancedSearchComponent } from './components/advanced-search/advanced-s
 import { FilterOptionsComponent } from './components/filter-options/filter-options.component';
 import { SortDropdownComponent } from './components/sort-dropdown/sort-dropdown.component';
 import { AdvancedSearchDataService } from '../../services/advanced-search-data.service';
+import { AnimeGridSkeletonComponent } from '../../components/anime-grid-skeleton/anime-grid-skeleton.component';
 
 @Component({
   selector: 'search',
@@ -16,8 +17,9 @@ import { AdvancedSearchDataService } from '../../services/advanced-search-data.s
     FilterOptionsComponent,
     AnimeGridComponent,
     AdvancedSearchComponent,
-    SortDropdownComponent
-  ],
+    SortDropdownComponent,
+    AnimeGridSkeletonComponent
+],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })

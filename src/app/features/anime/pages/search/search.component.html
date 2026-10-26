@@ -15,7 +15,10 @@
         <sort-dropdown></sort-dropdown>
         @if(dataService$.filteredSearchResults$| async; as animes) {
           <anime-grid [animes]="animes" [showCardTitle]="true"></anime-grid>
-        }    
+        }
+        @else {
+          <anime-grid-skeleton [showCardTitle]="true"></anime-grid-skeleton>
+        }
       </div>
     </div>
     

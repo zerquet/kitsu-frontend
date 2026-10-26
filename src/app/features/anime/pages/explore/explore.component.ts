@@ -23,12 +23,9 @@ import { MainSearchComponent } from "./components/main-search/main-search.compon
   styleUrl: './explore.component.css'
 })
 export class ExploreComponent implements AfterContentChecked {
-  private categoryService = inject(CategoryService);
   private cdref = inject(ChangeDetectorRef);
 
   ngAfterContentChecked(): void {
     this.cdref.detectChanges();
   }
-
-  categories$ = this.categoryService.getCategories();
 }

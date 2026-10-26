@@ -2,7 +2,7 @@
   <div class="row">
 
     <!--75%-->
-    <div class="col-sm-9">
+    <div class="col-sm-9 mb-5">
       <div class="row">
         <category-summary class="col-sm-12"></category-summary>
         <main-search class="col-sm-12"></main-search>
@@ -11,9 +11,6 @@
     </div>
 
     <!--25%-->
-    @if(categories$ | async; as categories) {
-      <category-list [categories]="categories" class="col-sm-3"></category-list>
-    }
-    
+    <category-list class="col-sm-3"></category-list>
   </div>
 </div>
