@@ -73,11 +73,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
           this.updateProfileForm.statusChanges.pipe(startWith(this.updateProfileForm.status), map(status => status === "VALID")),
           this.favoritesDataService.favoritesChanged$
         ]).pipe(
-          map(([formIsValid, favoritesChanged]) => {
-            console.log(!formIsValid || favoritesChanged);
-            
-            return !formIsValid || favoritesChanged
-          } ),
+          map(([formIsValid, favoritesChanged]) => !formIsValid || favoritesChanged),
           takeUntilDestroyed(this.destroyRef)
         );
 
@@ -93,7 +89,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     req.append('id', this.id!.value!);
     req.append('location', this.location!.value!);
     req.append('bio', this.bio!.value!);
-    if (!Utils.IsNullOrUndefined(this.birthday!.value)) req.append('birthday', new Date(this.birthday!.value!).toLocaleDateString());
+    if (!Utils.IsNullOrUndefined(this.birthday!.value)) req.append('birthday', this.birthday!.value!);
     req.append('gender', this.gender!.value!);
     req.append('profilePhoto', this.profilePhoto!.value!)
     req.append('coverPhoto', this.coverPhoto!.value!);
@@ -158,7 +154,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  birthdayIsDifferent(birthday: Date | undefined): ValidatorFn {
+  birthdayIsDifferent(birthday: string | undefined): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === birthday) {        
         return null;

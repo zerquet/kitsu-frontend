@@ -4,7 +4,7 @@ export interface GetUserProfileResponseDto {
   username: string;
   location?: string;
   bio?: string;
-  birthday?: Date;
+  birthday?: string;
   gender?: string;
   profilePhotoId?: string;
   coverPhotoId?: string;

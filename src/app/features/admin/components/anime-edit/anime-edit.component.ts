@@ -107,7 +107,6 @@ export class AnimeEditComponent implements OnInit {
   );
 
   onSubmit() {
-    //this.getFormValidationErrors();
     const data = new FormData();
     data.append('id', this.animeId!.value!.toString());
     data.append('title', this.title!.value!);
@@ -143,7 +142,7 @@ export class AnimeEditComponent implements OnInit {
           this.router.navigate(['/admin/anime']);
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
 
           this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
         }
@@ -157,7 +156,6 @@ export class AnimeEditComponent implements OnInit {
     reader.onload = () => {
       this.newAnimeImage = reader.result?.toString();
     }
-    console.log('updatefn');
     this.form.patchValue({ image: file });
 
   }
@@ -298,7 +296,6 @@ export class AnimeEditComponent implements OnInit {
     return (control: AbstractControl): ValidationErrors | null => {
 
       var file = control.value as File | null | undefined;
-      console.log(file);
 
       if (file === null || file === undefined) {
         return null;
@@ -498,23 +495,10 @@ export class AnimeEditComponent implements OnInit {
   franchiseIdIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (this.anime !== undefined) {
-        console.log(control.value);
-        console.log(this.anime.value?.franchiseId);
         if (control.value === this.anime.value?.franchiseId)
           return null;
       }
       return { franchiseIdIsDifferent: true };
     }
-  }
-
-  getFormValidationErrors() {
-    Object.keys(this.form.controls).forEach(key => {
-      const controlErrors: ValidationErrors = this.form.get(key)!.errors!;
-      if (controlErrors != null) {
-        Object.keys(controlErrors).forEach(keyError => {
-          console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
-        });
-      }
-    });
   }
 }

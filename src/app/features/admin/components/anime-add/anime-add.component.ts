@@ -88,7 +88,6 @@ export class AnimeAddComponent {
   );
 
   onSubmit() {
-    //this.getFormValidationErrors();
     const data = new FormData();
     data.append('title', this.title!.value!);
     if (!Utils.IsNullOrUndefined(this.description!.value)) data.append('description', this.description?.value!);
@@ -123,7 +122,7 @@ export class AnimeAddComponent {
           this.router.navigate(['/admin/anime']);
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
 
           this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
         }

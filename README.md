@@ -58,9 +58,9 @@ The code-base is structured by features:
 
 This front-end expects the [kitsu-backend](https://github.com/zerquet/kitsu-backend) API running locally on `https://localhost:7017`. Once that's up:
 
-\```
+```
 npm install
 ng serve
-\```
+```
 
 Navigate to `http://localhost:4200`. Without the backend running, pages that fetch data (explore, search, anime, profiles) won't load.
