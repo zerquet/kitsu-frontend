@@ -1,5 +1,5 @@
 @if(animes$ | async; as animes) {
   <anime-grid [animes]="animes" class="row"></anime-grid>
 } @else {
-  <anime-grid-skeleton class="row" [showCaption]="true"></anime-grid-skeleton>
+  <anime-grid-skeleton class="row"></anime-grid-skeleton>
 }
