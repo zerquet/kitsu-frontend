@@ -5,7 +5,7 @@ export interface User {
   displayId: string;
   location?: string;
   bio?: string;
-  birthday?: Date;
+  birthday?: string;
   gender?: string;
   profilePhotoId?: string;
   profilePhotoUrl: string;

@@ -28,9 +28,9 @@ export function getAnimeCoverUrl(animeCoverImgFileName: string | undefined) {
     : DEFAULT_USER_COVER;
 }
 
-export function formatBirthday(birthda: Date) {
-  const birthday = new Date(birthda);
-  const month = birthday.toLocaleString('default', { month: 'long' });
+export function formatBirthday(birthdate: string) {
+  const birthday = new Date(birthdate);
+  const month = birthday.toLocaleString('default', { month: 'long', timeZone: 'UTC' });
   const ordinalDay = getOrdinalDay(birthday.getUTCDate());
   return `${month} ${ordinalDay}`;
 }
