@@ -41,8 +41,6 @@ export class AddMediaReactionModalComponent implements OnInit {
             animeId: new FormControl(libraryEntry.animeId),
             libraryEntryId: new FormControl(libraryEntry.id)
           });
-          console.log(libraryEntry);
-          
         }),
         switchMap(() => this.addMediaReactionForm.controls['reaction'].valueChanges),
         takeUntilDestroyed(this.destroyRef)
