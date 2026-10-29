@@ -1,6 +1,6 @@
-/* Shared styles for admin list and form pages. Uses the site color tokens from styles.css. */
-:host {
-  display: block;
+/* Global styles for admin list and form pages, loaded once via angular.json rather than per component.
+   Every class is admin- prefixed so nothing leaks into the public site. Uses the color tokens from styles.css. */
+.admin-page {
   max-width: 1200px;
   padding: 32px 40px;
 }
@@ -443,7 +443,7 @@ input[type="file"].admin-input::file-selector-button {
 }
 
 @media (max-width: 900px) {
-  :host {
+  .admin-page {
     padding: 20px 16px;
   }
 

@@ -14,8 +14,7 @@ import { environment } from '../../../../../environments/environment';
   selector: 'app-episode-add',
   standalone: true,
   imports: [ReactiveFormsModule, AsyncPipe, RouterLink, TrimDirective],
-  templateUrl: './episode-add.component.html',
-  styleUrl: '../../admin-shared.css'
+  templateUrl: './episode-add.component.html'
 })
 export class EpisodeAddComponent {
   private animeService = inject(AnimeService);

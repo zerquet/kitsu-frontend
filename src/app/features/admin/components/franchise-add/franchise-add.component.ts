@@ -10,8 +10,7 @@ import { TrimDirective } from '../../../../core/directives/trim.directive';
   selector: 'app-franchise-add',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TrimDirective],
-  templateUrl: './franchise-add.component.html',
-  styleUrl: '../../admin-shared.css'
+  templateUrl: './franchise-add.component.html'
 })
 export class FranchiseAddComponent {
   private franchiseService = inject(FranchiseService);
