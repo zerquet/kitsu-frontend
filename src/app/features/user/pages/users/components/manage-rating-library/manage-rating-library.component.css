@@ -46,6 +46,10 @@
   color: #b2b2b2;
 }
 
-.rating-cell-span:hover {
+.rating-cell-span.readonly {
+  cursor: default;
+}
+
+.rating-cell-span:not(.readonly):hover {
   color: #16a085;
 }

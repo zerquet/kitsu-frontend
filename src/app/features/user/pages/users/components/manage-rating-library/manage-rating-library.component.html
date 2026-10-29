@@ -2,10 +2,12 @@
 @if (libraryEntry) {
   @if (readonly) {
     @if (!libraryEntry.userRating) {
-      <span class="rating-cell-span"><i class="bi bi-circle"></i></span>
+      <span class="rating-cell-span readonly"><i class="bi bi-circle"></i></span>
     }
     @else {
-      <i [class]="(currentRatingOption?.iconClass ?? '') + ' ' + (currentRatingOption?.colorClass ?? '')"></i>
+      <span class="rating-cell-span readonly">
+        <i [class]="(currentRatingOption?.iconClass ?? '') + ' ' + (currentRatingOption?.colorClass ?? '')"></i>
+      </span>
     }
   }
   @else {

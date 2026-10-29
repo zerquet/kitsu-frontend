@@ -2,7 +2,7 @@
     position: relative;
     width: 16.66%;
     padding-right: 9px;
-    padding-bottom: 9px;
+    padding-bottom: 18px;
 }
 
 .anime-poster-image-container {
@@ -29,4 +29,13 @@
     height: 100%;
     aspect-ratio: 550 / 780; /*standard Kitsu poster size*/
     border-radius: 5px;
+}
+
+.anime-poster-title {
+	font-weight: bold;
+	font-size: .8rem;
+	padding-top: 8px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
