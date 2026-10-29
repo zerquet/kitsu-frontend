@@ -14,11 +14,12 @@ import { UsersService } from '../../../../../../shared/services/users.service';
 import { EditMediaReactionModalComponent } from '../../../../components/edit-media-reaction-modal/edit-media-reaction-modal.component';
 import { progressIsValid } from '../../../../../../shared/validators/validators';
 import { ManageRatingLibraryComponent } from "../manage-rating-library/manage-rating-library.component";
+import { TableRowSkeletonComponent } from '../table-row-skeleton/table-row-skeleton.component';
 
 @Component({
   selector: 'users-library',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink, NgbTooltip, ManageRatingLibraryComponent],
+  imports: [ReactiveFormsModule, NgClass, NgIf, AsyncPipe, RouterLink, NgbTooltip, ManageRatingLibraryComponent, TableRowSkeletonComponent],
   templateUrl: './users-library.component.html',
   styleUrl: './users-library.component.css'
 })
@@ -74,6 +75,7 @@ export class UsersLibraryComponent implements OnInit {
   }
 
   library$ = this.userAnimeService.library$;
+  libraryLoading$ = this.userAnimeService.libraryLoading$;
   sortDirection$ = new BehaviorSubject("asc");
   sortOption$ = new BehaviorSubject("Title");
   libraryType$ = new BehaviorSubject("all");

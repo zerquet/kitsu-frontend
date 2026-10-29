@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, filter, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, delay, filter, finalize, map, Observable, of, tap } from 'rxjs';
 import { LibraryEntry, LibraryEntryDetail, LibraryEntryWithUser } from '../models/library-entry.model';
 import { FavoriteAnime } from '../models/favoriteAnime.model';
 import { environment } from '../../../environments/environment';
@@ -36,6 +36,7 @@ export class UserAnimeService {
   profile$ = this.usersService.profile$;
   favoriteAnimes$ = new BehaviorSubject<FavoriteAnime[]>([]);
   library$ = new BehaviorSubject<LibraryEntryDetail[]>([]);
+  libraryLoading$ = new BehaviorSubject<boolean>(false);
   mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
   toastService: any;
   private _currentEntrySubject = new BehaviorSubject<LibraryEntryDetail | null>(null);
@@ -70,10 +71,15 @@ export class UserAnimeService {
 
   loadUserLibrary(userDisplayId: string) {
     //This does not handle users with empty library
+    //Clear the previous user's library so it isn't shown while the new one loads.
+    this.library$.next([]);
+    this.libraryLoading$.next(true);
+
     this.http.get<GetLibraryResponseDto[]>(`${this.libraryBaseUrl}/${userDisplayId}`)
-      .pipe(map(libraryEntries => {
-        return libraryEntries.map(mapGetLibraryToLibraryEntry)
-      }))
+      .pipe(
+        map(libraryEntries => libraryEntries.map(mapGetLibraryToLibraryEntry)),
+        finalize(() => this.libraryLoading$.next(false))
+      )
       .subscribe((library) => {
         this.library$.next(library);
       });
