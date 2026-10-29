@@ -25,7 +25,6 @@ export class AnimeAddComponent {
   private adminService = inject(AdminService);
   private toastService = inject(AppToastService);
   private franchiseService = inject(FranchiseService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
   form = new FormGroup({ //some not working check
     title: new FormControl('', Validators.required),
@@ -56,6 +55,7 @@ export class AnimeAddComponent {
   maturityRatings = ['PG', 'R'];
   newAnimeImage: string | undefined = undefined;
   newCoverImage: string | undefined = undefined;
+  submitting = false;
 
   ngOnInit(): void {
     this.form.controls['franchiseSearch'].valueChanges.pipe(
@@ -82,6 +82,9 @@ export class AnimeAddComponent {
   );
 
   onSubmit() {
+    if (this.submitting) return;
+
+    this.submitting = true;
     const data = new FormData();
     data.append('title', this.title!.value!);
     if (!Utils.IsNullOrUndefined(this.description!.value)) data.append('description', this.description?.value!);
@@ -116,7 +119,7 @@ export class AnimeAddComponent {
         },
         error: (err) => {
           console.error(err);
-
+          this.submitting = false;
           this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
         }
       });

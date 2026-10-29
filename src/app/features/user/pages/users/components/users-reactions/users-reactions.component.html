@@ -1,7 +1,19 @@
 <div class="d-flex flex-row flex-wrap reactions-container">
-  @if (mediaReactions$ | async; as mediaReactions) {
-    @for (reaction of mediaReactions; track reaction.id) {
-      <reaction-card [reaction]="reaction"></reaction-card> 
+  @if (mediaReactionsLoading$ | async) {
+    <div class="reactions-empty">
+      <svg class="spinning-icon" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  }
+  @else {
+    @if (mediaReactions$ | async; as mediaReactions) {
+      @for (reaction of mediaReactions; track reaction.id) {
+        <reaction-card [reaction]="reaction"></reaction-card> 
+      }
+      @empty {
+        <div class="reactions-empty">This user has no reactions</div>
+      }
     }
   }
 </div>

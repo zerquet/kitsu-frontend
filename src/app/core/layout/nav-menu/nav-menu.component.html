@@ -7,16 +7,21 @@
     </button>
     <div class="collapse navbar-collapse" id="navbar-content">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        @if((this.authenticatedUser$ | async); as authenticatedUser) {
-        <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0);" routerLink="/users/{{authenticatedUser.displayId}}/library"
-            [class.active]="activeMenuItem === 'library'">Library</a>
-        </li>
+        @if(this.authenticatedUser$ | async; as authenticatedUser) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/users/{{authenticatedUser.displayId}}/library"
+              [class.active]="activeMenuItem === 'library'">Library</a>
+          </li>
         }
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0);" routerLink="/explore"
+          <a class="nav-link" routerLink="/explore"
             [class.active]="activeMenuItem === 'anime'">Anime</a>
         </li>
+        @if ((authenticatedUser$ | async)?.isAdmin) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/anime">Admin</a>
+          </li>
+        }
       </ul>
       <div>
         <!--An absolute positioned element will appear at the top-left corner of the parent element. So adding this <div> encapsulating the form and dropdown <div>

@@ -40,6 +40,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
   currentCoverPhotoUrl: string = DEFAULT_USER_COVER;
   currentCoverPhotoId: string | undefined;
   environment = environment;
+  submitting = new BehaviorSubject<boolean>(false);
 
   profileInfo$ = this.usersService.profile$;
   private destroyRef = inject(DestroyRef);
@@ -71,9 +72,10 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
 
         this.canSubmit$ = combineLatest([
           this.updateProfileForm.statusChanges.pipe(startWith(this.updateProfileForm.status), map(status => status === "VALID")),
-          this.favoritesDataService.favoritesChanged$
+          this.favoritesDataService.favoritesChanged$,
+          this.submitting
         ]).pipe(
-          map(([formIsValid, favoritesChanged]) => !formIsValid || favoritesChanged),
+          map(([formIsValid, favoritesChanged, submitting]) => (!formIsValid || favoritesChanged) && !submitting), // can submit if form or favorites changed and no request is in flight
           takeUntilDestroyed(this.destroyRef)
         );
 
@@ -85,6 +87,9 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    if (this.submitting.getValue()) return;
+
+    this.submitting.next(true);
     const req = new FormData();
     req.append('id', this.id!.value);
 
@@ -99,13 +104,17 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     appendIfPresent('profilePhoto', this.profilePhoto!.value!)
     appendIfPresent('coverPhoto', this.coverPhoto!.value!);
 
+    // Only reset submitting on error; on success the modal is closing and the button must stay disabled.
     this.usersService.updateProfile(req)
       .subscribe({
         next: () => {
           this.activeModal.close();
           this.toastService.show("Success", "Profile successfully updated!")
         },
-        error: () => this.toastService.show("Error", "Updates could not be saved.")
+        error: () => {
+          this.submitting.next(false);
+          this.toastService.show("Error", "Updates could not be saved.")
+        }
       });
 
     if (this.currentTabId === 'profile.favorites') {

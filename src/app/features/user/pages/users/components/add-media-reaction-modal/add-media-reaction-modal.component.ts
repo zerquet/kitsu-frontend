@@ -28,6 +28,7 @@ export class AddMediaReactionModalComponent implements OnInit {
   addMediaReactionForm!: FormGroup;
 
   charsLeft = 140;
+  submitting = false;
 
   ngOnInit() {
     //When adding media reaction, implied entry.reaction is null. So this.mediaReaction$ is null, can't use it to create form. 
@@ -51,6 +52,9 @@ export class AddMediaReactionModalComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.submitting) return;
+
+    this.submitting = true;
     let req: AddMediaReactionRequestDto = {
       animeId: 0,
       libraryEntryId: 0,
@@ -67,6 +71,7 @@ export class AddMediaReactionModalComponent implements OnInit {
       req.reaction = this.reaction.value;
     }
 
+    // Only reset submitting on error; on success the modal is closing and the button must stay disabled.
     this.userAnimeService.addMediaReaction(req)
       .subscribe({
         next: () => {
@@ -74,6 +79,7 @@ export class AddMediaReactionModalComponent implements OnInit {
           this.toastService.show('Success', 'Reaction added!')
         },
         error: (err) => {
+          this.submitting = false;
           this.toastService.show('Error', err)
         }
       })

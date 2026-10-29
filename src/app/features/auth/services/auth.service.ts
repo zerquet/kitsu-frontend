@@ -24,7 +24,7 @@ export class AuthService {
   private _tokenIsDecoded = false;
   private _currentUserSubject = new BehaviorSubject<AuthenticatedUser | null>(null);
 
-  constructor() {    
+  constructor() {
     //Try to log in via JWT token
     if (!this._tokenIsDecoded) {
       this.decodeToken();
@@ -37,7 +37,7 @@ export class AuthService {
   login(req: LoginRequestDto) {
     return this.http.post<LoginResponseDto>(`${this.baseUrl}/auth/login`, req)
       .pipe(
-        tap((res) => {          
+        tap((res) => {
           localStorage.setItem("access_token", res.token);
           if (!res.user) {
             this._currentUserSubject.next(null);
@@ -45,13 +45,13 @@ export class AuthService {
           }
           res.user.profilePhotoUrl = getProfilePhotoUrl(res.user.profilePhotoId);
           res.user.coverPhotoUrl = getCoverPhotoUrl(res.user.coverPhotoId);
-          this._currentUserSubject.next(res.user); 
+          this._currentUserSubject.next(res.user);
           })
       );
   }
 
   logout() {
-    localStorage.setItem("access_token", "");
+    localStorage.removeItem("access_token");
     this._currentUserSubject.next(null);
     this.router.navigate(['/explore'])
   }

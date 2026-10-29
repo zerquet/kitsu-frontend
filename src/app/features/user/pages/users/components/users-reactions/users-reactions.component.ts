@@ -13,18 +13,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './users-reactions.component.css'
 })
 export class UsersReactionsComponent implements OnInit {
-  private usersService = inject(UserAnimeService);
+  private userAnimeService = inject(UserAnimeService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   
-  mediaReactions$ = this.usersService.mediaReactions$;
+  mediaReactions$ = this.userAnimeService.mediaReactions$;
+  mediaReactionsLoading$ = this.userAnimeService.mediaReactionsLoading$;
   
   ngOnInit(): void {
     this.route.params
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: (params) => {
-        this.usersService.loadUserMediaReactions(params['id'])
+        this.userAnimeService.loadUserMediaReactions(params['id'])
       }
     })
   }

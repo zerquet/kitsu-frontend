@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit, signal} from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { combineLatest, take } from 'rxjs';
 import { NgbActiveModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -28,6 +28,7 @@ export class ManageLibraryEntryModalComponent implements OnInit {
 
   libraryEntry$ = this.userAnimeService.currentEntry$;
   canEdit$ = this.usersService.canEdit$;
+  submitting = false;
 
   ngOnInit() {
     combineLatest([this.canEdit$, this.libraryEntry$])
@@ -54,6 +55,9 @@ export class ManageLibraryEntryModalComponent implements OnInit {
   onClose = () => this.activeModal.close();
 
   onSubmit() {
+    if (this.submitting) return;
+
+    this.submitting = true;
     const formData = this.updateLibraryEntryForm.value;
 
     let req: UpdateLibraryEntryRequest = {
@@ -65,6 +69,7 @@ export class ManageLibraryEntryModalComponent implements OnInit {
       if (!progressIsValid(this.progress.value, this.animeEpisodeCount)) {
         //If progress is invalid, reset its value.
         this.progress.patchValue(this.animeEpisodeCount);
+        this.submitting = false;
         return;
       }
       req.episodesWatched = this.progress.value
@@ -76,9 +81,11 @@ export class ManageLibraryEntryModalComponent implements OnInit {
       req.userRating = this.rating.value
     }
 
+    // Only reset submitting on error; on success the modal is closing and the button must stay disabled.
     this.userAnimeService.updateEntry(req)
       .subscribe({
-        next: () => this.activeModal.close()
+        next: () => this.activeModal.close(),
+        error: () => this.submitting = false
       });
   }
 

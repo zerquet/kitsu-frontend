@@ -19,9 +19,17 @@ export class FranchiseAddComponent {
   form: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required)
   });
+  submitting = false;
 
   onSubmit() {
-    if (!this.name || !this.name.value) return;
+    if (this.submitting) return;
+
+    this.submitting = true;
+    if (!this.name || !this.name.value) {
+      this.submitting = false;
+      return;
+    }
+
     const req = this.name?.value;
 
     this.franchiseService.addFranchise(req).subscribe({
@@ -31,6 +39,7 @@ export class FranchiseAddComponent {
         this.router.navigate(['/admin/franchises']);
       },
       error: () => {
+        this.submitting = false;
         this.toastService.show('Error', 'Failed to add franchise');
       }
     });
