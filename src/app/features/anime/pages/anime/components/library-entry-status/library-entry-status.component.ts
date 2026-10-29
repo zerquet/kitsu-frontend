@@ -31,6 +31,7 @@ export class LibraryEntryStatusComponent implements OnInit {
   animeId = input.required<number>();
   animeEpisodeCount = input.required<number>();
   libraryEntry$ = this.userAnimeService.currentEntry$;
+  libraryEntryLoading$ = this.userAnimeService.currentEntryLoading$;
   isLoggedIn = false;
 
   updateLibraryEntryForm = new FormGroup({

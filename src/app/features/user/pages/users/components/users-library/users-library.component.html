@@ -40,9 +40,7 @@
           </thead>
           <tbody>
             @if (libraryLoading$ | async) {
-            
-                  <table-row-skeleton></table-row-skeleton>
-              
+              <table-row-skeleton></table-row-skeleton>
             }
             @else {
               @if (filteredAnimeList$ | async; as library) {
@@ -51,11 +49,11 @@
                     <td [ngClass]="entry.watchStatus" class="status-bar-cell"></td>
                     <td class="title-cell">
                       <span class="title-cell-thumbnail-span">
-                        <div><img src="{{environment.imageHostUrl}}/anime/poster/{{entry.anime.imageUrl}}" alt=""></div>
+                        <a routerLink="/anime/{{entry.animeId}}/summary"><img src="{{environment.imageHostUrl}}/anime/poster/{{entry.anime.imageUrl}}" alt=""></a>
                       </span>
                       <div class="title-cell-span">
-                        <div class="title-cell-title" routerLink="/anime/{{entry.animeId}}/summary">{{entry.anime.title}}
-                        </div>
+                        <a class="title-cell-title" routerLink="/anime/{{entry.animeId}}/summary">{{entry.anime.title}}
+                        </a>
                         @if (entry.mediaReaction) {
                         <div class="media-reaction-edit">
                           <i class="bi bi-chat-left-dots" (click)="onEditMediaReactionClick(entry)" placement="bottom"

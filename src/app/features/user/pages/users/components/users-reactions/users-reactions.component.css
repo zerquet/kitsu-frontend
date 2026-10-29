@@ -1,3 +1,24 @@
 .reactions-container {
   width: 100%;
 }
+
+.reactions-empty {
+  text-align: center;
+  flex: 1;
+  padding-top: 40px;
+}
+
+.spinning-icon {
+  /* Keyframe name, duration, timing function, and repetition */
+  animation: spin 2s linear infinite; 
+}
+
+/* Define the animation steps */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

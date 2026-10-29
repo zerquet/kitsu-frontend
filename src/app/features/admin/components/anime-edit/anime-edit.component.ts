@@ -61,7 +61,7 @@ export class AnimeEditComponent implements OnInit {
   anime = new BehaviorSubject<AnimeDetail | null>(null);
   newAnimeImage: string | undefined = undefined;
   newCoverImage: string | undefined = undefined;
-  environment = environment;
+  submitting = false;  
 
   ngOnInit(): void {
     this.route.params.pipe(
@@ -100,6 +100,9 @@ export class AnimeEditComponent implements OnInit {
   );
 
   onSubmit() {
+    if (this.submitting) return;
+
+    this.submitting = true;
     const data = new FormData();
     data.append('id', this.animeId!.value!.toString());
     data.append('title', this.title!.value!);
@@ -135,6 +138,7 @@ export class AnimeEditComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
+          this.submitting = false;
           this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
         }
       });
@@ -199,7 +203,7 @@ export class AnimeEditComponent implements OnInit {
       title: res.title,
       description: res.description,
       releaseStatus: res.releaseStatus,
-      categories: res.categories.map(x => x.id), //might need to use Id instead. I assume it's comparing [value] to see which are selected
+      categories: res.categories.map(x => x.id),
       episodes: res.episodeCount,
       year: res.year,
       mediaType: res.mediaType,

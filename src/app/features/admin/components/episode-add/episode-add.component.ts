@@ -41,6 +41,7 @@ export class EpisodeAddComponent {
       takeUntil(this.destroy$))
   selectedAnime: Anime | null = null;
   show = false;
+  submitting = false;
 
   ngOnInit(): void {
     this.form.controls['matchingAnime'].valueChanges
@@ -59,6 +60,9 @@ export class EpisodeAddComponent {
 
 
   onSubmit() {
+    if (this.submitting) return;
+
+    this.submitting = true;
     const dto = {
       id: null,
       animeId: this.animeId?.value,
@@ -79,6 +83,7 @@ export class EpisodeAddComponent {
         this.router.navigate(['/admin/episodes']);
       },
       error: () => {
+        this.submitting = false;
         this.toastService.show('Failed to add episode', 'Something went wrong');
       }
     });

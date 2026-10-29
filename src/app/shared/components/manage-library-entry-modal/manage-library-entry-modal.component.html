@@ -41,8 +41,8 @@
           <div><button id="removeFromLibraryBtn" type="button" (click)="onDeleteLibraryEntry(libraryEntry.animeId)" placement="right"
               ngbTooltip="Remove from Library" [openDelay]="150" [closeDelay]="100"><i class="bi bi-trash"></i></button>
           </div>
-          <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid"
-              [class.disabled]="updateLibraryEntryForm.valid" (click)="onSubmit()"></div>
+          <div><input id="saveChangesBtn" type="button" value="Save Changes" [disabled]="updateLibraryEntryForm.valid || submitting"
+              [class.disabled]="updateLibraryEntryForm.valid || submitting" (click)="onSubmit()"></div>
         </div>
       }
     </form>

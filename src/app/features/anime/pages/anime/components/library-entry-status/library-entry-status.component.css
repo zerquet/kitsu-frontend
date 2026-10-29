@@ -93,3 +93,23 @@
   color: #f3290a;
   cursor: pointer;
 }
+
+.library-entry-loading {
+  text-align: center;
+  padding: 10px;
+}
+
+.spinning-icon {
+  /* Keyframe name, duration, timing function, and repetition */
+  animation: spin 2s linear infinite; 
+}
+
+/* Define the animation steps */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -68,6 +68,6 @@
 
   <div class="admin-form-footer">
     <a class="admin-btn admin-btn-secondary" routerLink="../../episodes">Cancel</a>
-    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="!form.valid">Add Episode</button>
+    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="!form.valid || submitting">Add Episode</button>
   </div>
 </form>

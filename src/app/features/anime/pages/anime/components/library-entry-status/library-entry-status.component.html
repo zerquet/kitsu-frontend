@@ -1,16 +1,24 @@
 <div id="sidebar-form">
-  <!-- Anime is in library -->
-  @if (this.libraryEntry$ | async; as libraryEntry) {
-    <span id="sidebar-heading"><span>Update Library</span></span>
-    @if (libraryEntry.watchStatus === 'completed') {
-      <div id="sidebar-container">
-        <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
-        <div>
-          <manage-rating [libraryEntry]="libraryEntry"></manage-rating>
-        </div>
-        <div>
-          @if (!libraryEntry.mediaReaction) {
-            <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Post Reaction" 
+  @if (libraryEntryLoading$ | async) {
+    <div class="library-entry-loading">
+      <svg class="spinning-icon" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  }
+  @else {
+    <!-- Anime is in library -->
+    @if (this.libraryEntry$ | async; as libraryEntry) {
+      <span id="sidebar-heading"><span>Update Library</span></span>
+      @if (libraryEntry.watchStatus === 'completed') {
+        <div id="sidebar-container">
+          <div class="saved-in-library"><span>Saved in <a href="">Completed</a></span></div>
+          <div>
+            <manage-rating [libraryEntry]="libraryEntry"></manage-rating>
+          </div>
+          <div>
+            @if (!libraryEntry.mediaReaction) {
+              <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Post Reaction" 
               (click)="onPostReaction()" />
           }
           @else {
@@ -20,52 +28,52 @@
         </div>
         <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
       </div>
+      }
+      @else if (libraryEntry.watchStatus === 'planning') {
+        <div id="sidebar-container">
+          <div class="saved-in-library"><span>Saved in <a href="">Want to Watch</a></span></div>
+          <div>
+            <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started"
+              (click)="onChangeWatchStatus('watching')" />
+          </div>
+          <div>
+            <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed" 
+              (click)="onChangeWatchStatus('completed')" />
+          </div>
+          <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+        </div>
+      } 
+      @else if (libraryEntry.watchStatus === 'watching') {
+        <div id="sidebar-container">
+          <div class="saved-in-library"><span>Saved in <a href="">Currently Watching</a></span></div>
+          <div>
+            <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
+              (click)="onChangeWatchStatus('completed')" />
+          </div>
+          <div>
+            <manage-rating [libraryEntry]="libraryEntry"></manage-rating>
+          </div>
+          <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+        </div>
+      }
     }
-    @else if (libraryEntry.watchStatus === 'planning') {
+    <!--New library entry or user logged out-->
+    @else if (!(this.libraryEntry$ | async) || !(this.authService.authenticatedUser$ | async)) {
+      <span id="sidebar-heading"><span>Add to Library</span></span>
       <div id="sidebar-container">
-        <div class="saved-in-library"><span>Saved in <a href="">Want to Watch</a></span></div>
-        <div>
-          <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started"
-            (click)="onChangeWatchStatus('watching')" />
-        </div>
-        <div>
-          <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed" 
-            (click)="onChangeWatchStatus('completed')" />
-        </div>
-        <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
-      </div>
-    } 
-    @else if (libraryEntry.watchStatus === 'watching') {
-      <div id="sidebar-container">
-        <div class="saved-in-library"><span>Saved in <a href="">Currently Watching</a></span></div>
         <div>
           <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
-            (click)="onChangeWatchStatus('completed')" />
+            (click)="onAddToLibrary('completed')" />
         </div>
         <div>
-          <manage-rating [libraryEntry]="libraryEntry"></manage-rating>
+          <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Want to Watch"
+            (click)="onAddToLibrary('planning')" />
         </div>
-        <div class="edit-library-entry"><span (click)="onEditLibraryEntry()">Edit Library Entry</span></div>
+        <div>
+          <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started Watching"
+            (click)="onAddToLibrary('watching')" />
+        </div>
       </div>
     }
   }
-  <!--New library entry or user logged out-->
-  @else if (!(this.libraryEntry$ | async) || !(this.authService.authenticatedUser$ | async)) {
-    <span id="sidebar-heading"><span>Add to Library</span></span>
-    <div id="sidebar-container">
-      <div>
-        <input class="sidebar-watch-status-btn mb-2" id="green-action-btn" type="button" value="Completed"
-          (click)="onAddToLibrary('completed')" />
-      </div>
-      <div>
-        <input class="sidebar-watch-status-btn mb-2" id="blue-action-btn" type="button" value="Want to Watch"
-          (click)="onAddToLibrary('planning')" />
-      </div>
-      <div>
-        <input class="sidebar-watch-status-btn mb-2" id="purple-action-btn" type="button" value="Started Watching"
-          (click)="onAddToLibrary('watching')" />
-      </div>
-    </div>
-  }
-  
 </div>

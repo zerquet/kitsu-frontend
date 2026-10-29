@@ -197,6 +197,6 @@
   <div class="admin-form-footer">
     <a class="admin-btn admin-btn-secondary" routerLink="../../anime">Cancel</a>
     <!-- The "is different" validators make the form invalid once a field changes, so a valid form means nothing to save -->
-    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="form.valid">Save Changes</button>
+    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="form.valid || submitting">Save Changes</button>
   </div>
 </form>

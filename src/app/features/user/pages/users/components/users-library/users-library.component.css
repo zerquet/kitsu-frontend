@@ -177,6 +177,11 @@ tbody {
   margin-left: 10px;
 }
 
+.title-cell-title {
+  text-decoration: none;
+  color: inherit;
+}
+
 .title-cell-title:hover,
 .media-reaction-add i:hover,
 .media-reaction-edit i:hover {

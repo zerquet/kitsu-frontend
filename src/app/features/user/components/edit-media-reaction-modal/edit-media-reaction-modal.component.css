@@ -59,6 +59,12 @@
   cursor: pointer;
 }
 
+.delete-reaction.disabled i,
+.delete-reaction.disabled i:hover {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .post-reaction-container {
   display: flex;
   justify-content: end;

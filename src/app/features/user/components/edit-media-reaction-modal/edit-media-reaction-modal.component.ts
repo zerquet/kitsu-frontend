@@ -26,6 +26,7 @@ export class EditMediaReactionModalComponent implements OnInit {
   editMediaReactionForm!: FormGroup;
 
   charsLeft = 140;
+  submitting = false;
 
   ngOnInit(): void {
     this.mediaReaction$
@@ -51,11 +52,23 @@ export class EditMediaReactionModalComponent implements OnInit {
   }
 
   deleteReaction(mediaReactionId: number) {
+    if (this.submitting) return;
+
+    this.submitting = true;
     this.userAnimeService.deleteMediaReaction(mediaReactionId)
-      .subscribe(() => this.activeModal.close())
+      .subscribe({
+        next: () => this.activeModal.close(),
+        error: (err) => {
+          this.submitting = false;
+          this.toastService.show('Error', err)
+        }
+      })
   }
 
   onSubmit() {
+    if (this.submitting) return;
+
+    this.submitting = true;
     let req: UpdateMediaReactionRequestDto = {
       reactionId: 0,
       reaction: ""
@@ -69,9 +82,11 @@ export class EditMediaReactionModalComponent implements OnInit {
     }
     else {
       //Reaction was not updated.
+      this.submitting = false;
       return;
     }    
 
+    // Only reset submitting on error; on success the modal is closing and the button must stay disabled.
     this.userAnimeService.updateMediaReaction(req)
       .subscribe({
         next: () => {
@@ -79,6 +94,7 @@ export class EditMediaReactionModalComponent implements OnInit {
           this.toastService.show('Success', 'Reaction updated!')
         },
         error: (err) => {
+          this.submitting = false;
           this.toastService.show('Error', err)
         }
       })

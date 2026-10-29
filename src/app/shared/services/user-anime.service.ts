@@ -38,9 +38,11 @@ export class UserAnimeService {
   library$ = new BehaviorSubject<LibraryEntryDetail[]>([]);
   libraryLoading$ = new BehaviorSubject<boolean>(false);
   mediaReactions$ = new BehaviorSubject<MediaReaction[]>([]);
+  mediaReactionsLoading$ = new BehaviorSubject<boolean>(false);
   toastService: any;
   private _currentEntrySubject = new BehaviorSubject<LibraryEntryDetail | null>(null);
   currentEntry$ = this._currentEntrySubject.asObservable();
+  currentEntryLoading$ = new BehaviorSubject<boolean>(false);
   private loadedFavorites = false;
   private _currentMediaReactionSubject = new BehaviorSubject<MediaReaction | null>(null);
   currentMediaReaction$ = this._currentMediaReactionSubject.asObservable();
@@ -52,6 +54,8 @@ export class UserAnimeService {
     this._currentMediaReactionSubject.next(null);
     
     if (userId === null) return of(null);
+
+    this.currentEntryLoading$.next(true);
     
     return this.http.get<GetLibraryEntryResponseDto>(`${this.libraryBaseUrl}Entry/${animeId}`)
       .pipe(
@@ -61,7 +65,8 @@ export class UserAnimeService {
         tap(libraryEntry => {
           this._currentEntrySubject.next(libraryEntry);
           this._currentMediaReactionSubject.next(libraryEntry.mediaReaction ?? null);
-        })
+        }),
+        finalize(() => this.currentEntryLoading$.next(false))
       );
   }
 
@@ -292,9 +297,13 @@ export class UserAnimeService {
   }
 
   loadUserMediaReactions(userDisplayId: string) {
+    this.mediaReactions$.next([]);
+    this.mediaReactionsLoading$.next(true);
+
     this.http.get<GetMediaReactionByUserResponseDto[]>(`${this.baseUrl}/${userDisplayId}/mediaReactions`)
       .pipe(
-        map((dtos) => dtos.map(dto => mapGetMediaReactionByUserToMediaReaction(dto)))
+        map((dtos) => dtos.map(dto => mapGetMediaReactionByUserToMediaReaction(dto))),
+        finalize(() => this.mediaReactionsLoading$.next(false))
       )
       .subscribe((mediaReactions) => {
         this.mediaReactions$.next(mediaReactions);

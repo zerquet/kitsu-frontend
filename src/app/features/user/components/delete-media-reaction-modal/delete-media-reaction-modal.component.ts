@@ -20,7 +20,7 @@ import { ModalTitleComponent } from "../../../../shared/components/modal-title/m
         (submit)="onSubmit()"
       >
         <div class="delete-btn-container">
-          <input id="delete-reaction-btn" type="submit" value="Confirm">
+          <input id="delete-reaction-btn" type="submit" value="Confirm" [disabled]="submitting">
         </div>
       </form>
     </div>
@@ -53,6 +53,11 @@ import { ModalTitleComponent } from "../../../../shared/components/modal-title/m
     #delete-reaction-btn:hover {
       background-color: #19b698;
     }
+    #delete-reaction-btn[disabled],
+    #delete-reaction-btn[disabled]:hover {
+      background-color: #B4B4B4;
+      cursor: not-allowed;
+    }
   `
 })
 export class DeleteMediaReactionModalComponent implements OnInit {
@@ -63,6 +68,7 @@ export class DeleteMediaReactionModalComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   deleteMediaReactionForm!: FormGroup;
+  submitting = false;
 
   ngOnInit() {
     this.userAnimeService.currentMediaReaction$
@@ -75,7 +81,11 @@ export class DeleteMediaReactionModalComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.submitting) return;
+
     if (this.reactionId !== null && this.reactionId.value !== null) {
+      this.submitting = true;
+      // Only reset submitting on error; on success the modal is closing and the button must stay disabled.
       this.usersService.deleteMediaReaction(this.reactionId.value)
         .subscribe({
           next: () => {
@@ -83,6 +93,7 @@ export class DeleteMediaReactionModalComponent implements OnInit {
             this.toastService.show('Success', 'Reaction deleted!')
           },
           error: (err) => {
+            this.submitting = false;
             this.toastService.show('Error', err);
           }
         })

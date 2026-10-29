@@ -21,6 +21,6 @@
 
   <div class="admin-form-footer">
     <a class="admin-btn admin-btn-secondary" routerLink="../../franchises">Cancel</a>
-    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="!form.valid">Add Franchise</button>
+    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="!form.valid || submitting">Add Franchise</button>
   </div>
 </form>
