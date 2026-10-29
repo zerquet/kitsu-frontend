@@ -1,30 +1,36 @@
-<div>
-  <h5>Manage Franchises</h5>
-  <div id="admin-search-section">
-    <div id="add-btn-section"><button type="button" routerLink="../add/franchise"><i class="bi bi-plus-square"></i> Add Franchise</button></div>
-    <form [formGroup]="form">
-      <input id="admin-search-field" type="text" formControlName="searchControl" placeholder="Search for franchises...">
+<header class="admin-page-header">
+  <h1>Franchises</h1>
+  <div class="admin-toolbar">
+    <form class="admin-search" [formGroup]="form">
+      <i class="bi bi-search"></i>
+      <input class="admin-input" type="search" formControlName="searchControl" placeholder="Search franchises...">
     </form>
+    <button class="admin-btn admin-btn-primary" type="button" routerLink="../add/franchise"><i class="bi bi-plus-lg"></i>Add Franchise</button>
   </div>
-  <div class="admin-table">
-    <div class="admin-head">
-      <div class="title-cell">Franchise</div>
-      <div class="actions-cell">Actions</div>
-    </div>
-    <div class="admin-body">
-      @if(filteredSearchList$ | async; as searchList) {
-        @for(franchise of searchList; track franchise.id) {
-          <div class="admin-row" routerLink="{{franchise.id}}">
-            <div class="title-cell">{{franchise.name}}</div>
-            <div class="actions-cell">
-              <!-- <span routerLink="{{franchise.id}}" class="me-1 cursor">
-                <i class="bi bi-pencil-fill"></i>
-              </span> -->
-              <span (click)="deleteFranchise(franchise.id!)" class="ms-1 cursor delete-anime"><i class="bi bi-trash3"></i></span>
-            </div>
-          </div>
+</header>
+
+<div class="admin-card">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Franchise</th>
+        <th class="col-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (filteredSearchList$ | async; as searchList) {
+        @for (franchise of searchList; track franchise.id) {
+          <tr>
+            <td class="admin-table-title">{{franchise.name}}</td>
+            <td class="col-actions">
+              <button class="admin-icon-btn danger" type="button" title="Delete" (click)="deleteFranchise(franchise.id!)"><i class="bi bi-trash3"></i></button>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr><td class="admin-empty" colspan="2">No franchises found.</td></tr>
         }
       }
-    </div>
-  </div>
+    </tbody>
+  </table>
 </div>

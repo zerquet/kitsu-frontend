@@ -10,21 +10,16 @@ import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { CategoryService } from '../../../../shared/services/category.service';
 import { FranchiseService } from '../../../../shared/services/franchise.service';
 import { CommonModule } from '@angular/common';
-import { DatePicker } from 'primeng/datepicker';
-import { InputNumber } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { Select } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
 import { TrimDirective } from '../../../../core/directives/trim.directive';
 import { AdminService } from '../../services/admin.service';
+import { CategoryPickerComponent } from '../category-picker/category-picker.component';
 
 @Component({
   selector: 'app-anime-add',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputTextModule, TextareaModule, Select, MultiSelectModule, InputNumber, DatePicker, RouterLink, TrimDirective],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TrimDirective, CategoryPickerComponent],
   templateUrl: './anime-add.component.html',
-  styleUrl: './anime-add.component.css'
+  styleUrl: '../../admin-shared.css'
 })
 export class AnimeAddComponent {
   private categoryService = inject(CategoryService);
@@ -38,19 +33,19 @@ export class AnimeAddComponent {
     description: new FormControl(''),
     image: new FormControl<File | undefined>(undefined, Validators.required),
     coverImage: new FormControl<File | undefined>(undefined),
-    releaseStatus: new FormControl(''),
+    releaseStatus: new FormControl<string | null>(null),
     categories: new FormControl<number[]>([]),
     episodes: new FormControl<number | null>(null, Validators.pattern("[0-9]*")),
     year: new FormControl<number | null>(null, Validators.pattern("[0-9]*")),
-    mediaType: new FormControl(''),
+    mediaType: new FormControl<string | null>(null),
     score: new FormControl<number | null>(null, Validators.pattern("[0-9]*")),
     englishTitle: new FormControl(''),
     japaneseTitle: new FormControl(''),
     japaneseRomaji: new FormControl(''),
     season: new FormControl(''),
-    startAirDate: new FormControl<Date | null>(null),
-    endAirDate: new FormControl<Date | null>(null),
-    rating: new FormControl(''),
+    startAirDate: new FormControl<string | null>(null),
+    endAirDate: new FormControl<string | null>(null),
+    rating: new FormControl<string | null>(null),
     episodeLength: new FormControl(0),
     franchiseSearch: new FormControl(),
     franchiseId: new FormControl<Number | null>(null)
@@ -107,12 +102,11 @@ export class AnimeAddComponent {
     if (!Utils.IsNullOrUndefined(this.japaneseTitle!.value)) data.append('japaneseTitle', this.japaneseTitle!.value!);
     if (!Utils.IsNullOrUndefined(this.japaneseRomaji!.value)) data.append('japaneseTitleRomaji', this.japaneseRomaji?.value!);
     if (!Utils.IsNullOrUndefined(this.season!.value)) data.append('season', this.season!.value!);
-    if (!Utils.IsNullOrUndefined(this.startAirDate!.value)) data.append('startAirDate', this.startAirDate!.value!.toLocaleDateString());
-    if (!Utils.IsNullOrUndefined(this.endAirDate!.value)) data.append('endAirDate', this.endAirDate!.value!.toLocaleDateString());
+    if (this.startAirDate!.value) data.append('startAirDate', this.startAirDate!.value);
+    if (this.endAirDate!.value) data.append('endAirDate', this.endAirDate!.value);
     if (!Utils.IsNullOrUndefined(this.rating!.value)) data.append('tvRating', this.rating!.value!);
     if (!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value?.toString()!);
-    if (!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString())
-
+    if (!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString());
     this.adminService
       .addAnime(data)
       .subscribe({
@@ -170,7 +164,7 @@ export class AnimeAddComponent {
 
   selectFranchise(franchise: Franchise) {
     this.selectedFranchise = franchise;
-    this.form.patchValue({ franchiseId: franchise.id });
+    this.form.patchValue({ franchiseId: franchise.id, franchiseSearch: '' });
     this.showFranchiseSearchResults = false;
     this.franchiseSearchTerm$.next("");
   }
@@ -178,10 +172,6 @@ export class AnimeAddComponent {
   deselectAnime() {
     this.selectedFranchise = null;
     this.form.patchValue({ franchiseId: null }); //keep replicating from []
-  }
-
-  onClearMediaType() {
-    this.mediaType?.patchValue('');
   }
 
   //FORM GETTERS

@@ -80,18 +80,6 @@ body {
   background-color: #22b8b8 !important;
 }
 
-.p-inputtext.ng-invalid.ng-dirty {
-  border-color: var(--p-inputtext-focus-border-color) !important;
-}
-
-.p-floatlabel:has(.ng-invalid.ng-dirty) label {
-  color: var(--p-inputtext-focus-border-color) !important;
-}
-
-.p-datepicker:has(.p-datepicker-input-icon-container) .p-datepicker-input {
-  height: 34px !important;
-}
-
 /*Delete Reaction tooltip class applied via tooltipClass from ngbTooltip. Placed here so I don't have to disable Encapsulation in edit reaction component, since could mess up global styles.*/
 .delete-reaction-tooltip .tooltip-inner {
   background-color: #464646;

@@ -7,7 +7,8 @@ import {
   getCoverPhotoUrl,
   getFileNameWithoutExtension,
   getOrdinalDay,
-  getProfilePhotoUrl
+  getProfilePhotoUrl,
+  toDateInputValue
 } from "./helpers";
 
 describe('helpers', () => {
@@ -51,8 +52,8 @@ describe('helpers', () => {
 
   describe('photo URLs', () => {
     it('builds profile and cover photo URLs from an id', () => {
-      expect(getProfilePhotoUrl('abc')).toBe(`${environment.imageHostUrl}/users/profile/abc.jpg`);
-      expect(getCoverPhotoUrl('abc')).toBe(`${environment.imageHostUrl}/users/cover/abc.jpg`);
+      expect(getProfilePhotoUrl('abc.jpg')).toBe(`${environment.imageHostUrl}/users/profile/abc.jpg`);
+      expect(getCoverPhotoUrl('abc.jpg')).toBe(`${environment.imageHostUrl}/users/cover/abc.jpg`);
     });
 
     it('falls back to defaults when there is no id', () => {
@@ -65,6 +66,23 @@ describe('helpers', () => {
       expect(getAnimePosterUrl('poster.jpg')).toBe(`${environment.imageHostUrl}/anime/poster/poster.jpg`);
       expect(getAnimeCoverUrl('cover.jpg')).toBe(`${environment.imageHostUrl}/anime/cover/cover.jpg`);
       expect(getAnimeCoverUrl(undefined)).toBe(DEFAULT_USER_COVER);
+    });
+  });
+
+  describe('toDateInputValue', () => {
+    it('keeps the date part of an ISO string', () => {
+      expect(toDateInputValue('2024-04-05T00:00:00')).toBe('2024-04-05');
+      expect(toDateInputValue('2024-04-05')).toBe('2024-04-05');
+    });
+
+    it('formats a Date using its local date', () => {
+      expect(toDateInputValue(new Date(2024, 0, 9))).toBe('2024-01-09');
+    });
+
+    it('returns null when there is no date', () => {
+      expect(toDateInputValue(null)).toBeNull();
+      expect(toDateInputValue(undefined)).toBeNull();
+      expect(toDateInputValue('')).toBeNull();
     });
   });
 

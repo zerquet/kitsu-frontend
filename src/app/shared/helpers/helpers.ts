@@ -7,13 +7,13 @@ export function getFileNameWithoutExtension(filename: string) {
 
 export function getProfilePhotoUrl(profilePhotoId: string | undefined) {
   return profilePhotoId 
-    ? `${environment.imageHostUrl}/users/profile/${profilePhotoId}.jpg` 
+    ? `${environment.imageHostUrl}/users/profile/${profilePhotoId}` 
     : DEFAULT_USER_PROFILE;
 }
 
 export function getCoverPhotoUrl(coverPhotoId: string | undefined) {
   return coverPhotoId
-    ? `${environment.imageHostUrl}/users/cover/${coverPhotoId}.jpg`
+    ? `${environment.imageHostUrl}/users/cover/${coverPhotoId}`
     : DEFAULT_USER_COVER;
 }
 
@@ -33,6 +33,22 @@ export function formatBirthday(birthdate: string) {
   const month = birthday.toLocaleString('default', { month: 'long', timeZone: 'UTC' });
   const ordinalDay = getOrdinalDay(birthday.getUTCDate());
   return `${month} ${ordinalDay}`;
+}
+
+// Converts an API date to the YYYY-MM-DD value a native date input expects.
+// API dates arrive as ISO strings at runtime even where models type them as Date.
+export function toDateInputValue(date: Date | string | null | undefined): string | null {
+  if (!date) {
+    return null;
+  }
+
+  if (typeof date === 'string') {
+    return date.substring(0, 10);
+  }
+
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
 }
 
 export function getOrdinalDay(day: number) {

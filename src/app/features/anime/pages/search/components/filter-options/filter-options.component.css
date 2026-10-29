@@ -19,5 +19,18 @@ mat-slider {
 }
 
 .checkbox-field {
+  display: flex;
+  align-items: center;
   padding-bottom: 6px;
+}
+
+.checkbox-field input {
+  width: 15px;
+  height: 15px;
+  accent-color: #22b8b8;
+  cursor: pointer;
+}
+
+.checkbox-field label {
+  cursor: pointer;
 }

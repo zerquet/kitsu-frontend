@@ -1,0 +1,20 @@
+<div class="picker">
+  <div class="picker-header">
+    <input type="text" placeholder="Filter categories..." [value]="filterTerm" (input)="onFilterInput($event)" [disabled]="disabled">
+    <span class="picker-count">{{selectedIds.size}} selected</span>
+  </div>
+  <div class="picker-chips">
+    @for (category of visibleCategories; track category.id) {
+      <button type="button" class="chip" [class.selected]="selectedIds.has(category.id)" [disabled]="disabled"
+        [attr.aria-pressed]="selectedIds.has(category.id)" (click)="toggle(category.id)">
+        @if (selectedIds.has(category.id)) {
+          <i class="bi bi-check"></i>
+        }
+        {{category.name}}
+      </button>
+    }
+    @empty {
+      <span class="picker-empty">No categories match.</span>
+    }
+  </div>
+</div>

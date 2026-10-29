@@ -11,7 +11,7 @@ export class FranchiseService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/franchises`;
 
-  addFranchise(request: Franchise): Observable<void> {
+  addFranchise(request: string): Observable<void> {
     return this.http
       .post<void>(this.baseUrl, request);
   }

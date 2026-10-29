@@ -3,12 +3,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AnimeService } from '../../../../shared/services/anime.service';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { Select } from 'primeng/select';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { InputNumber } from 'primeng/inputnumber';
-import { DatePicker } from 'primeng/datepicker';
 import { Subject, Observable, BehaviorSubject, combineLatest, distinctUntilChanged, map, switchMap, takeUntil, of, debounceTime, tap } from 'rxjs';
 import { Franchise } from '../../../../shared/models/franchise.model';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
@@ -20,18 +14,19 @@ import { Category } from '../../../../shared/models/category.model';
 import { TrimDirective } from '../../../../core/directives/trim.directive';
 import { environment } from '../../../../../environments/environment';
 import { AdminService } from '../../services/admin.service';
+import { toDateInputValue } from '../../../../shared/helpers/helpers';
+import { CategoryPickerComponent } from '../category-picker/category-picker.component';
 
 @Component({
   selector: 'app-anime-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputTextModule, TextareaModule, Select, MultiSelectModule, InputNumber, DatePicker, RouterLink, TrimDirective],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TrimDirective, CategoryPickerComponent],
   templateUrl: './anime-edit.component.html',
-  styleUrl: './anime-edit.component.css'
+  styleUrl: '../../admin-shared.css'
 })
 export class AnimeEditComponent implements OnInit {
   private categoryService = inject(CategoryService);
   private adminService = inject(AdminService);
-  private animeService = inject(AnimeService);
   private toastService = inject(AppToastService);
   private franchiseService = inject(FranchiseService);
   private route = inject(ActivatedRoute);
@@ -42,19 +37,19 @@ export class AnimeEditComponent implements OnInit {
     description: new FormControl('', [this.descriptionIsDifferentValidator()]),
     image: new FormControl<File | undefined>(undefined, [this.imageIsDifferentValidator()]),
     coverImage: new FormControl<File | undefined>(undefined, [this.coverImageIsDifferentValidator()]),
-    releaseStatus: new FormControl('', [this.releaseStatusIsDifferentValidator()]),
+    releaseStatus: new FormControl<string | null>(null, [this.releaseStatusIsDifferentValidator()]),
     categories: new FormControl<number[]>([], this.categoriesAreDifferentValidator()),
     episodes: new FormControl<number | null>(null, [Validators.pattern("[0-9]*"), this.episodeCountIsDifferentValidator()]),
     year: new FormControl<number | null>(null, [Validators.pattern("[0-9]*"), this.yearIsDifferentValidator()]),
-    mediaType: new FormControl('', [this.mediaTypeIsDifferentValidator()]),
+    mediaType: new FormControl<string | null>(null, [this.mediaTypeIsDifferentValidator()]),
     score: new FormControl<number | null>(null, [Validators.pattern("[0-9]*"), this.scoreIsDifferentValidator()]),
     englishTitle: new FormControl('', [this.englishTitleIsDifferentValidator()]),
     japaneseTitle: new FormControl('', [this.japaneseTitleIsDifferentValidator()]),
     japaneseRomaji: new FormControl('', [this.japaneseRomajiIsDifferentValidator()]),
     season: new FormControl('', [this.seasonIsDifferentValidator()]),
-    startAirDate: new FormControl<Date | null>(null, [this.startAirDateIsDifferentValidator()]),
-    endAirDate: new FormControl<Date | null>(null, [this.endAirDateIsDifferentValidator()]),
-    rating: new FormControl('', [this.ratingIsDifferentValidator()]),
+    startAirDate: new FormControl<string | null>(null, [this.startAirDateIsDifferentValidator()]),
+    endAirDate: new FormControl<string | null>(null, [this.endAirDateIsDifferentValidator()]),
+    rating: new FormControl<string | null>(null, [this.ratingIsDifferentValidator()]),
     episodeLength: new FormControl(0, [this.episodeLengthIsDifferentValidator()]),
     franchiseSearch: new FormControl(),
     franchiseId: new FormControl<Number | null>(null, [this.franchiseIdIsDifferentValidator()])
@@ -72,14 +67,13 @@ export class AnimeEditComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.pipe(
       distinctUntilChanged(),
-      switchMap(params => this.animeService.getAnimeById(params['animeId'])),
+      switchMap(params => this.adminService.getAnimeById(params['animeId'])),
       takeUntil(this.destroy$)
-    ).subscribe(res => {
-      if (res !== undefined) {
-        this.anime.next(res.anime);
-        this.prefillform(res.anime);
-        //send dto from api and assign as Franchise 
-        this.selectedFranchise = res.anime.franchiseId !== null && res.anime.franchise?.name !== undefined ? { id: res.anime.franchiseId, name: res.anime.franchise?.name } : null;
+    ).subscribe(anime => {
+      if (anime) {
+        this.anime.next(anime);
+        this.prefillform(anime);
+        this.selectedFranchise = anime.franchise ? anime.franchise : null;
       }
     })
 
@@ -127,8 +121,8 @@ export class AnimeEditComponent implements OnInit {
     if (!Utils.IsNullOrUndefined(this.japaneseTitle!.value)) data.append('japaneseTitle', this.japaneseTitle!.value!);
     if (!Utils.IsNullOrUndefined(this.japaneseRomaji!.value)) data.append('japaneseTitleRomaji', this.japaneseRomaji?.value!);
     if (!Utils.IsNullOrUndefined(this.season!.value)) data.append('season', this.season!.value!);
-    if (!Utils.IsNullOrUndefined(this.startAirDate!.value)) data.append('startAirDate', this.startAirDate!.value!.toLocaleDateString());
-    if (!Utils.IsNullOrUndefined(this.endAirDate!.value)) data.append('endAirDate', this.endAirDate!.value!.toLocaleDateString());
+    if (this.startAirDate!.value) data.append('startAirDate', this.startAirDate!.value);
+    if (this.endAirDate!.value) data.append('endAirDate', this.endAirDate!.value);
     if (!Utils.IsNullOrUndefined(this.rating!.value)) data.append('tvRating', this.rating!.value!);
     if (!Utils.IsNullOrUndefined(this.episodeLength!.value)) data.append('episodeLength', this.episodeLength!.value?.toString()!);
     if (!Utils.IsNullOrUndefined(this.franchiseId!.value)) data.append('franchiseId', this.franchiseId!.value!.toString());
@@ -138,12 +132,10 @@ export class AnimeEditComponent implements OnInit {
       .subscribe({
         next: () => {
           this.toastService.show('Success', `Updated '${this.title?.value}'.`)
-          //this.form.reset();
           this.router.navigate(['/admin/anime']);
         },
         error: (err) => {
           console.error(err);
-
           this.toastService.show('Error', 'Something went wrong. Check logs for more details.')
         }
       });
@@ -192,7 +184,7 @@ export class AnimeEditComponent implements OnInit {
 
   selectFranchise(franchise: Franchise) {
     this.selectedFranchise = franchise;
-    this.form.patchValue({ franchiseId: franchise.id });
+    this.form.patchValue({ franchiseId: franchise.id, franchiseSearch: '' });
     this.showFranchiseSearchResults = false;
     this.franchiseSearchTerm$.next("");
   }
@@ -200,10 +192,6 @@ export class AnimeEditComponent implements OnInit {
   deselectAnime() {
     this.selectedFranchise = null;
     this.form.patchValue({ franchiseId: null }); //keep replicating from []
-  }
-
-  onClearMediaType() {
-    this.mediaType?.patchValue('');
   }
 
   private prefillform(res: AnimeDetail) {
@@ -221,8 +209,8 @@ export class AnimeEditComponent implements OnInit {
       japaneseTitle: res.japaneseTitle,
       japaneseRomaji: res.japaneseTitleRomaji,
       season: res.season,
-      startAirDate: res.startAirDate === undefined ? null : new Date(res.startAirDate),
-      endAirDate: res.endAirDate === undefined ? null : new Date(res.endAirDate),
+      startAirDate: toDateInputValue(res.startAirDate),
+      endAirDate: toDateInputValue(res.endAirDate),
       rating: res.tvRating !== "null" ? res.tvRating : null,
       episodeLength: res.episodeLength,
       franchiseId: res.franchiseId ?? null
@@ -421,26 +409,10 @@ export class AnimeEditComponent implements OnInit {
 
   startAirDateIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-
       if (this.anime !== undefined) {
-        var date;
-        if (this.anime.value === null) {
-          date = null;
-        }
-        else {
-          date = this.anime.value?.startAirDate === undefined ? null : new Date(this.anime.value!.startAirDate);
-        }
-
-        if (date !== null) {
-          if (control.value.toDateString() === date.toDateString()) {
-            return null;
-          }
-        }
-        else {
-          if (control.value === date) {
-            return null;
-          }
-        }
+        // An empty date input reports '' rather than null
+        if ((control.value || null) === toDateInputValue(this.anime.value?.startAirDate))
+          return null;
       }
       return { startAirDateIsDifferent: true };
     }
@@ -449,24 +421,8 @@ export class AnimeEditComponent implements OnInit {
   endAirDateIsDifferentValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (this.anime !== undefined) {
-        var date;
-        if (this.anime.value === null) {
-          date = null;
-        }
-        else {
-          date = this.anime.value?.endAirDate === undefined ? null : new Date(this.anime.value!.endAirDate);
-        }
-
-        if (date !== null) {
-          if (control.value.toDateString() === date.toDateString()) {
-            return null;
-          }
-        }
-        else {
-          if (date === control.value) {
-            return null;
-          }
-        }
+        if ((control.value || null) === toDateInputValue(this.anime.value?.endAirDate))
+          return null;
       }
       return { endAirDateIsDifferent: true };
     }

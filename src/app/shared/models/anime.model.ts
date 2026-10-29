@@ -20,8 +20,8 @@ export interface AnimeDetail extends Anime {
   japaneseTitle?: string;
   japaneseTitleRomaji?: string;
   season?: string;
-  startAirDate?: Date;
-  endAirDate?: Date;
+  startAirDate?: string;
+  endAirDate?: string;
   tvRating?: string;
   episodeLength?: number;
   franchiseId?: number;

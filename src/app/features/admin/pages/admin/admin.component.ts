@@ -9,6 +9,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
-export class AdminComponent {
-  selectedTab = 'anime';
-}
+export class AdminComponent { }

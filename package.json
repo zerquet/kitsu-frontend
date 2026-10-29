@@ -22,12 +22,10 @@
     "@angular/router": "^18.2.0",
     "@ng-bootstrap/ng-bootstrap": "^17.0.0",
     "@popperjs/core": "^2.11.8",
-    "@primeng/themes": "^18.0.2",
     "@schematics/angular": "^19.2.1",
     "bootstrap": "^5.3.2",
     "jwt-decode": "^4.0.0",
     "prettier": "^3.9.5",
-    "primeng": "^18.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"

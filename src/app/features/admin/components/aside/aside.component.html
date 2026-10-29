@@ -1,10 +1,23 @@
-<div id="sidemenu-greeting">
-  <h5>Welcome, {{username}}</h5>
+<div class="aside-brand">
+  <a routerLink="/explore">KITSU</a>
+  <span class="aside-brand-tag">Admin</span>
 </div>
-<ul id="admin-nav">
-  @for (tab of tabs; track tab) {
-    <a routerLink="{{tab.toLowerCase()}}" (click)="onTabClick(tab)">
-      <li [ngClass]="{'active-tab': activeTab === tab}">{{tab}}</li>
+
+<nav class="aside-nav">
+  <span class="aside-section-label">Content</span>
+  @for (tab of tabs; track tab.label) {
+    <a class="aside-link" [routerLink]="tab.path" [class.active]="(activeTab$ | async) === tab.label">
+      <i class="bi {{tab.icon}}"></i>{{tab.label}}
     </a>
   }
-</ul>
+</nav>
+
+<div class="aside-footer">
+  @if (authenticatedUser$ | async; as user) {
+    <div class="aside-user">
+      <img [src]="user.profilePhotoUrl" alt="">
+      <span>{{user.username}}</span>
+    </div>
+  }
+  <a class="aside-link" routerLink="/explore"><i class="bi bi-arrow-left"></i>Back to site</a>
+</div>

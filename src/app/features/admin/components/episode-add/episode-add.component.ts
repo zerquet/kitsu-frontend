@@ -6,20 +6,16 @@ import { Anime } from '../../../../shared/models/anime.model';
 import { AnimeService } from '../../../../shared/services/anime.service';
 import { AppToastService } from '../../../../shared/services/app-toast.service';
 import { EpisodeService } from '../../../../shared/services/episode.service';
-import { NgIf, NgClass, AsyncPipe } from '@angular/common';
-import { DatePickerModule } from 'primeng/datepicker';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
+import { AsyncPipe } from '@angular/common';
 import { TrimDirective } from '../../../../core/directives/trim.directive';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-episode-add',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, NgClass, AsyncPipe, FloatLabelModule, InputTextModule, InputNumberModule, TextareaModule, DatePickerModule, RouterLink, TrimDirective],
+  imports: [ReactiveFormsModule, AsyncPipe, RouterLink, TrimDirective],
   templateUrl: './episode-add.component.html',
-  styleUrl: './episode-add.component.css'
+  styleUrl: '../../admin-shared.css'
 })
 export class EpisodeAddComponent {
   private animeService = inject(AnimeService);
@@ -27,6 +23,7 @@ export class EpisodeAddComponent {
   private episodeService = inject(EpisodeService);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
+  environment = environment;
   form: FormGroup = new FormGroup({
     animeId: new FormControl('', [Validators.required, Validators.pattern('[0-9]*')]),
     matchingAnime: new FormControl(),
@@ -97,7 +94,7 @@ export class EpisodeAddComponent {
 
   selectAnimeForEpisodeAddition(anime: Anime) {
     this.selectedAnime = anime;
-    this.form.patchValue({ animeId: anime.id });
+    this.form.patchValue({ animeId: anime.id, matchingAnime: '' });
     this.show = false;
     this.animeSearchTerm$.next("");
 
