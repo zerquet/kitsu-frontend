@@ -9,13 +9,14 @@ import { AnimeService } from '../../../../shared/services/anime.service';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
 import { AdminService } from '../../services/admin.service';
+import { AnimeTableItem } from '../../models/anime-table-item.model';
 
 @Component({
   selector: 'anime-list',
   standalone: true,
   imports: [ReactiveFormsModule, AsyncPipe, RouterLink, RouterOutlet],
   templateUrl: './anime-list.component.html',
-  styleUrl: './anime-list.component.css'
+  styleUrl: '../../admin-shared.css'
 })
 export class AnimeListComponent {
   private adminService = inject(AdminService);
@@ -46,8 +47,8 @@ export class AnimeListComponent {
 
   private destroy$ = new Subject<void>();
   searchTerm$ = new BehaviorSubject<string>('');
-  searchList$: Observable<AnimeDetail[]> = this.adminService.getAnimes(); //get recent animes if no search query.
-  filteredSearchList$: Observable<AnimeDetail[]> = combineLatest([this.searchList$, this.searchTerm$])
+  searchList$: Observable<AnimeTableItem[]> = this.adminService.animes$; //get recent animes if no search query.
+  filteredSearchList$: Observable<AnimeTableItem[]> = combineLatest([this.searchList$, this.searchTerm$])
     .pipe(
       switchMap(([list, term]) => {
         if (term === '') {
@@ -63,5 +64,5 @@ export class AnimeListComponent {
     //modal.componentInstance.initializeModalData(id);
   }
 
-  private filterList = (term: string, list: AnimeDetail[]) => list.filter(a => a.title.toLowerCase().includes(term.toLowerCase()));
+  private filterList = (term: string, list: AnimeTableItem[]) => list.filter(a => a.title.toLowerCase().includes(term.toLowerCase()));
 }

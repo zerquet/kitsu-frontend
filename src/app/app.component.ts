@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { NavMenuComponent } from './core/layout/nav-menu/nav-menu.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { AuthService } from './features/auth/services/auth.service';
@@ -14,13 +15,13 @@ import { AuthService } from './features/auth/services/auth.service';
 })
 export class AppComponent {
   title = 'kitsu-frontend';
-  constructor(public authService: AuthService) { }
+  constructor(public authService: AuthService, private router: Router) { }
   ngOnInit(): void {
-    if (window.location.pathname.includes('admin')) {
-      this.authService.isAdminPage$.next(true);
-    }
-    else {
-      this.authService.isAdminPage$.next(false);
-    }
+    this.authService.isAdminPage$.next(window.location.pathname.startsWith('/admin'));
+
+    // Re-check on every navigation so the site nav hides when entering admin from within the app
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(event => this.authService.isAdminPage$.next(event.urlAfterRedirects.startsWith('/admin')));
   }
 }

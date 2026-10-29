@@ -1,47 +1,67 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { AnimeDetail } from '../../../shared/models/anime.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { GetAnimeByIdResponseDto } from '../dtos/get-anime-by-id-response.dto';
+import { mapAddAnimeToAnimeTableItem, mapAnimeTableResponseItemToAnimeTableItem, mapGetAnimeByIdToAnimeDetail, mapUpdateAnimeToAnimeTableItem } from '../../../shared/mappers/admin.mapper';
+import { AnimeTableResponseItemDto } from '../dtos/anime-table-response-item.dto';
+import { mapAnimeResponseItemToAnime } from '../../../shared/mappers/anime.mapper';
+import { AnimeTableItem } from '../models/anime-table-item.model';
+import { UpdateAnimeResponseDto } from '../dtos/update-anime-response.dto';
+import { AddAnimeResponseDto } from '../dtos/add-anime-response.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/animes`;
-  private _animes$ = new BehaviorSubject<AnimeDetail[]>([]); //STATE
+  private readonly baseUrl = `${environment.apiUrl}/admin`;
+  private _animes$ = new BehaviorSubject<AnimeTableItem[]>([]); //STATE
+  animes$ = this._animes$.asObservable();
   
   constructor() {
-    this.http.get<AnimeDetail[]>(`${this.baseUrl}`)
+    this.http.get<AnimeTableResponseItemDto[]>(`${this.baseUrl}/animes`)
+      .pipe(map(animes => {
+        return animes.map(mapAnimeTableResponseItemToAnimeTableItem)
+      }))
       .subscribe((animes) => {
         this._animes$.next(animes)
       });
   }
 
-  addAnime(req: FormData): Observable<AnimeDetail> {
-    return this.http.post<AnimeDetail>(this.baseUrl, req)
+  getAnimeById(animeId: number): Observable<AnimeDetail> {  
+    return this.http.get<GetAnimeByIdResponseDto>(`${this.baseUrl}/animes/${animeId}`)
+      .pipe(map(mapGetAnimeByIdToAnimeDetail));
+  }
+
+  addAnime(req: FormData) {
+    return this.http.post<AddAnimeResponseDto>(`${this.baseUrl}/animes`, req)
       .pipe(
-        tap((res) => {
-          const animes = this._animes$.getValue();
-          animes.push(res);
-          this._animes$.next(animes);
-        })
+        map(mapAddAnimeToAnimeTableItem),
+        tap((anime) => this._animes$.next([...this._animes$.getValue(), anime]))
       );
   }
 
-  updateAnime(req: FormData): Observable<AnimeDetail> {
-    return this.http.put<AnimeDetail>(this.baseUrl, req)
+  updateAnime(req: FormData) {    
+    return this.http.put<UpdateAnimeResponseDto>(`${this.baseUrl}/animes`, req)
       .pipe(
-        tap((res) => {
-          const animes = this._animes$.getValue();
-          animes[animes.findIndex((a) => a.id == res.id)] = res;
-          this._animes$.next(animes);
-        })
+        map(mapUpdateAnimeToAnimeTableItem),
+        tap((anime) => this.applyAnimeUpdates(anime))
       );
   }
 
-  getAnimes(): Observable<AnimeDetail[]> {
-    return this._animes$;
+  private applyAnimeUpdates(anime: AnimeTableItem) {
+    console.log(this._animes$);
+    
+    console.log(anime);
+    const animes = this._animes$.getValue();
+    
+    const idx = animes.findIndex((a) => a.id === anime.id);
+
+    if (idx !== -1) {
+      animes[idx] = anime;
+      this._animes$.next([...animes]);
+    }
   }
 }

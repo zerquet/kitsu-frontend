@@ -12,7 +12,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, AsyncPipe, RouterLink],
   templateUrl: './episode-list.component.html',
-  styleUrl: './episode-list.component.css'
+  styleUrl: '../../admin-shared.css'
 })
 export class EpisodeListComponent {
   private router = inject(Router);

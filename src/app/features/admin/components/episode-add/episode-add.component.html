@@ -1,83 +1,73 @@
-<div id="form-heading">
-  <h5><a class="cursor" routerLink="../../episodes">Episodes</a> <i class="bi bi-chevron-right"></i></h5>
-</div>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="edit-intro">
-    <h5>Add Episode Record</h5>
+<header class="admin-page-header">
+  <div>
+    <div class="admin-breadcrumb"><a routerLink="../../episodes">Episodes</a><i class="bi bi-chevron-right"></i>New</div>
+    <h1>Add Episode</h1>
   </div>
-  <div id="form-layout">
-    <div class="important-fields">
+</header>
 
-      <div class="field">
+<form class="admin-card" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="admin-form-body single">
+    <section>
+      <div class="admin-field">
         <label for="matchingAnime">Anime</label>
-        <div>
-          <input pInputText formControlName="matchingAnime" id="matchingAnime" type="text" pSize="small">
-          @if(this.show === true) {
-            @if(animeResults$ | async; as animeResults) {
-              <div class="dropdown open">
-                <div class="scroller">
+        @if (selectedAnime !== null) {
+          <div class="admin-selected-pill">
+            <span>{{selectedAnime.title}}</span>
+            <button class="admin-icon-btn danger" title="Clear selected anime" (click)="deselectAnime()" type="button"><i class="bi bi-x-lg"></i></button>
+          </div>
+        }
+        @else {
+          <div class="admin-autocomplete">
+            <input class="admin-input" formControlName="matchingAnime" id="matchingAnime" type="text" placeholder="Search anime..." autocomplete="off">
+            @if (show) {
+              @if (animeResults$ | async; as animeResults) {
+                <div class="admin-autocomplete-menu">
                   @for (anime of animeResults; track anime.id) {
-                    <div class="item">
-                      <span class="imgSquare" style="border-radius: 3px;">
-                        <div>
-                            <img class="resultsAnimeImg" [src]="anime.imageUrl">
-                        </div>
-                      </span>
-                      <div class="resultInfoContainer">
-                        <p (click)="selectAnimeForEpisodeAddition(anime)">{{anime.title}}</p>
-                      </div>
-                    </div>
+                    <button class="admin-autocomplete-item" type="button" (click)="selectAnimeForEpisodeAddition(anime)">
+                      <img src="{{environment.imageHostUrl}}/anime/poster/{{anime.imageUrl}}" alt="">
+                      {{anime.title}}
+                    </button>
                   }
-                  @if(animeResults.length === 0) {
-                    <div class="item">
-                      <div class="resultInfoContainer">No results found.</div>
-                    </div>
+                  @empty {
+                    <div class="admin-autocomplete-empty">No results found.</div>
                   }
                 </div>
-              </div>
+              }
             }
-          }
-        </div>
-      </div>
-      @if (selectedAnime !== null) {
-        <div class="field">
-          <label for="selectedAnime">Selected Anime</label>
-          <input pInputText [disabled]="true" [value]="selectedAnime.title" pSize="small"/>
-          <div class="clear-selection">
-            <button title="Clear selected anime" (click)="deselectAnime()" type="button"><i class="bi bi-trash3"></i></button>
           </div>
-        </div>
-      }
-      <div class="field">
-        <label for="epNumber">Episode Number</label>
-        <p-inputnumber formControlName="epNumber" id="epNumber" mode="decimal" [useGrouping]="false" size="small" />
+        }
       </div>
-      <div class="field label">
-        <label for="title">Title</label>
-        <input appTrim pInputText pSize="small" formControlName="title" id="title" type="text" />
-        <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="required">
-          <div *ngIf="title?.hasError('required')">
-            Title is required.
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <label for="description" class="align-top">Description</label>
-        <textarea appTrim pTextarea pSize="small" formControlName="description" id="description" rows="6"></textarea>
-      </div>
-      <div class="field date">
-        <label for="airDate">Air Date</label>
-        <p-datepicker formControlName="airDate" id="airDate" showIcon iconDisplay="input" size="small" />
-      </div>
-      <div class="field">
-        <label for="japaneseTitle">Title (Japanese)</label>
-        <input appTrim pInputText formControlName="japaneseTitle" id="japaneseTitle" type="text" pSize="small">
-      </div>
-    </div>
 
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="epNumber">Episode Number</label>
+          <input class="admin-input" formControlName="epNumber" id="epNumber" type="number" min="0">
+        </div>
+        <div class="admin-field">
+          <label for="airDate">Air Date</label>
+          <input class="admin-input" formControlName="airDate" id="airDate" type="date">
+        </div>
+      </div>
+
+      <div class="admin-field">
+        <label for="title">Title</label>
+        <input appTrim class="admin-input" formControlName="title" id="title" type="text">
+      </div>
+
+      <div class="admin-field">
+        <label for="japaneseTitle">Title (Japanese)</label>
+        <input appTrim class="admin-input" formControlName="japaneseTitle" id="japaneseTitle" type="text">
+      </div>
+
+      <div class="admin-field">
+        <label for="description">Description</label>
+        <textarea appTrim class="admin-input" formControlName="description" id="description" rows="6"></textarea>
+      </div>
+    </section>
   </div>
 
-  <div id="add-btn-section" class="text-center mt-4">
-    <button id="add-btn" type="submit" [disabled]="!form.valid">Add Episode Record</button>
+  <div class="admin-form-footer">
+    <a class="admin-btn admin-btn-secondary" routerLink="../../episodes">Cancel</a>
+    <button class="admin-btn admin-btn-primary" type="submit" [disabled]="!form.valid">Add Episode</button>
   </div>
 </form>

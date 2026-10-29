@@ -33,6 +33,7 @@ export const routes: Routes = [
   { path: "media-reactions/:id", component: MediaReactionsComponent },
   {
     path: "admin", component: AdminComponent, children: [
+      { path: "", redirectTo: "anime", pathMatch: "full" },
       {
         path: "anime",
         component: AnimeListComponent,

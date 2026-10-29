@@ -22,8 +22,8 @@ describe('user profile mapper', () => {
     const profile = mapGetUserProfileToUserProfile({
       ...dto,
       birthday: '2000-06-26',
-      profilePhotoId: 'pfp',
-      coverPhotoId: 'cover'
+      profilePhotoId: 'pfp.jpg',
+      coverPhotoId: 'cover.jpg'
     });
 
     expect(profile.birthdayPublic).toMatch(/ 26th$/);

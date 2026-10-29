@@ -62,12 +62,12 @@
   <fieldset>
     <filter-values [filter]="'Types'" [max]="'2'"></filter-values>
     <div class="checkbox-field">
-      <p-checkbox [value]="tvChecked$.value" (change)="onToggleMediaType('isTv$')"  />
-      <label class="ps-2">TV</label>
+      <input id="type-tv" type="checkbox" [checked]="tvChecked$.value" (change)="onToggleMediaType('isTv$')">
+      <label for="type-tv" class="ps-2">TV</label>
     </div>
     <div class="checkbox-field">
-      <p-checkbox [value]="movieChecked$.value"  (change)="onToggleMediaType('isMovie$')" />
-      <label class="ps-2">Movie</label>
+      <input id="type-movie" type="checkbox" [checked]="movieChecked$.value" (change)="onToggleMediaType('isMovie$')">
+      <label for="type-movie" class="ps-2">Movie</label>
     </div>
   </fieldset>
 </div>

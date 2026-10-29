@@ -57,11 +57,11 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
         this.currentCoverPhotoId = profile.coverPhotoId;
 
         this.updateProfileForm = new FormGroup({
-          id: new FormControl<any>(profile.id),
-          location: new FormControl<any>(profile.location, [this.locationIsDifferent(profile.location)]),
-          birthday: new FormControl<any>(profile.birthday, [this.birthdayIsDifferent(profile.birthday)]),
-          gender: new FormControl<any>(profile.gender, [this.genderIsDifferent(profile.gender)]),
-          bio: new FormControl<any>(profile.bio, [this.bioIsDifferent(profile.bio)]),
+          id: new FormControl<string>(profile.id),
+          location: new FormControl<string | undefined>(profile.location, [this.locationIsDifferent(profile.location)]),
+          birthday: new FormControl<string | undefined>(profile.birthday, [this.birthdayIsDifferent(profile.birthday)]),
+          gender: new FormControl<string | undefined>(profile.gender, [this.genderIsDifferent(profile.gender)]),
+          bio: new FormControl<string | undefined>(profile.bio, [this.bioIsDifferent(profile.bio)]),
           profilePhoto: new FormControl<File | undefined>(undefined, [this.profilePhotoIsDifferent(profile.profilePhotoId)]),
           coverPhoto: new FormControl<File | undefined>(undefined, [this.coverPhotoIsDifferent(profile.coverPhotoId)])
         });        
@@ -86,13 +86,18 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     const req = new FormData();
-    req.append('id', this.id!.value!);
-    req.append('location', this.location!.value!);
-    req.append('bio', this.bio!.value!);
-    if (!Utils.IsNullOrUndefined(this.birthday!.value)) req.append('birthday', this.birthday!.value!);
-    req.append('gender', this.gender!.value!);
-    req.append('profilePhoto', this.profilePhoto!.value!)
-    req.append('coverPhoto', this.coverPhoto!.value!);
+    req.append('id', this.id!.value);
+
+    const appendIfPresent = (key: string, value: string | Blob | null | undefined) => {
+      if (!Utils.IsNullOrUndefined(value)) req.append(key, value!);
+    }
+    
+    appendIfPresent('location', this.location?.value);
+    appendIfPresent('bio', this.bio?.value);
+    appendIfPresent('birthday', this.birthday!.value!);
+    appendIfPresent('gender', this.gender?.value);
+    appendIfPresent('profilePhoto', this.profilePhoto!.value!)
+    appendIfPresent('coverPhoto', this.coverPhoto!.value!);
 
     this.usersService.updateProfile(req)
       .subscribe({
