@@ -11,8 +11,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
   selector: 'app-franchise-list',
   standalone: true,
   imports: [NgIf, ReactiveFormsModule, AsyncPipe, RouterLink],
-  templateUrl: './franchise-list.component.html',
-  styleUrl: '../../admin-shared.css'
+  templateUrl: './franchise-list.component.html'
 })
 export class FranchiseListComponent {
   private router = inject(Router);

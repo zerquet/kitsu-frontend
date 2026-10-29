@@ -15,8 +15,7 @@ import { AnimeTableItem } from '../../models/anime-table-item.model';
   selector: 'anime-list',
   standalone: true,
   imports: [ReactiveFormsModule, AsyncPipe, RouterLink, RouterOutlet],
-  templateUrl: './anime-list.component.html',
-  styleUrl: '../../admin-shared.css'
+  templateUrl: './anime-list.component.html'
 })
 export class AnimeListComponent {
   private adminService = inject(AdminService);

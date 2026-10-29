@@ -21,8 +21,7 @@ import { CategoryPickerComponent } from '../category-picker/category-picker.comp
   selector: 'app-anime-edit',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink, TrimDirective, CategoryPickerComponent],
-  templateUrl: './anime-edit.component.html',
-  styleUrl: '../../admin-shared.css'
+  templateUrl: './anime-edit.component.html'
 })
 export class AnimeEditComponent implements OnInit {
   private categoryService = inject(CategoryService);

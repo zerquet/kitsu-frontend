@@ -18,8 +18,7 @@ import { CategoryPickerComponent } from '../category-picker/category-picker.comp
   selector: 'app-anime-add',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink, TrimDirective, CategoryPickerComponent],
-  templateUrl: './anime-add.component.html',
-  styleUrl: '../../admin-shared.css'
+  templateUrl: './anime-add.component.html'
 })
 export class AnimeAddComponent {
   private categoryService = inject(CategoryService);
