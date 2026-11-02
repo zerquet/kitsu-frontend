@@ -1,0 +1,45 @@
+<div class="d-flex px-3 pt-3" id="anime-reactions-section">
+  <div class="anime-reactions-toolbar">
+    <strong>Reactions · </strong>
+    <span>Sort here</span>
+    <a class="new-reaction-link">New Reaction</a>
+  </div>
+
+  @if (animeMediaReactions$ | async; as animeReactions) {
+    @if (animeReactions.length === 0) {
+      <div class="reactions-empty">Doesn't look like anyone has reacted to this yet</div>
+    }
+    @else {
+      <div class="anime-reactions-list">
+        @for (reaction of animeReactions; track reaction.id) {
+          <div class="reaction-item">
+            <div class="reaction-vote">
+              <a>
+                <div><i class="bi bi-caret-up-fill"></i></div>
+                {{reaction.upvoteCount}}
+              </a>
+            </div>
+            <div class="reaction-details">
+              <div class="reaction-heading">
+                <a class="reaction-author" routerLink="/users/{{reaction.userId}}/about"><small>{{reaction.author}}</small></a>
+                <a class="reaction-options" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-three-dots"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="javascript:void(0);" (click)="onCopyLink(reaction.id)">
+                      Copy Link to Reaction
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="reaction-content">
+                <a routerLink="/media-reactions/{{reaction.id}}">{{reaction.reaction}}</a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>      
+    }
+  }
+</div>

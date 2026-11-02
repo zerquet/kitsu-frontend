@@ -2,7 +2,7 @@ import { GetAnimeByIdResponseDto } from "../../features/anime/dtos/get-anime-by-
 import { AnimeResponseItemDto, AnimeSearchResultResponseDto, GetExploreAnimeResponseDto } from "../../features/anime/dtos/get-explore-anime-response.dto";
 import { AnimePageModel } from "../../features/anime/models/anime-page.model";
 import { ExplorePageModel } from "../../features/anime/models/explore-page.model";
-import { getAnimePosterUrl } from "../helpers/helpers";
+import { formatAirDate, getAnimePosterUrl } from "../helpers/helpers";
 import { Anime } from "../models/anime.model";
 
 export function mapGetExploreAnimeToExplorePage(dto: GetExploreAnimeResponseDto): ExplorePageModel {
@@ -26,7 +26,11 @@ export function mapSearchResultToAnime(dto: AnimeSearchResultResponseDto): Anime
 
 export function mapGetAnimeByIdToAnimePage(dto: GetAnimeByIdResponseDto): AnimePageModel {
   return {
-    anime: dto.anime,
+    anime: {
+      ...dto.anime,
+      startAirDateFormatted: dto.anime.startAirDate ? formatAirDate(dto.anime.startAirDate) : undefined,
+      endAirDateFormatted: dto.anime.endAirDate ? formatAirDate(dto.anime.endAirDate): undefined
+    },
     isFavorite: dto.isFavorite
   }
 }

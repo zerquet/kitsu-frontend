@@ -22,6 +22,8 @@ export interface AnimeDetail extends Anime {
   season?: string;
   startAirDate?: string;
   endAirDate?: string;
+  startAirDateFormatted?: string;
+  endAirDateFormatted?: string;
   tvRating?: string;
   episodeLength?: number;
   franchiseId?: number;

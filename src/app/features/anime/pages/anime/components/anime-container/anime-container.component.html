@@ -5,6 +5,9 @@
   @else if(tab === 'episodes') {
     <anime-episodes [id]="anime.id"></anime-episodes>
   }
+  @else if(tab === 'reactions') {
+    <anime-reactions></anime-reactions>
+  }
   @else if (tab === 'franchise') {
     <anime-franchise [id]="anime.franchiseId" [franchiseName]="anime.title"></anime-franchise>
   }

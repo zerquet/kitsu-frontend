@@ -3,14 +3,14 @@
     <div id="title-section">
       <strong>{{anime.title}}</strong>
       <span id="anime-quick-info-section" class="ps-2">
-        <strong>{{anime.year}} | {{anime.mediaType}} | {{anime.episodeCount}} Episodes</strong>
+        <strong>{{anime.year}}</strong>
       </span>
     </div>
     <div><strong id="anime-score">{{anime.score}}% Overall Rating</strong></div>
     <div class="mt-2">{{anime.description}}</div>
     <ul id="anime-categories-list" class="d-flex flex-wrap flex-row ps-0 mt-5">
       @for (cat of anime.categories; track cat.id) {
-        <li class=""><a href="javascript:void(0);" routerLink="/explore/category/{{cat.name}}">{{cat.name}}</a></li>
+        <li class=""><a routerLink="/explore/category/{{cat.slug}}">{{cat.name}}</a></li>
       }
     </ul>
   </div>
@@ -21,6 +21,9 @@
         <li *ngIf="anime.englishTitle"><strong>English</strong><span>{{anime.englishTitle}}</span></li>
         <li *ngIf="anime.japaneseTitle"><strong>Japanese</strong><span>{{anime.japaneseTitle}}</span></li>
         <li *ngIf="anime.japaneseTitleRomaji"><strong>Japanese (Romaji)</strong><span>{{anime.japaneseTitleRomaji}}</span></li>
+        <li *ngIf="anime.mediaType"><strong>Type</strong><span>{{anime.mediaType}}</span></li>
+        <li *ngIf="anime.episodeCount"><strong>Episodes</strong><span>{{anime.episodeCount}}</span></li>
+        <li *ngIf="anime.startAirDateFormatted && anime.endAirDateFormatted"><strong>Aired</strong><span>{{anime.startAirDateFormatted}} to {{anime.endAirDateFormatted}}</span></li>
         <li *ngIf="anime.releaseStatus"><strong>Status</strong><span>{{anime.releaseStatus}}</span></li>
         <li *ngIf="anime.season"><strong>Season</strong><span>{{anime.season}}</span></li>
         <li *ngIf="anime.tvRating"><strong>Rating</strong><span>{{anime.tvRating}}</span></li>

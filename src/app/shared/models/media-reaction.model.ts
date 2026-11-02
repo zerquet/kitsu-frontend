@@ -14,3 +14,11 @@ export interface MediaReaction {
 export interface MediaReactionWithUser extends MediaReaction {
   userProfile: UserProfile;
 }
+
+export interface MediaReactionTableRow {
+  id: number;
+  userId: string;
+  reaction: string;
+  upvoteCount: number;
+  author?: string;
+}

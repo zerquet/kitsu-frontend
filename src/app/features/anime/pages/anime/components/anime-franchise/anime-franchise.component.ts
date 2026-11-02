@@ -20,9 +20,9 @@ export class AnimeFranchiseComponent {
   @Input() franchiseName: string = "";
   @Input() set id(id: number | undefined) {
     if (id != null) {
-      this.animeService.getAnimesByFranchiseId(id).subscribe(animes => {
-        this.animes$.next(animes);
-      });
+      // this.animeService.getAnimesByFranchiseId(id).subscribe(animes => {
+      //   this.animes$.next(animes);
+      // });
     }
   }
   activeAnimeId = 0;
