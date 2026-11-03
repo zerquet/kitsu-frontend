@@ -10,13 +10,18 @@ You can [demo the live app](https://icy-sky-0b3ce1210.6.azurestaticapps.net/). A
 
 ### Explore Anime
 
-Find anime in the explore page or by searching.  
+Find anime in the explore page, browse by category or collection, or use the advanced search with filters and sorting.  
 <img width="1280" height="729" alt="Explore and search anime" src="https://github.com/user-attachments/assets/668f6270-eec8-4510-8d60-986a020a6713" />
 
 ### Track anime
 
-Track anime with ratings, progress, and a library.  
+Track anime with ratings, progress, and a library. Each anime page has a summary, episodes, reactions and franchise tab.  
 <img width="1280" height="726" alt="Add anime to your library" src="https://github.com/user-attachments/assets/d14f1387-6f68-43ad-afca-2508187188c9" />
+
+### Media reactions
+
+Post short reactions to anime you've watched. Reactions show up on the anime's page and on your profile, and you can edit or delete your own.
+<!-- TODO: add screenshot -->
 
 ### View your profile
 
@@ -30,29 +35,30 @@ Edit your library entries with a search, filter, and sorting options.
 
 ### Admin Hub
 
-_(UI is a work-in-progress)_  
-Control the anime catalog via the admin hub.
+Manage the anime catalog, episodes and franchises via the admin hub.  
 <img width="1280" height="726" alt="Admin Hub" src="https://github.com/user-attachments/assets/402d90c9-3176-4780-bd2c-3824a09ded7d" />
 
-## Tech stack used:
+## Tech stack
 
-- Angular 18 (front-end)
+- Angular 18 with Bootstrap 5 / ng-bootstrap and Angular Material (front-end)
 - ASP.NET Core (back-end, [repository link](https://github.com/zerquet/kitsu-backend))
 - SQL Server (database)
 - Azure (Static Web App for front-end, App Service for API, SQL Server for database, Storage account for image hosting)
 
-## Architecture Notes:
+## Architecture notes
 
-- `core/`: JWT interceptors and layout
-- `shared/`: reusable components, services, validators and DTO -> model mappers
-- Route guards that protect the admin hub
+- `core/`: JWT interceptor, nav menu layout, and app-wide directives/utilities
+- `shared/`: reusable components, services, models, validators, helpers and DTO -> model mappers
+- A route guard protects the admin hub
 
-The code-base is structured by features:
+The code-base is structured by features under `features/`:
 
-- `admin/ `: admin hub to manage anime catalog
-- `anime/`: contains the search, explore and anime pages
-- `auth/`: authentication (sign in/sign out)
-- `user/`: relates to the user's library, profile, and media reactions.
+- `admin/`: admin hub to manage the anime catalog, episodes and franchises
+- `anime/`: contains the explore, search and anime pages
+- `auth/`: authentication (sign up, sign in, sign out)
+- `user/`: relates to the user's library, profile, and media reactions
+
+Each feature keeps its own DTOs, models, components and services.
 
 ## Running locally
 
@@ -60,7 +66,13 @@ This front-end expects the [kitsu-backend](https://github.com/zerquet/kitsu-back
 
 ```
 npm install
-ng serve
+npm start
 ```
 
 Navigate to `http://localhost:4200`. Without the backend running, pages that fetch data (explore, search, anime, profiles) won't load.
+
+To run the unit tests:
+
+```
+npm test
+```
