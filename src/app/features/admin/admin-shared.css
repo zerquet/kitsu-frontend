@@ -400,6 +400,12 @@ input[type="file"].admin-input::file-selector-button {
   border-bottom: none;
 }
 
+.admin-table tbody .admin-results-loading {
+  text-align: center;
+  flex: 1;
+  padding: 40px 0px;
+}
+
 .admin-table tbody tr.clickable {
   cursor: pointer;
   transition: background-color 80ms ease-in-out;
@@ -453,5 +459,20 @@ input[type="file"].admin-input::file-selector-button {
 
   .admin-search {
     width: 100%;
+  }
+}
+
+.spinning-icon {
+  /* Keyframe name, duration, timing function, and repetition */
+  animation: spin 2s linear infinite; 
+}
+
+/* Define the animation steps */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

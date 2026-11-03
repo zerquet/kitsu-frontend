@@ -22,22 +22,33 @@
       </tr>
     </thead>
     <tbody>
-      @if (filteredSearchList$ | async; as searchList) {
-        @for (anime of searchList; track anime.id) {
-          <tr class="clickable" routerLink="{{anime.id}}">
-            <td class="col-poster"><img class="admin-table-poster" src="{{anime.imageUrl}}" alt=""></td>
-            <td class="admin-table-title">{{anime.title}}</td>
-            <td class="col-narrow">{{anime.year}}</td>
-            <td class="col-narrow">{{anime.mediaType}}</td>
-            <td class="col-narrow">{{anime.episodeCount}}</td>
-            <td class="col-actions">
-              <a class="admin-icon-btn" routerLink="{{anime.id}}" title="Edit"><i class="bi bi-pencil"></i></a>
-              <button class="admin-icon-btn danger" type="button" title="Delete" (click)="$event.stopPropagation(); deleteAnime(anime.id)"><i class="bi bi-trash3"></i></button>
+      @if (searchState$ | async; as state) {
+        @if (state.loading) {
+          <tr>
+            <td colspan="6" class="admin-results-loading">
+              <svg class="spinning-icon" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
             </td>
           </tr>
         }
-        @empty {
-          <tr><td class="admin-empty" colspan="6">No anime found.</td></tr>
+        @else {
+          @for (anime of state.results; track anime.id) {
+            <tr class="clickable" routerLink="{{anime.id}}">
+              <td class="col-poster"><img class="admin-table-poster" src="{{anime.imageUrl}}" alt=""></td>
+              <td class="admin-table-title">{{anime.title}}</td>
+              <td class="col-narrow">{{anime.year}}</td>
+              <td class="col-narrow">{{anime.mediaType}}</td>
+              <td class="col-narrow">{{anime.episodeCount}}</td>
+              <td class="col-actions">
+                <a class="admin-icon-btn" routerLink="{{anime.id}}" title="Edit"><i class="bi bi-pencil"></i></a>
+                <button class="admin-icon-btn danger" type="button" title="Delete" (click)="$event.stopPropagation(); deleteAnime(anime.id)"><i class="bi bi-trash3"></i></button>
+              </td>
+            </tr>
+          }
+          @empty {
+            <tr><td class="admin-empty" colspan="6">No anime found.</td></tr>
+          }
         }
       }
     </tbody>

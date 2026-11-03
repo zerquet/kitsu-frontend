@@ -40,7 +40,7 @@ export class AdvancedSearchDataService {
     switchMap(([term, minRating, maxRating, minYear, maxYear, minEps, maxEps, isTv, isMovie, sortOption]) => {   
       return this.animeService
         .searchAnime(term, minYear, maxYear, minRating, maxRating, minEps, maxEps, isTv, isMovie)
-        .pipe(map(list => this.sorter(list, sortOption)));
+        .pipe(map(list => this.sorter(list, sortOption))); //sorting should apply in backend too.
       }
     )
   );
