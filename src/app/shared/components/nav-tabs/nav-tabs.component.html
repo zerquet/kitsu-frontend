@@ -3,12 +3,14 @@
     <ul>
       @for (tab of tabs; track tab) {
         @if (tab.routeUrl) {
-          <li [routerLink]="tab.routeUrl" routerLinkActive="active" [class.no-bottom-border]="!hasBottomBorder">
-            {{tab.label | titlecase}}
-          </li>
+          <a [routerLink]="tab.routeUrl" routerLinkActive="active" [class.no-bottom-border]="!hasBottomBorder" class="tab-item">
+            <li>
+              {{tab.label | titlecase}}
+            </li>
+          </a>
         }
         @else {
-          <li [class.active]="activeTabId === tab.id" [class.no-bottom-border]="!hasBottomBorder" (click)="tabClicked.emit(tab.id)">
+          <li [class.active]="activeTabId === tab.id" [class.no-bottom-border]="!hasBottomBorder" (click)="tabClicked.emit(tab.id)" class="tab-item">
             {{tab.label | titlecase}}
           </li>
         }

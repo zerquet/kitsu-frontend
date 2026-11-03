@@ -35,6 +35,14 @@ export function formatBirthday(birthdate: string) {
   return `${month} ${ordinalDay}`;
 }
 
+export function formatAirDate(date: string) {
+  const airDate = new Date(date);
+  const month = airDate.toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+  const day = airDate.toLocaleString('default', { day: 'numeric', timeZone: 'UTC'});
+  const year = airDate.toLocaleString('default', { year: 'numeric', timeZone: 'UTC'});
+  return `${month} ${day}, ${year}`;
+}
+
 // Converts an API date to the YYYY-MM-DD value a native date input expects.
 // API dates arrive as ISO strings at runtime even where models type them as Date.
 export function toDateInputValue(date: Date | string | null | undefined): string | null {

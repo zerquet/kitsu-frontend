@@ -3,11 +3,12 @@ import { AnimeFranchiseComponent } from "../../../../pages/anime/components/anim
 import { AnimeEpisodesComponent } from "../../../../pages/anime/components/anime-episodes/anime-episodes.component";
 import { AnimeSummaryComponent } from "../../../../pages/anime/components/anime-summary/anime-summary.component";
 import { Anime, AnimeDetail } from '../../../../../../shared/models/anime.model';
+import { AnimeReactionsComponent } from '../anime-reactions/anime-reactions.component';
 
 @Component({
   selector: 'anime-container',
   standalone: true,
-  imports: [AnimeFranchiseComponent, AnimeEpisodesComponent, AnimeSummaryComponent],
+  imports: [AnimeFranchiseComponent, AnimeEpisodesComponent, AnimeSummaryComponent, AnimeReactionsComponent],
   templateUrl: './anime-container.component.html',
   styleUrl: './anime-container.component.css'
 })

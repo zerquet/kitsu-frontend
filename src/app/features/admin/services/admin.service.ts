@@ -18,21 +18,18 @@ export class AdminService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/admin`;
   private _animes$ = new BehaviorSubject<AnimeTableItem[]>([]); //STATE
-  animes$ = this._animes$.asObservable();
-  
   constructor() {
-    this.http.get<AnimeTableResponseItemDto[]>(`${this.baseUrl}/animes`)
-      .pipe(map(animes => {
-        return animes.map(mapAnimeTableResponseItemToAnimeTableItem)
-      }))
-      .subscribe((animes) => {
-        this._animes$.next(animes)
-      });
+  
   }
 
   getAnimeById(animeId: number): Observable<AnimeDetail> {  
     return this.http.get<GetAnimeByIdResponseDto>(`${this.baseUrl}/animes/${animeId}`)
       .pipe(map(mapGetAnimeByIdToAnimeDetail));
+  }
+
+  searchAnime(term: string): Observable<AnimeTableItem[]> {
+    return this.http.get<AnimeTableResponseItemDto[]>(`${this.baseUrl}/animes/search`, { params: { term } })
+      .pipe(map(animes => animes.map(mapAnimeTableResponseItemToAnimeTableItem)));
   }
 
   addAnime(req: FormData) {

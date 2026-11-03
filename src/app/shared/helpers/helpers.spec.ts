@@ -1,6 +1,7 @@
 import { environment } from "../../../environments/environment";
 import { DEFAULT_USER_COVER, DEFAULT_USER_PROFILE } from "../constants/constants";
 import {
+  formatAirDate,
   formatBirthday,
   getAnimeCoverUrl,
   getAnimePosterUrl,
@@ -49,6 +50,12 @@ describe('helpers', () => {
       expect(formatBirthday('2000-03-01')).toBe(`${monthName(2000, 2)} 1st`);
     });
   });
+
+  describe('formatAirDate', () => {
+    it('formats a DateOnly string as month, day and year', () => {
+      expect(formatAirDate('2024-01-08')).toBe('Jan 8, 2024');
+    })
+  })
 
   describe('photo URLs', () => {
     it('builds profile and cover photo URLs from an id', () => {

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
@@ -10,6 +11,7 @@ import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
   styleUrl: './advanced-search.component.css'
 })
 export class AdvancedSearchComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   @Output() formChange = new EventEmitter<string>();
   form = new FormGroup({ search: new FormControl('') });
 
@@ -17,15 +19,8 @@ export class AdvancedSearchComponent implements OnInit {
     this.form.controls['search'].valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      takeUntil(this.destroy$))
+      takeUntilDestroyed(this.destroyRef))
     .subscribe(term => this.formChange.emit(term?.toLocaleLowerCase()));  
   }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private destroy$ = new Subject<void>();
   
 }

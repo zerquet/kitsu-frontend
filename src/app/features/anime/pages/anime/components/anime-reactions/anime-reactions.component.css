@@ -1,0 +1,130 @@
+#anime-reactions-section {
+  flex-flow: column;
+}
+
+.anime-reactions-toolbar {
+  margin-bottom: 14px;
+}
+
+.anime-reactions-toolbar a.new-reaction-link {
+  float: right;
+  text-decoration: none;
+  color: #f75239;
+  font-weight: bold;
+  font-size: .9rem;
+}
+
+a.new-reaction-link:hover {
+  cursor: pointer;
+  color: #f3290a;
+}
+
+.reactions-empty {
+  text-align: center;
+}
+
+.anime-reactions-list {
+  display: flex;
+  flex-flow: column;
+  padding: 0px 15px;
+  background-color: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 3px;
+}
+
+.reaction-item {
+  display: flex;
+  border-bottom: 1px solid #eaeaea;
+  align-items: center;
+  margin-top: 15px;
+  padding-bottom: 15px;
+  gap: 10px;
+}
+
+.reaction-vote {
+  width: 55px;
+  text-align: center;
+}
+
+.reaction-vote a {
+  color: #999;
+}
+
+.reaction-vote a:hover {
+  color: inherit;
+  cursor: pointer;
+}
+
+.reaction-details {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+}
+
+.reaction-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 25px;
+}
+
+a.reaction-author {
+  text-decoration: none;
+  color: #999;
+  font-weight: bold;
+  font-size: .8rem;
+}
+
+a.reaction-author:hover {
+  cursor: pointer;
+  color: #f3290a;
+}
+
+a.reaction-options {
+  display: none;
+  text-decoration: none;
+  color: #999;
+}
+
+a.reaction-options i {
+  font-size: 30px;
+}
+
+a.reaction-options:hover {
+  cursor: pointer;
+  color: #f3290a;
+}
+
+.reaction-item:hover a.reaction-options {
+  display: inline-block;
+}
+
+/*Similar styles in reaction-card for dropdown*/
+.reaction-heading .dropdown-menu {
+  background-color: #fff;
+}
+
+.reaction-heading .dropdown-menu .dropdown-item {
+  color: #464646;
+}
+
+.reaction-heading .dropdown-menu .dropdown-item:hover {
+  background-color: #faf9fa;
+  color: #f3290a
+}
+
+.reaction-content {
+  width: 95%;
+  font-weight: bold;
+}
+
+.reaction-content a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.reaction-content:hover {
+  cursor: pointer;
+  color: #f3290a;
+}
+

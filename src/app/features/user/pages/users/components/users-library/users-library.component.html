@@ -54,17 +54,29 @@
                       <div class="title-cell-span">
                         <a class="title-cell-title" routerLink="/anime/{{entry.animeId}}/summary">{{entry.anime.title}}
                         </a>
-                        @if (entry.mediaReaction) {
-                        <div class="media-reaction-edit">
-                          <i class="bi bi-chat-left-dots" (click)="onEditMediaReactionClick(entry)" placement="bottom"
-                            [openDelay]="150" [closeDelay]="100" [ngbTooltip]="entry.mediaReaction.reaction"></i>
-                        </div>
+                        @if (canEdit$ | async) {
+                          @if (entry.mediaReaction) {
+                            <div class="media-reaction-present">
+                              <i class="bi bi-chat-left-dots" (click)="onEditMediaReactionClick(entry)" placement="bottom"
+                              [openDelay]="150" [closeDelay]="100" [ngbTooltip]="entry.mediaReaction.reaction"></i>
+                            </div>
+                          }
+                          @else {
+                            <div class="media-reaction-add">
+                              <i class="bi bi-plus-circle" (click)="onAddMediaReaction(entry)" placement="bottom" [openDelay]="150"
+                                [closeDelay]="100" ngbTooltip="Add Reaction"></i>
+                            </div>
+                          }
                         }
                         @else {
-                        <div class="media-reaction-add">
-                          <i class="bi bi-plus-circle" (click)="onAddMediaReaction(entry)" placement="bottom" [openDelay]="150"
-                            [closeDelay]="100" ngbTooltip="Add Reaction"></i>
-                        </div>
+                          @if (entry.mediaReaction) {
+                            <div class="media-reaction-present">
+                              <a routerLink="/media-reactions/{{entry.mediaReaction.id}}">
+                                <i class="bi bi-chat-left-dots" placement="bottom"
+                                [openDelay]="150" [closeDelay]="100" [ngbTooltip]="entry.mediaReaction.reaction"></i>
+                              </a>
+                            </div>
+                          }
                         }
                       </div>
                     </td>
@@ -92,7 +104,7 @@
                         </span>
                       }
                       @else {
-                        <span>{{entry.episodesWatched}}/{{entry.anime.episodeCount}}</span>
+                        <span>{{entry.episodesWatched}} / {{entry.anime.episodeCount ?? '—'}}</span>
                       }
                     </td>
                     <td class="edit-btn-cell">

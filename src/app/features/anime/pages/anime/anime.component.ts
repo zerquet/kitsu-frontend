@@ -43,7 +43,7 @@ export class AnimeComponent implements OnInit {
   tabs: TabItem[] = [
     {id: 'anime.summary', label: 'summary', routeUrl: '../summary'},
     {id: 'anime.episodes', label: 'episodes', routeUrl: '../episodes'},
-    {id: 'anime.characters', label: 'characters', routeUrl: '../characters'},
+    {id: 'anime.reactions', label: 'reactions', routeUrl: '../reactions'},
     {id: 'anime.franchise', label: 'franchise', routeUrl: '../franchise'}
   ];
   environment = environment;
@@ -64,8 +64,9 @@ export class AnimeComponent implements OnInit {
   isFavorite$ = new BehaviorSubject<boolean>(false);
 
   anime$ = this.route.params.pipe(
+    map(params => params['id']),
     distinctUntilChanged(),
-    switchMap(params => this.animeService.getAnimeById(params['id'])),
+    switchMap(id => this.animeService.getAnimeById(id)),
     tap(res => {
       if (!res) return;
 
@@ -78,8 +79,9 @@ export class AnimeComponent implements OnInit {
   );
 
   currentTab$ = this.route.params.pipe(
-    distinctUntilChanged(),
     map(params => params['tab'] || "summary"),
+    distinctUntilChanged(),
+    tap((tab) => console.log('current tab: ', tab)),
     takeUntilDestroyed(this.destroyRef)
   );
 

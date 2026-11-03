@@ -8,6 +8,9 @@ import { AnimeResponseItemDto, AnimeSearchResultResponseDto, GetExploreAnimeResp
 import { mapAnimeResponseItemToAnime, mapGetAnimeByIdToAnimePage, mapGetExploreAnimeToExplorePage, mapSearchResultToAnime } from '../mappers/anime.mapper';
 import { ExplorePageModel } from '../../features/anime/models/explore-page.model';
 import { AnimePageModel } from '../../features/anime/models/anime-page.model';
+import { GetMediaReactionByAnimeResponseDto } from '../../features/anime/dtos/get-media-reaction-by-anime-response.dto';
+import { MediaReaction, MediaReactionTableRow } from '../models/media-reaction.model';
+import { mapGetMediaReactionByAnimeToMediaReaction } from '../mappers/media-reaction.mapper';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +19,10 @@ export class AnimeService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/animes`;
   private readonly franchiseBaseUrl = `${environment.apiUrl}/franchises`;
+  private animeReactionsSubject = new BehaviorSubject<MediaReactionTableRow[]>([]);
+  animeReactions$ = this.animeReactionsSubject.asObservable();
 
-  private _animes$ = new BehaviorSubject<AnimeDetail[]>([]); //STATE
+  //private _animes$ = new BehaviorSubject<AnimeDetail[]>([]); //STATE
 
   getExploreAnime(category?: string): Observable<ExplorePageModel> {
     const url = category 
@@ -45,24 +50,24 @@ export class AnimeService {
 
   //if app gets bigger, we may need to call APi directly...
   //and maybe hold a store for animes of a certain category? not sure how it'll work but i have an idea
-  getAnimesByCategory(category: string): Observable<AnimeDetail[]> {
-    return this._animes$.pipe(
-      map((animes) => {
-        return animes.filter((anime) => {
-          return anime.categories.some((c) => c.name === category)
-        });
-      }),
-      switchMap((stateResults) => {
-        const skipQueryString = stateResults.map(x => x.id.toString()).join(',');
-        return this.http.get<AnimeDetail[]>(`${environment.apiUrl}/${category}/animes?skip=${skipQueryString}`,)
-          .pipe(
-            map((serverResults) => {
-              return stateResults.concat(serverResults);
-            })
-          );
-      })
-    );
-  }
+  // getAnimesByCategory(category: string): Observable<AnimeDetail[]> {
+  //   return this._animes$.pipe(
+  //     map((animes) => {
+  //       return animes.filter((anime) => {
+  //         return anime.categories.some((c) => c.name === category)
+  //       });
+  //     }),
+  //     switchMap((stateResults) => {
+  //       const skipQueryString = stateResults.map(x => x.id.toString()).join(',');
+  //       return this.http.get<AnimeDetail[]>(`${environment.apiUrl}/${category}/animes?skip=${skipQueryString}`,)
+  //         .pipe(
+  //           map((serverResults) => {
+  //             return stateResults.concat(serverResults);
+  //           })
+  //         );
+  //     })
+  //   );
+  // }
 
   //Refactor this. Consider search result model 
   getAnimeByTitle(term: string): Observable<Anime[]> {
@@ -105,20 +110,28 @@ export class AnimeService {
   }
 
   //TODO move to franchise svc?
-  getAnimesByFranchiseId(franchiseId: number): Observable<AnimeDetail[]> {
-    return this._animes$.pipe(
-      map((animes) => {
-        return animes.filter((anime) => anime.franchiseId == franchiseId);
-      }),
-      switchMap((stateResults) => {
-        const skipQueryString = stateResults.map(x => x.id.toString()).join(',');
-        return this.http.get<AnimeDetail[]>(`${this.franchiseBaseUrl}/${franchiseId}/animes?skip=${skipQueryString}`)
-          .pipe(
-            map((serverResults) => {
-              return stateResults.concat(serverResults);
-            })
-          );
+  // getAnimesByFranchiseId(franchiseId: number): Observable<AnimeDetail[]> {
+  //   return this._animes$.pipe(
+  //     map((animes) => {
+  //       return animes.filter((anime) => anime.franchiseId == franchiseId);
+  //     }),
+  //     switchMap((stateResults) => {
+  //       const skipQueryString = stateResults.map(x => x.id.toString()).join(',');
+  //       return this.http.get<AnimeDetail[]>(`${this.franchiseBaseUrl}/${franchiseId}/animes?skip=${skipQueryString}`)
+  //         .pipe(
+  //           map((serverResults) => {
+  //             return stateResults.concat(serverResults);
+  //           })
+  //         );
+  //     })
+  //   );
+  // }
+
+  loadAnimeMediaReactions(animeId: number) {
+    this.http.get<GetMediaReactionByAnimeResponseDto[]>(`${this.baseUrl}/${animeId}/media-reactions`)
+      .pipe(map(dtos => dtos.map(mapGetMediaReactionByAnimeToMediaReaction)))
+      .subscribe((reactions) => {
+        this.animeReactionsSubject.next(reactions);
       })
-    );
   }
 }

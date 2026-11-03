@@ -17,28 +17,32 @@
   list-style: none;
   padding-left: 0px;
   margin-bottom: 0px;
-  cursor: pointer;
   margin-left: 1%;
   font-size: .90rem;
 }
 
-.anime-tabs ul li {
+.anime-tabs a {
+  text-decoration: none;
+}
+
+.anime-tabs ul .tab-item {
   border: 1px solid #eaeaea;
   padding: 8px 16px;
   transition: all 80ms ease-in-out;
   color: #9f9f9f;
+  cursor: pointer;
 }
 
-.anime-tabs ul li:hover {
+.anime-tabs ul .tab-item:hover {
   background-color: #f7f7f7;
   color: #464646;
 }
 
-.anime-tabs ul li.active {
+.anime-tabs ul .tab-item.active{
   background-color: #f7f7f7;
   color: #464646;
 }
 
-.anime-tabs ul li.active:hover {
+.anime-tabs ul .tab-item.active:hover {
   background-color: #f2f2f2;
 }

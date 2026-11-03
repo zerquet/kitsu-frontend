@@ -19,7 +19,8 @@
     <library-entry-status [animeId]="animeId" [animeEpisodeCount]="animeEpisodeCount"></library-entry-status>
   </div>
   @if (currentTab$ | async; as currentTab) {
-  <anime-container [anime]="animeResponse.anime" [tab]="currentTab"></anime-container>
+    <!-- use router-outlet here instead, similar to explore page?-->
+    <anime-container [anime]="animeResponse.anime" [tab]="currentTab"></anime-container>
   }
 </div>
 }

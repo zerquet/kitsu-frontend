@@ -184,9 +184,14 @@ tbody {
 
 .title-cell-title:hover,
 .media-reaction-add i:hover,
-.media-reaction-edit i:hover {
+.media-reaction-present i:hover {
   color: #f75239;
   cursor: pointer;
+}
+
+.media-reaction-present a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .media-reaction-add {

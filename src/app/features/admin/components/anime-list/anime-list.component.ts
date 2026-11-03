@@ -1,62 +1,46 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, BehaviorSubject, Observable, combineLatest, switchMap, of, takeUntil, debounceTime, distinctUntilChanged, filter } from 'rxjs';
+import {  RouterLink, RouterOutlet } from '@angular/router';
+import { BehaviorSubject, Observable, switchMap, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
 import { AuthService } from '../../../../features/auth/services/auth.service';
-import { Anime, AnimeDetail } from '../../../../shared/models/anime.model';
-import { AnimeService } from '../../../../shared/services/anime.service';
 import { AsyncPipe } from '@angular/common';
-import { environment } from '../../../../../environments/environment';
 import { AdminService } from '../../services/admin.service';
 import { AnimeTableItem } from '../../models/anime-table-item.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'anime-list',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, RouterLink, RouterOutlet],
+  imports: [ReactiveFormsModule, AsyncPipe, RouterLink],
   templateUrl: './anime-list.component.html'
 })
 export class AnimeListComponent {
   private adminService = inject(AdminService);
-  private modalService = inject(NgbModal);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
   public authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef); 
 
   form = new FormGroup({ searchControl: new FormControl('') });
-  currRoute = '/admin';
-  currTab = 'anime';
-  selectedAnime = -1;
-  environment = environment;
 
   ngOnInit() {
     this.form.controls['searchControl'].valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      filter((value) => value !== null),
-      takeUntil(this.destroy$)
-    ).subscribe((value) => this.searchTerm$.next(value));
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((term) => {
+      this.searchTerm$.next(term ? term.toLocaleLowerCase() : "")
+    });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private destroy$ = new Subject<void>();
   searchTerm$ = new BehaviorSubject<string>('');
-  searchList$: Observable<AnimeTableItem[]> = this.adminService.animes$; //get recent animes if no search query.
-  filteredSearchList$: Observable<AnimeTableItem[]> = combineLatest([this.searchList$, this.searchTerm$])
-    .pipe(
-      switchMap(([list, term]) => {
-        if (term === '') {
-          return of(list);
-        }
-        return of(this.filterList(term, list));
-      }),
-      takeUntil(this.destroy$)
-    )
+  // Single stream carrying both loading state and results, so the template subscribes once
+  // and toggling the spinner never tears down (and cancels) the in-flight request.
+  searchState$: Observable<{ loading: boolean; results: AnimeTableItem[] }> = this.searchTerm$.pipe(
+    switchMap(term => this.adminService.searchAnime(term).pipe(
+      map(results => ({ loading: false, results })),
+      startWith({ loading: true, results: [] as AnimeTableItem[] })
+    )),
+    takeUntilDestroyed(this.destroyRef)
+  );
 
   deleteAnime(id: number) {
     //const modal = this.modalService.open(DeleteAnimeModalComponent, { size: 'sm', centered: true });

@@ -1,8 +1,9 @@
+import { GetMediaReactionByAnimeResponseDto } from "../../features/anime/dtos/get-media-reaction-by-anime-response.dto";
 import { AddMediaReactionResponseDto } from "../../features/user/dtos/add-media-reaction-response.dto";
 import { GetMediaReactionByIdResponseDto } from "../../features/user/dtos/get-media-reaction-by-id-response.dto";
 import { GetMediaReactionByUserResponseDto } from "../../features/user/dtos/get-media-reaction-by-user-response.dto";
 import { UpdateMediaReactionResponseDto } from "../../features/user/dtos/update-media-reaction-response.dto";
-import { MediaReaction, MediaReactionWithUser } from "../models/media-reaction.model";
+import { MediaReaction, MediaReactionTableRow, MediaReactionWithUser } from "../models/media-reaction.model";
 import { mapGetUserProfileToUserProfile } from "./user-profile.mapper";
 
 export function mapGetMediaReactionByIdToMediaReaction(dto: GetMediaReactionByIdResponseDto) : MediaReactionWithUser {
@@ -51,5 +52,15 @@ export function mapUpdateMediaReactionToMediaReaction(dto: UpdateMediaReactionRe
     anime: dto.anime,
     reaction: dto.reaction,
     upvoteCount: dto.upvoteCount
+  }
+}
+
+export function mapGetMediaReactionByAnimeToMediaReaction(dto: GetMediaReactionByAnimeResponseDto): MediaReactionTableRow {
+  return {
+    id: dto.mediaReactionId,
+    userId: dto.userId,
+    reaction: dto.reaction,
+    upvoteCount: dto.upvoteCount,
+    author: dto.author
   }
 }
