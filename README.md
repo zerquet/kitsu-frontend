@@ -1,6 +1,9 @@
 # Kitsu clone (front-end)
 
-A full-stack anime tracker based on [Kitsu](https://kitsu.app/). It was built to practice Angular, .NET and Azure.  
+A full-stack anime tracker based on [Kitsu](https://kitsu.app/). It was built to practice Angular, .NET and Azure.
+
+> This is an unofficial portfolio project. It is not affiliated with, endorsed by, or connected to Kitsu.
+
 You can [demo the live app](https://icy-sky-0b3ce1210.6.azurestaticapps.net/). A demo login is provided below for you to use:
 
 **Email**: demo1@gmail.com  
