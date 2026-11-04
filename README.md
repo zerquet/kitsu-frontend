@@ -39,7 +39,7 @@ Edit your library entries with a search, filter, and sorting options.
 ### Admin Hub
 
 Manage the anime catalog, episodes and franchises via the admin hub.  
-<img width="1280" height="726" alt="Admin Hub" src="https://github.com/user-attachments/assets/402d90c9-3176-4780-bd2c-3824a09ded7d" />
+<img width="1000" height="566" alt="Admin hub" src="https://github.com/user-attachments/assets/bb7aad80-5b44-4bf8-bc6d-14dff6e6fa75" />
 
 ## Tech stack
 
